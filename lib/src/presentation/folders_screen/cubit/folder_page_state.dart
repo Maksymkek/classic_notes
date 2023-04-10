@@ -14,4 +14,5 @@ class FolderPageState {
   List<FolderActionsWidget> folderWidgets;
   String sortBy = Settings.date.name;
   String sortOrder = Settings.descending.name;
+  String theme = Settings.light.name;
 }

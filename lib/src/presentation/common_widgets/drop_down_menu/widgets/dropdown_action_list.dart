@@ -25,73 +25,75 @@ class DropDownActionListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DropDownMenuCubit, DropDownMenuState>(
-      bloc: cubit,
-      builder: (BuildContext context, state) {
-        return GestureDetector(
-          onTap: onClose,
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Padding(
-              padding: _getPadding(),
-              child: Align(
-                alignment: Alignment.topRight,
-                child: ClipRRect(
-                  clipBehavior: Clip.antiAlias,
-                  borderRadius: const BorderRadius.vertical(
-                    bottom: Radius.circular(10.0),
-                  ),
-                  child: Container(
-                    clipBehavior: Clip.antiAlias,
-                    width: 200,
-                    decoration: const BoxDecoration(
-                      color: AppColors.white,
-                      border: Border(
-                        top: BorderSide(
-                          color: AppColors.lightBrown,
-                          width: 0.2,
-                        ),
-                      ),
+    return GestureDetector(
+      onTap: onClose,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Padding(
+          padding: _getPadding(),
+          child: Align(
+            alignment: Alignment.topRight,
+            child: ClipRRect(
+              clipBehavior: Clip.antiAlias,
+              borderRadius: const BorderRadius.vertical(
+                bottom: Radius.circular(10.0),
+              ),
+              child: Container(
+                clipBehavior: Clip.antiAlias,
+                width: 200,
+                decoration: const BoxDecoration(
+                  color: AppColors.white,
+                  border: Border(
+                    top: BorderSide(
+                      color: AppColors.lightBrown,
+                      width: 0.2,
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: item.actions
-                          .map(
-                            (action) => GestureDetector(
-                              onTap: () async {
-                                await Future.delayed(
-                                  const Duration(milliseconds: 150),
-                                );
-                                cubit.onActionSelected(action);
-                                Future.delayed(
-                                  const Duration(milliseconds: 250),
-                                ).whenComplete(() => onClose());
+                  ),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: item.actions
+                      .map(
+                        (action) => GestureDetector(
+                          onTap: () async {
+                            await Future.delayed(
+                              const Duration(milliseconds: 150),
+                            );
+                            cubit.onActionSelected(action);
+                            Future.delayed(
+                              const Duration(milliseconds: 250),
+                            ).whenComplete(() => onClose());
+                          },
+                          onTapDown: (details) {
+                            cubit.onActionTapResponse(item, action, true);
+                          },
+                          onTapUp: (details) {
+                            _onTapEnd(action);
+                          },
+                          onTapCancel: () {
+                            _onTapEnd(action);
+                          },
+                          child: SizeTransition(
+                            sizeFactor: animation,
+                            axis: Axis.vertical,
+                            axisAlignment: -1.0,
+                            child: BlocBuilder<DropDownMenuCubit,
+                                DropDownMenuState>(
+                              bloc: cubit,
+                              builder: (context, snapshot) {
+                                return DropDownActionWidget(action: action);
                               },
-                              onTapDown: (details) {
-                                cubit.onActionTapResponse(item, action, true);
-                              },
-                              onTapUp: (details) {
-                                _onTapEnd(action);
-                              },
-                              onTapCancel: () {
-                                _onTapEnd(action);
-                              },
-                              child: SizeTransition(
-                                  sizeFactor: animation,
-                                  axis: Axis.vertical,
-                                  axisAlignment: -1.0,
-                                  child: DropDownActionWidget(action: action)),
                             ),
-                          )
-                          .toList(),
-                    ),
-                  ),
+                          ),
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 

@@ -25,6 +25,10 @@ class AppColors {
 
   static const papayawhip = Color.fromRGBO(255, 239, 213, 1.0);
 
+  static const lightYellow = Color.fromRGBO(255, 254, 208, 1.0);
+
+  static const hintGrey = Color.fromRGBO(192, 192, 192, 1.0);
+
   static const white = Colors.white;
 
   static const black = Colors.black;
