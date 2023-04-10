@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:notes/src/presentation/app_colors.dart';
-import 'package:notes/src/presentation/common_widgets/drop_down_menu/widgets/dropdown_item_list.dart';
+import 'package:notes/src/presentation/common_widgets/drop_down_menu/dropdown_overlay.dart';
+import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_item_model.dart';
 
 //Done only ui part
 //TODO interference with the application data
 
 final dropDownWidgetKey = GlobalKey();
 
-class DropDownManagerWidget extends StatefulWidget {
-  const DropDownManagerWidget({super.key});
+class DropDownButtonWidget extends StatefulWidget {
+  const DropDownButtonWidget({super.key, required this.dropdownItems});
+  final List<DropDownItem> dropdownItems;
 
   @override
-  State<DropDownManagerWidget> createState() => _DropDownManagerWidgetState();
+  State<DropDownButtonWidget> createState() => _DropDownButtonWidgetState();
 }
 
-class _DropDownManagerWidgetState extends State<DropDownManagerWidget>
+class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
     with TickerProviderStateMixin {
-  late OverlayState overlayState;
-  OverlayEntry? overlayEntry;
-  AnimationController? animationController;
-  Animation<double>? animation;
+  late AnimationController animationController;
+  late Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,11 @@ class _DropDownManagerWidgetState extends State<DropDownManagerWidget>
         color: AppColors.darkBrown,
       ),
       onPressed: () {
-        _buildDropDownMenu();
+        DropDownOverlayManager.buildFolderForm(
+          context: context,
+          animation: animation,
+          animationController: animationController,
+        );
       },
       iconSize: 36,
     );
@@ -39,7 +43,6 @@ class _DropDownManagerWidgetState extends State<DropDownManagerWidget>
   @override
   void initState() {
     super.initState();
-    overlayState = Overlay.of(context);
     animationController = AnimationController(
       duration: const Duration(milliseconds: 250),
       reverseDuration: const Duration(milliseconds: 350),
@@ -47,39 +50,13 @@ class _DropDownManagerWidgetState extends State<DropDownManagerWidget>
     );
     animation = CurvedAnimation(
       curve: Curves.fastOutSlowIn,
-      parent: animationController!,
+      parent: animationController,
     );
-  }
-
-  void _removeHighlightOverlay() async {
-    await animationController?.reverse();
-    overlayEntry?.remove();
-    overlayEntry = null;
   }
 
   @override
   void dispose() {
-    _removeHighlightOverlay();
-    animationController?.dispose();
+    animationController.dispose();
     super.dispose();
-  }
-
-  void _buildDropDownMenu() async {
-    overlayEntry = OverlayEntry(
-      builder: (appContext) {
-        return Material(
-          color: Colors.transparent,
-          child: Align(
-            child: DropDownItemListWidget(
-              itemAnimation: animation!,
-              onClose: _removeHighlightOverlay,
-              overlayState: overlayState,
-            ),
-          ),
-        );
-      },
-    );
-    overlayState.insert(overlayEntry!);
-    animationController!.forward();
   }
 }

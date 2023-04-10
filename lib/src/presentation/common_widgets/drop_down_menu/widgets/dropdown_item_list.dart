@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/cubit/dropdown_menu_cubit.dart';
-import 'package:notes/src/presentation/common_widgets/drop_down_menu/cubit/dropdown_menu_state.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/dropdown_manager.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_action_model.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_item_model.dart';
@@ -16,11 +14,13 @@ class DropDownItemListWidget extends StatefulWidget {
     required this.onClose,
     required this.overlayState,
     required this.itemAnimation,
+    required this.controller,
   });
 
-  final VoidCallback onClose;
+  final void Function(AnimationController) onClose;
   final OverlayState overlayState;
   final Animation<double> itemAnimation;
+  final AnimationController controller;
 
   @override
   State<DropDownItemListWidget> createState() => _DropDownItemListWidgetState();
@@ -36,66 +36,61 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<DropDownMenuCubit, DropDownMenuState>(
-      bloc: cubit,
-      builder: (BuildContext context, state) {
-        return GestureDetector(
-          onTap: widget.onClose,
-          child: FadeTransition(
-            opacity: widget.itemAnimation,
-            child: Scaffold(
-              backgroundColor: AppColors.black.withOpacity(0.04),
-              body: Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: _getOffset(),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 250),
-                    clipBehavior: Clip.antiAlias,
-                    width: 200,
-                    decoration: BoxDecoration(
-                      borderRadius: borderRadius,
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: cubit.state.items
-                          .map(
-                            (item) => GestureDetector(
-                              onTap: () {
-                                _onTap(item);
-                              },
-                              onTapDown: (details) {
-                                cubit.onItemTapResponse(item, true);
-                              },
-                              onTapUp: (details) {
-                                _onTapEnd(item);
-                              },
-                              onTapCancel: () {
-                                _onTapEnd(item);
-                              },
-                              child: SizeTransition(
-                                sizeFactor: widget.itemAnimation,
-                                axis: Axis.vertical,
-                                axisAlignment: -1.0,
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: DropDownItemWidget(
-                                    item: item,
-                                    cubit: cubit,
-                                  ),
-                                ),
+    return GestureDetector(
+      onTap: () => widget.onClose(widget.controller),
+      child: FadeTransition(
+        opacity: widget.itemAnimation,
+        child: Scaffold(
+          backgroundColor: AppColors.black.withOpacity(0.04),
+          body: Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: _getOffset(),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 250),
+                clipBehavior: Clip.antiAlias,
+                width: 200,
+                decoration: BoxDecoration(
+                  borderRadius: borderRadius,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: cubit.state.items
+                      .map(
+                        (item) => GestureDetector(
+                          onTap: () {
+                            _onTap(item);
+                          },
+                          onTapDown: (details) {
+                            cubit.onItemTapResponse(item, true);
+                          },
+                          onTapUp: (details) {
+                            _onTapEnd(item);
+                          },
+                          onTapCancel: () {
+                            _onTapEnd(item);
+                          },
+                          child: SizeTransition(
+                            sizeFactor: widget.itemAnimation,
+                            axis: Axis.vertical,
+                            axisAlignment: -1.0,
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: DropDownItemWidget(
+                                item: item,
+                                cubit: cubit,
                               ),
                             ),
-                          )
-                          .toList(),
-                    ),
-                  ),
+                          ),
+                        ),
+                      )
+                      .toList(),
                 ),
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 

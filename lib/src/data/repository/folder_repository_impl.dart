@@ -47,6 +47,16 @@ class MockFolderRepository extends FolderRepository {
       dateOfCreation: DateTime.now(),
     ),
   };
+  int? getFolderById(Folder updatedFolder) {
+    int? searchedFolderId;
+    for (int i = 0; i < _folders.length; i++) {
+      var folder = _folders[i];
+      if (folder?.id == updatedFolder.id) {
+        searchedFolderId = folder?.id;
+      }
+    }
+    return searchedFolderId;
+  }
 
   @override
   Future<void> addFolder(Folder folder) async {
@@ -70,10 +80,12 @@ class MockFolderRepository extends FolderRepository {
 
   @override
   Future<void> updateFolder(Folder folder) async {
-    _folders.update(
-      _folders.values.toList().indexOf(folder),
-      (value) => folder,
-    );
+    try {
+      _folders.update(
+        getFolderById(folder)!,
+        (value) => folder,
+      );
+    } on Exception catch (_, ex) {}
   }
 
   @override

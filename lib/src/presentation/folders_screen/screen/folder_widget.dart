@@ -37,10 +37,12 @@ class FolderWidget extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           child: folder.icon,
         ),
-        title: Text(folder.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: AppStyles.middleBolderTextStyle),
+        title: Text(
+          folder.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: AppStyles.middleBolderTextStyle,
+        ),
         trailing: Container(
           height: double.infinity,
           clipBehavior: Clip.antiAlias,

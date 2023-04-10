@@ -74,7 +74,7 @@ class FolderPageCubit extends Cubit<FolderPageState> {
     onScreenLoad();
   }
 
-  void onDeleteFolderClick(folder) {
+  void onDeleteFolderClick(Folder folder) {
     _deleteFolderInteractor(folder);
     onScreenLoad();
   }
