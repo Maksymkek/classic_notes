@@ -37,6 +37,9 @@ class ActiveItemState implements ItemState {
   @override
   Color dividerColor = AppColors.lightBrown;
 
+  @override
+  Color textColor = AppColors.darkBrown;
+
   static ActiveItemState getInstance() {
     return _instance ?? (_instance = ActiveItemState._());
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_logs/flutter_logs.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_cubit.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_state.dart';
@@ -9,6 +10,7 @@ import 'package:notes/src/presentation/folder_form_screen/widgets/icon_picker_wi
 
 class StylePickerWidget extends StatefulWidget {
   const StylePickerWidget({super.key, required this.cubit});
+
   final FolderFormCubit cubit;
 
   @override
@@ -18,13 +20,6 @@ class StylePickerWidget extends StatefulWidget {
 class _StylePickerWidgetState extends State<StylePickerWidget> {
   late final ScrollController colorPickerController;
   late final ScrollController iconPickerController;
-
-  @override
-  void initState() {
-    super.initState();
-    colorPickerController = ScrollController();
-    iconPickerController = ScrollController();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,33 +35,24 @@ class _StylePickerWidgetState extends State<StylePickerWidget> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 13),
-          BlocBuilder<FolderFormCubit, FolderFormState>(
-            bloc: widget.cubit,
-            buildWhen: (prev, current) {
-              return prev.colorPickers != current.colorPickers;
-            },
-            builder: (context, snapshot) {
-              return _ItemPickerWidget(
-                listView: buildColorPickerList(),
-                controller: colorPickerController,
-              );
-            },
+          _ItemPickerWidget(
+            listView: buildColorPickerList(),
+            controller: colorPickerController,
           ),
-          BlocBuilder<FolderFormCubit, FolderFormState>(
-            bloc: widget.cubit,
-            buildWhen: (prev, current) {
-              return prev.iconPickers != current.iconPickers;
-            },
-            builder: (context, state) {
-              return _ItemPickerWidget(
-                listView: buildIconPickerList(),
-                controller: iconPickerController,
-              );
-            },
+          _ItemPickerWidget(
+            listView: buildIconPickerList(),
+            controller: iconPickerController,
           )
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    colorPickerController = ScrollController();
+    iconPickerController = ScrollController();
   }
 
   @override
@@ -83,9 +69,26 @@ class _StylePickerWidgetState extends State<StylePickerWidget> {
       itemCount: widget.cubit.state.iconPickers.length,
       itemBuilder: (BuildContext context, int index) {
         var iconPicker = widget.cubit.state.iconPickers[index];
-        return IconPickerWidget(
-          model: iconPicker,
-          onPressed: widget.cubit.onIconSelected,
+        return BlocBuilder<FolderFormCubit, FolderFormState>(
+          bloc: widget.cubit,
+          buildWhen: (prev, current) {
+            var res = !current.iconPickers.contains(iconPicker);
+            if (res) {
+              iconPicker.isActive = current.iconPickers[index].isActive;
+            }
+            return res;
+          },
+          builder: (context, state) {
+            FlutterLogs.logInfo(
+              'Presentation',
+              'folder-form',
+              'iconPicker${iconPicker.icon}',
+            );
+            return IconPickerWidget(
+              model: iconPicker,
+              onPressed: widget.cubit.onIconSelected,
+            );
+          },
         );
       },
     );
@@ -98,9 +101,27 @@ class _StylePickerWidgetState extends State<StylePickerWidget> {
       itemCount: widget.cubit.state.colorPickers.length,
       itemBuilder: (BuildContext context, int index) {
         var colorPicker = widget.cubit.state.colorPickers[index];
-        return ColorPickerWidget(
-          model: colorPicker,
-          onPressed: widget.cubit.onColorSelected,
+
+        return BlocBuilder<FolderFormCubit, FolderFormState>(
+          bloc: widget.cubit,
+          buildWhen: (prev, current) {
+            var res = !current.colorPickers.contains(colorPicker);
+            if (res) {
+              colorPicker.isActive = current.colorPickers[index].isActive;
+            }
+            return res;
+          },
+          builder: (context, state) {
+            FlutterLogs.logInfo(
+              'Presentation',
+              'folder-form',
+              'colorPicker${colorPicker.color}',
+            );
+            return ColorPickerWidget(
+              model: colorPicker,
+              onPressed: widget.cubit.onColorSelected,
+            );
+          },
         );
       },
     );

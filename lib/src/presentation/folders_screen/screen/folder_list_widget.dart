@@ -1,0 +1,131 @@
+import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes/src/dependencies/settings/sort_by.dart';
+import 'package:notes/src/dependencies/settings/sort_order.dart';
+import 'package:notes/src/presentation/common_widgets/custom_drag_item.dart';
+import 'package:notes/src/presentation/folders_screen/cubit/folder_page_cubit.dart';
+import 'package:notes/src/presentation/folders_screen/cubit/folder_page_state.dart';
+import 'package:notes/src/presentation/folders_screen/screen/folder_widget_actions.dart';
+
+class FolderListWidget extends StatefulWidget {
+  const FolderListWidget({super.key, required this.cubit});
+
+  final FolderPageCubit cubit;
+
+  @override
+  State<FolderListWidget> createState() => _FolderListWidgetState();
+}
+
+class _FolderListWidgetState extends State<FolderListWidget>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController animationController;
+  late final Animation<double> animation;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: 0,
+          horizontal: 20,
+        ),
+        child: DragAndDropLists(
+          itemGhostOpacity: 0.0,
+          onItemReorder: (
+            int oldItemIndex,
+            int oldListIndex,
+            int newItemIndex,
+            int newListIndex,
+          ) {
+            widget.cubit.onItemDragged(oldItemIndex, newItemIndex);
+          },
+          onListReorder: (int oldListIndex, int newListIndex) {},
+          children: [
+            DragAndDropList(
+              children: buildFolderActionWidgetList(widget.cubit),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    animationController = AnimationController(
+      duration: const Duration(milliseconds: 250),
+      reverseDuration: const Duration(milliseconds: 350),
+      vsync: this,
+    );
+    animation = CurvedAnimation(
+      curve: Curves.fastOutSlowIn,
+      parent: animationController,
+    );
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  List<DragAndDropItem> buildFolderActionWidgetList(FolderPageCubit cubit) {
+    var itemsMap = cubit.state.folders.map((key, folder) {
+      return MapEntry(
+        key,
+        CustomDragAndDropItem(
+          child: BlocBuilder<FolderPageCubit, FolderPageState>(
+            bloc: cubit,
+            buildWhen: (prev, current) {
+              if (current.folders[key] != folder) {
+                try {
+                  folder = current.folders[key]!;
+                  return true;
+                } catch (_) {
+                  return true;
+                }
+              }
+              return false;
+            },
+            builder: (context, state) {
+              return FolderActionsWidget(
+                folder: folder,
+                cubit: cubit,
+                animationController: animationController,
+                animation: animation,
+              );
+            },
+          ),
+          name: folder.name,
+          dateOfLastChange: folder.dateOfLastChange,
+        ),
+      );
+    });
+    List<CustomDragAndDropItem> sortedItems =
+        sortItems(itemsMap, cubit.state.sortOrder, cubit.state.sortBy);
+    return sortedItems;
+  }
+
+  List<CustomDragAndDropItem> sortItems(
+    Map<int, CustomDragAndDropItem> itemsMap,
+    String sortOrder,
+    String sortBy,
+  ) {
+    var sortedItems = itemsMap.values.toList();
+    if (sortBy != SortBy.custom.name) {
+      sortedItems.sort((a, b) {
+        if (sortBy == SortBy.name.name) {
+          return a.name.compareTo(b.name);
+        } else {
+          return a.dateOfLastChange.compareTo(b.dateOfLastChange);
+        }
+      });
+      if (sortOrder == SortOrder.descending.name) {
+        return sortedItems.reversed.toList();
+      }
+    }
+    return sortedItems;
+  }
+}

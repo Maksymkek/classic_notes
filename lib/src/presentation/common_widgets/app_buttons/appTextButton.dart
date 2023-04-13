@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class AppButtonWidget extends StatefulWidget {
-  const AppButtonWidget({
+class AppTextButtonWidget extends StatefulWidget {
+  const AppTextButtonWidget({
     super.key,
     required this.icon,
     required this.text,
@@ -22,34 +22,13 @@ class AppButtonWidget extends StatefulWidget {
   final double spacer;
 
   @override
-  State<AppButtonWidget> createState() => _AppButtonWidgetState();
+  State<AppTextButtonWidget> createState() => _AppTextButtonWidgetState();
 }
 
-class _AppButtonWidgetState extends State<AppButtonWidget>
+class _AppTextButtonWidgetState extends State<AppTextButtonWidget>
     with SingleTickerProviderStateMixin {
   late Animation<Color?> animation;
   late AnimationController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = AnimationController(
-      duration: const Duration(milliseconds: 0),
-      vsync: this,
-      reverseDuration: const Duration(milliseconds: 600),
-    );
-    animation = ColorTween(begin: widget.color, end: widget.activeColor)
-        .animate(controller);
-    animation.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,5 +59,26 @@ class _AppButtonWidgetState extends State<AppButtonWidget>
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 0),
+      vsync: this,
+      reverseDuration: const Duration(milliseconds: 600),
+    );
+    animation = ColorTween(begin: widget.color, end: widget.activeColor)
+        .animate(controller);
+    animation.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }

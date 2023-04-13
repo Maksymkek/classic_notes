@@ -25,37 +25,41 @@ class FolderFormCubit extends Cubit<FolderFormState> {
   }
 
   void onColorSelected(ColorPickerModel selectedColorPicker) {
+    final newSelColorPicker = ColorPickerModel.from(selectedColorPicker);
     final newColorPickers = state.colorPickers.map((colorPicker) {
       if (colorPicker != selectedColorPicker) {
-        colorPicker.isActive = false;
-        return colorPicker;
+        final newColorPicker = ColorPickerModel.from(colorPicker);
+        newColorPicker.isActive = false;
+        return newColorPicker;
       } else {
-        selectedColorPicker.isActive = true;
-        return selectedColorPicker;
+        newSelColorPicker.isActive = true;
+        return newSelColorPicker;
       }
     }).toList();
-    state.folder.background = selectedColorPicker.color;
+    state.folder.background = newSelColorPicker.color;
     state.folder.icon = Icon(
       state.folder.icon.icon,
       size: state.folder.icon.size,
-      color: selectedColorPicker.iconColor,
+      color: newSelColorPicker.iconColor,
     );
     _copyWith(colorPickers: newColorPickers);
   }
 
   void onIconSelected(IconPickerModel selectedIconPicker) {
+    final newSelIconPicker = IconPickerModel.from(selectedIconPicker);
     final newIconPickers = state.iconPickers.map((iconPicker) {
       if (iconPicker != selectedIconPicker) {
-        iconPicker.isActive = false;
-        return iconPicker;
+        var newIconPicker = IconPickerModel.from(iconPicker);
+        newIconPicker.isActive = false;
+        return newIconPicker;
       } else {
-        selectedIconPicker.isActive = true;
-        return selectedIconPicker;
+        newSelIconPicker.isActive = true;
+        return newSelIconPicker;
       }
     }).toList();
     state.folder.icon = Icon(
-      selectedIconPicker.icon,
-      size: selectedIconPicker.trueIconSize,
+      newSelIconPicker.icon,
+      size: newSelIconPicker.trueIconSize,
       color: state.folder.icon.color,
     );
     _copyWith(iconPickers: newIconPickers);

@@ -21,4 +21,6 @@ abstract class ItemState {
   double horizontalPadding = 0;
 
   Color dividerColor = AppColors.black;
+
+  Color textColor = AppColors.darkBrown;
 }

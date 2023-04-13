@@ -11,15 +11,7 @@ class FolderFormOverlayManager {
   static late OverlayState _overlayState;
   static OverlayEntry? _overlayEntry;
 
-  static Future<void> _removeHighlightOverlay(
-    AnimationController animationController,
-  ) async {
-    await animationController.reverse();
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-  }
-
-  static void buildFolderForm({
+  static void buildOverlay({
     required BuildContext context,
     required Animation<double> animation,
     required AnimationController animationController,
@@ -42,7 +34,7 @@ class FolderFormOverlayManager {
                       AppIcons.folder,
                       size: 28,
                     ),
-                    dateOfCreation: DateTime.now(),
+                    dateOfLastChange: DateTime.now(),
                   ),
               onClose: _removeHighlightOverlay,
               animation: animation,
@@ -58,5 +50,13 @@ class FolderFormOverlayManager {
 
     _overlayState.insert(_overlayEntry!);
     animationController.forward();
+  }
+
+  static Future<void> _removeHighlightOverlay(
+    AnimationController animationController,
+  ) async {
+    await animationController.reverse();
+    _overlayEntry?.remove();
+    _overlayEntry = null;
   }
 }
