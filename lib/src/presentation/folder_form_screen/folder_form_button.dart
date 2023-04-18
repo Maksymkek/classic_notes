@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:notes/src/domain/entity/folder.dart';
+import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
+import 'package:notes/src/presentation/common_widgets/app_buttons/icon_button.dart';
 import 'package:notes/src/presentation/folder_form_screen/folder_form_overlay.dart';
 
 class FolderFormButtonWidget extends StatefulWidget {
-  const FolderFormButtonWidget({Key? key, this.folder}) : super(key: key);
+  const FolderFormButtonWidget({super.key, this.folder});
+
   final Folder? folder;
 
   @override
@@ -15,6 +18,24 @@ class _FolderFormButtonWidgetState extends State<FolderFormButtonWidget>
     with SingleTickerProviderStateMixin {
   AnimationController? animationController;
   Animation<double>? animation;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 7.0, bottom: 5.0),
+      child: AppIconButtonWidget(
+        icon: AppIcons.addFolder,
+        activeColor: AppColors.lightBrown,
+        onPressed: () => FolderFormOverlayManager.buildOverlay(
+          context: context,
+          animation: animation!,
+          animationController: animationController!,
+        ),
+        iconSize: 38,
+        color: AppColors.darkBrown,
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -31,23 +52,8 @@ class _FolderFormButtonWidgetState extends State<FolderFormButtonWidget>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(
-        AppIcons.addFolder,
-      ),
-      onPressed: () => FolderFormOverlayManager.buildFolderForm(
-        context: context,
-        animation: animation!,
-        animationController: animationController!,
-      ),
-      iconSize: 36,
-    );
-  }
-
-  @override
   void dispose() {
-    super.dispose();
     animationController?.dispose();
+    super.dispose();
   }
 }

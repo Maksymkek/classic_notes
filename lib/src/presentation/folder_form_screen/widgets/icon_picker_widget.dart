@@ -9,6 +9,7 @@ class IconPickerWidget extends StatelessWidget {
     required this.model,
     required this.onPressed,
   });
+
   final IconPickerModel model;
   final Function(IconPickerModel) onPressed;
 

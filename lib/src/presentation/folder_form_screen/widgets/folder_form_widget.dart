@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/src/domain/entity/folder.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
-import 'package:notes/src/presentation/common_widgets/appTextButton.dart';
+import 'package:notes/src/presentation/common_widgets/app_buttons/appTextButton.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_cubit.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_state.dart';
 import 'package:notes/src/presentation/folder_form_screen/models/color_picker_model.dart';
@@ -90,25 +90,6 @@ class _FolderFormWidgetState extends State<FolderFormWidget> {
   late FolderFormCubit cubit;
 
   @override
-  void initState() {
-    super.initState();
-    _setStylePickerData();
-    cubit = FolderFormCubit(
-      FolderFormState(
-        folder: Folder(
-          id: widget.folder.id,
-          icon: widget.folder.icon,
-          name: widget.folder.name,
-          background: widget.folder.background,
-          dateOfCreation: widget.folder.dateOfCreation,
-        ),
-        colorPickers: _colorPickers,
-        iconPickers: _iconPickers,
-      ),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => widget.onClose(widget.animationController),
@@ -162,6 +143,25 @@ class _FolderFormWidgetState extends State<FolderFormWidget> {
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _setStylePickerData();
+    cubit = FolderFormCubit(
+      FolderFormState(
+        folder: Folder(
+          id: widget.folder.id,
+          icon: widget.folder.icon,
+          name: widget.folder.name,
+          background: widget.folder.background,
+          dateOfLastChange: widget.folder.dateOfLastChange,
+        ),
+        colorPickers: _colorPickers,
+        iconPickers: _iconPickers,
+      ),
+    );
+  }
+
   void onDragClosing(details) {
     if (details.delta.dy > 0) {
       widget.onClose(widget.animationController);
@@ -174,7 +174,11 @@ class _FolderFormWidgetState extends State<FolderFormWidget> {
       children: [
         Text(
           'New folder',
-          style: GoogleFonts.acme(fontSize: 30),
+          style: GoogleFonts.alexandria(
+            fontSize: 30,
+            color: AppColors.darkBrown,
+            fontWeight: FontWeight.w300,
+          ),
         ),
         const SizedBox(height: 23),
         FolderPreviewWidget(cubit: cubit),
@@ -189,7 +193,7 @@ class _FolderFormWidgetState extends State<FolderFormWidget> {
         const SizedBox(
           height: 24,
         ),
-        AppButtonWidget(
+        AppTextButtonWidget(
           icon: AppIcons.selected,
           text: 'Done',
           onPressed: () {

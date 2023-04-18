@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notes/src/presentation/app_styles.dart';
-import 'package:notes/src/presentation/common_widgets/drop_down_menu/dropdown_manager.dart';
+import 'package:notes/src/presentation/common_widgets/drop_down_menu/dropdown_button_widget.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_item_model.dart';
 
 class BuildAppBar extends StatelessWidget {
@@ -8,7 +8,9 @@ class BuildAppBar extends StatelessWidget {
     super.key,
     required this.dropdownItems,
   });
+
   final List<DropDownItem> dropdownItems;
+
   @override
   Widget build(BuildContext context) {
     return Padding(

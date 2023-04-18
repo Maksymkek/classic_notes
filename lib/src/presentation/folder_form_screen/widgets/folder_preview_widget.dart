@@ -8,6 +8,7 @@ import 'package:notes/src/presentation/folders_screen/screen/folder_widget.dart'
 
 class FolderPreviewWidget extends StatelessWidget {
   const FolderPreviewWidget({super.key, required this.cubit});
+
   final FolderFormCubit cubit;
 
   @override
@@ -21,9 +22,10 @@ class FolderPreviewWidget extends StatelessWidget {
           ),
           child: BlocBuilder<FolderFormCubit, FolderFormState>(
             bloc: cubit,
-            builder: (context, snapshot) {
+            builder: (context, state) {
               return FolderWidget(
                 folder: cubit.state.folder,
+                previewMode: true,
               );
             },
           ),

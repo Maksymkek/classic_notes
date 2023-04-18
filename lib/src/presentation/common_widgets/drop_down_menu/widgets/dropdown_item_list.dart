@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/cubit/dropdown_menu_cubit.dart';
-import 'package:notes/src/presentation/common_widgets/drop_down_menu/dropdown_manager.dart';
-import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_action_model.dart';
+import 'package:notes/src/presentation/common_widgets/drop_down_menu/dropdown_button_widget.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_item_model.dart';
+import 'package:notes/src/presentation/common_widgets/drop_down_menu/visual_effects/item_states/active_item.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/widgets/dropdown_action_list.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/widgets/dropdown_item.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/widgets/widget_offset_key.dart';
 
 class DropDownItemListWidget extends StatefulWidget {
   const DropDownItemListWidget({
-    super.key,
+    required super.key,
     required this.onClose,
     required this.overlayState,
     required this.itemAnimation,
-    required this.controller,
+    required this.dropDownItems,
   });
 
-  final void Function(AnimationController) onClose;
+  final VoidCallback onClose;
   final OverlayState overlayState;
   final Animation<double> itemAnimation;
-  final AnimationController controller;
+  final List<DropDownItem> dropDownItems;
 
   @override
   State<DropDownItemListWidget> createState() => _DropDownItemListWidgetState();
@@ -33,11 +33,12 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
   AnimationController? animationController;
   Animation<double>? actionAnimation;
   late BorderRadius borderRadius;
+  bool canClose = true;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => widget.onClose(widget.controller),
+      onTap: onClose,
       child: FadeTransition(
         opacity: widget.itemAnimation,
         child: Scaffold(
@@ -106,63 +107,12 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
       curve: Curves.easeInOut,
       parent: animationController!,
     );
-    cubit = DropDownMenuCubit([
-      DropDownItem(
-        title: 'Sort by',
-        icon: Icons.sort_rounded,
-        actions: [
-          DropdownAction(
-            title: 'date',
-            onTap: () {},
-            isSelected: true,
-            icon: Icons.date_range_rounded,
-          ),
-          DropdownAction(
-            title: 'name',
-            onTap: () {},
-            isSelected: false,
-            icon: Icons.abc,
-          ),
-        ],
-      ),
-      DropDownItem(
-        title: 'Sort order',
-        icon: Icons.swap_vert_rounded,
-        actions: [
-          DropdownAction(
-            title: 'descending',
-            onTap: () {},
-            isSelected: true,
-            icon: Icons.arrow_downward_rounded,
-          ),
-          DropdownAction(
-            title: 'ascending',
-            onTap: () {},
-            isSelected: false,
-            icon: Icons.arrow_upward_rounded,
-          ),
-        ],
-      ),
-      DropDownItem(
-        title: 'Change theme',
-        icon: Icons.brightness_4,
-        actions: [
-          DropdownAction(
-            title: 'light',
-            onTap: () {},
-            isSelected: true,
-            icon: Icons.light_mode_rounded,
-          ),
-          DropdownAction(
-            title: 'dark',
-            onTap: () {},
-            isSelected: false,
-            icon: Icons.dark_mode_rounded,
-          ),
-        ],
-      ),
-    ]);
+    cubit = DropDownMenuCubit(
+      widget.dropDownItems,
+      dropDownWidgetKey.globalPaintBounds?.bottom ?? 80,
+    );
     borderRadius = const BorderRadius.all(Radius.circular(10.0));
+    cubit.uncheckItem();
   }
 
   @override
@@ -172,19 +122,28 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
     super.dispose();
   }
 
+  void onClose() {
+    if (canClose) {
+      cubit.syncChangedSettings(widget.dropDownItems);
+      widget.onClose();
+    }
+  }
+
   EdgeInsets _getOffset() {
-    final offset = dropDownWidgetKey.globalPaintBounds!;
-    return EdgeInsets.fromLTRB(0.0, offset.top.toDouble(), 19.6, 0.0);
+    return EdgeInsets.fromLTRB(0.0, cubit.state.dy, 19.6, 0.0);
   }
 
   void _buildDropDownAction(DropDownActionListWidget actionsWidget) {
+    canClose = false;
     overlayEntry = OverlayEntry(
       builder: (appContext) {
         return FutureBuilder(
           future: Future.delayed(const Duration(milliseconds: 300)),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              animationController!.forward();
+              animationController?.forward().whenComplete(
+                    () => {canClose = true},
+                  );
               return actionsWidget;
             } else {
               return Container();
@@ -197,11 +156,13 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
   }
 
   void _removeHighlightOverlay() async {
+    canClose = false;
     await animationController?.reverse();
     overlayEntry?.remove();
     overlayEntry = null;
     cubit.uncheckItem();
     _setRoundedCorners();
+    canClose = true;
   }
 
   void _setRectangleBorders() {
@@ -223,18 +184,23 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
     await Future.delayed(
       const Duration(milliseconds: 150),
     );
-    cubit.onItemClick(item);
-    if (item == cubit.state.items.last) {
-      _setRectangleBorders();
+    if (item.isActive == false &&
+        item.visualState == ActiveItemState.getInstance() &&
+        canClose == true) {
+      cubit.onItemClick(item);
+      canClose = true;
+      if (item == cubit.state.items.last) {
+        _setRectangleBorders();
+      }
+      _buildDropDownAction(
+        DropDownActionListWidget(
+          item: item,
+          cubit: cubit,
+          onClose: _removeHighlightOverlay,
+          animation: actionAnimation!,
+        ),
+      );
     }
-    _buildDropDownAction(
-      DropDownActionListWidget(
-        item: item,
-        cubit: cubit,
-        onClose: _removeHighlightOverlay,
-        animation: actionAnimation!,
-      ),
-    );
   }
 
   void _onTapEnd(DropDownItem item) {

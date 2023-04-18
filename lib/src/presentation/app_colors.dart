@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const darkBrown = Color.fromRGBO(43, 23, 0, 1.0);
+  static const darkBrown = Color.fromRGBO(79, 58, 13, 1.0);
 
-  static const milkWhite = Color.fromRGBO(247, 246, 246, 1.0);
+  static const milkWhite = Color.fromRGBO(246, 243, 243, 1.0);
 
-  static const carmineRed = Color.fromRGBO(215, 0, 64, 1);
+  static const carmineRed = Color.fromRGBO(215, 0, 64, 1.0);
 
-  static const sapphireBlue = Color.fromRGBO(15, 82, 186, 1);
+  static const sapphireBlue = Color.fromRGBO(15, 82, 186, 1.0);
 
-  static const lightGrey = Color.fromRGBO(250, 250, 250, 1);
+  static const lightGrey = Color.fromRGBO(250, 250, 250, 1.0);
 
   static const darkGrey = Color.fromRGBO(25, 25, 25, 1.0);
 
@@ -28,6 +28,8 @@ class AppColors {
   static const lightYellow = Color.fromRGBO(255, 254, 208, 1.0);
 
   static const hintGrey = Color.fromRGBO(192, 192, 192, 1.0);
+
+  static const lightPressedGrey = Color.fromRGBO(235, 235, 235, 1.0);
 
   static const white = Colors.white;
 

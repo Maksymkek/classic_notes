@@ -8,44 +8,19 @@ import 'package:notes/src/presentation/folder_form_screen/folder_form_overlay.da
 import 'package:notes/src/presentation/folders_screen/cubit/folder_page_cubit.dart';
 import 'package:notes/src/presentation/folders_screen/screen/folder_widget.dart';
 
-class FolderActionsWidget extends StatefulWidget {
+class FolderActionsWidget extends StatelessWidget {
   const FolderActionsWidget({
     super.key,
     required this.folder,
     required this.cubit,
+    required this.animationController,
+    required this.animation,
   });
 
   final FolderPageCubit cubit;
   final Folder folder;
-
-  @override
-  State<FolderActionsWidget> createState() => _FolderActionsWidgetState();
-}
-
-class _FolderActionsWidgetState extends State<FolderActionsWidget>
-    with TickerProviderStateMixin {
-  late final AnimationController animationController;
-  late final Animation<double> animation;
-
-  @override
-  void initState() {
-    super.initState();
-    animationController = AnimationController(
-      duration: const Duration(milliseconds: 250),
-      reverseDuration: const Duration(milliseconds: 350),
-      vsync: this,
-    );
-    animation = CurvedAnimation(
-      curve: Curves.fastOutSlowIn,
-      parent: animationController,
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    animationController.dispose();
-  }
+  final AnimationController animationController;
+  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {
@@ -54,18 +29,24 @@ class _FolderActionsWidgetState extends State<FolderActionsWidget>
           Padding(
         padding: const EdgeInsets.only(bottom: 10),
         child: Slidable(
+          key: ValueKey(folder.id),
           endActionPane: ActionPane(
-            motion: const ScrollMotion(),
+            motion: const DrawerMotion(),
+            dismissible: DismissiblePane(
+              onDismissed: () {
+                cubit.onDeleteFolderClick(folder);
+              },
+            ),
             extentRatio: 0.5,
             children: [
               SlidableActionWidget(
                 icon: Icons.edit_outlined,
                 color: AppColors.brightBlue,
                 onTap: () {
-                  FolderFormOverlayManager.buildFolderForm(
+                  FolderFormOverlayManager.buildOverlay(
                     context: context,
                     animation: animation,
-                    folder: widget.folder,
+                    folder: folder,
                     animationController: animationController,
                   );
                 },
@@ -74,13 +55,13 @@ class _FolderActionsWidgetState extends State<FolderActionsWidget>
                 icon: Icons.delete_outline,
                 color: AppColors.carmineRed,
                 onTap: () {
-                  widget.cubit.onDeleteFolderClick(widget.folder);
+                  cubit.onDeleteFolderClick(folder);
                 },
               ),
             ],
           ),
           child: FolderWidget(
-            folder: widget.folder,
+            folder: folder,
           ),
         ),
       ),

@@ -17,7 +17,7 @@ class DisabledItemState implements ItemState {
   double maxTextSpace = 104.0;
 
   @override
-  Color background = AppColors.lightBrown;
+  Color background = AppColors.darkBrown;
 
   @override
   double backIconSize = 8.0;
@@ -36,6 +36,9 @@ class DisabledItemState implements ItemState {
 
   @override
   Color dividerColor = AppColors.darkBrown;
+
+  @override
+  Color textColor = AppColors.white;
 
   static DisabledItemState getInstance() {
     return _instance ?? (_instance = DisabledItemState._());

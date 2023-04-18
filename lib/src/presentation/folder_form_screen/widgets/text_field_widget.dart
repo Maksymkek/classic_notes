@@ -5,6 +5,7 @@ import 'package:notes/src/presentation/folder_form_screen/widgets/folder_form_wi
 
 class TextFieldWidget extends StatefulWidget {
   const TextFieldWidget({super.key, required this.cubit});
+
   final FolderFormCubit cubit;
 
   @override
@@ -13,15 +14,6 @@ class TextFieldWidget extends StatefulWidget {
 
 class _TextFieldWidgetState extends State<TextFieldWidget> {
   late TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.cubit.state.folder.name);
-    _controller.selection = TextSelection.fromPosition(
-      TextPosition(offset: _controller.text.length),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +42,17 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.cubit.state.folder.name);
+    _controller.selection = TextSelection.fromPosition(
+      TextPosition(offset: _controller.text.length),
+    );
+  }
+
+  @override
   void dispose() {
-    super.dispose();
     _controller.dispose();
+    super.dispose();
   }
 }

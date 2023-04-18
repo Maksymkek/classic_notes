@@ -3,19 +3,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 
 class AppStyles {
-  static final smallTextStyle = GoogleFonts.acme(
+  static final smallTextStyle = GoogleFonts.alexandria(
     color: AppColors.darkBrown,
     fontSize: 16,
+    fontWeight: FontWeight.w300,
   );
 
-  static final bigBoldTextStyle = GoogleFonts.acme(
+  static final bigBoldTextStyle = GoogleFonts.alexandria(
     color: AppColors.darkBrown,
-    fontSize: 40,
-    fontWeight: FontWeight.bold,
+    fontSize: 42,
+    fontWeight: FontWeight.w300,
   );
 
-  static final middleBolderTextStyle = GoogleFonts.rocknRollOne(
-    fontSize: 16,
-    fontWeight: FontWeight.w200,
+  static final middleBolderTextStyle = GoogleFonts.galdeano(
+    fontSize: 20,
+    fontWeight: FontWeight.w300,
   );
 }
