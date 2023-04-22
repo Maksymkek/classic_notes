@@ -114,9 +114,9 @@ class _FolderFormWidgetState extends State<FolderFormWidget> {
                     decoration: BoxDecoration(
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.44),
+                          color: Colors.black.withOpacity(0.05),
                           spreadRadius: 0,
-                          blurRadius: 17,
+                          blurRadius: 20,
                           offset: const Offset(0, 0),
                         ),
                       ],

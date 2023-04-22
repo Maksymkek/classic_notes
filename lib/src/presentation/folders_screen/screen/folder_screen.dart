@@ -37,7 +37,16 @@ class _FolderScreenState extends State<FolderScreen> {
       floatingActionButton: const FolderFormButtonWidget(),
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, 80),
-        child: BuildAppBar(dropdownItems: dropDownItems),
+        child: FutureBuilder(
+          future: future,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return BuildAppBar(dropdownItems: dropDownItems);
+            } else {
+              return Container();
+            }
+          },
+        ),
       ),
       body: SizedBox(
         width: double.infinity,
@@ -83,7 +92,6 @@ class _FolderScreenState extends State<FolderScreen> {
   void initState() {
     super.initState();
     cubit = DI.getInstance().folderPageCubit;
-    appSettings = DI.getInstance().appSettingsRepository.getSettings();
     future = cubit.onScreenLoad();
     dropDownItems = [
       DropDownItem(

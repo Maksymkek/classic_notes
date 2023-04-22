@@ -37,7 +37,7 @@ class DI {
   }
 
   Future<void> init() async {
-    _folderRepository = MockFolderRepository();
+    _folderRepository = FolderRepositoryImpl();
     _getFoldersInteractor = GetFoldersInteractor(_folderRepository);
     _addFolderInteractor = AddFolderInteractor(_folderRepository);
     _updateFolderInteractor = UpdateFolderInteractor(_folderRepository);
