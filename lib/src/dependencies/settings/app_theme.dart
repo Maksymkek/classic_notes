@@ -1,4 +1,4 @@
-enum ChangeTheme {
+enum AppTheme {
   light,
   dark,
   auto,

@@ -6,7 +6,7 @@ class UpdateFoldersOrderInteractor {
 
   FolderRepository folderRepository;
 
-  Future<void> call(Map<int, Folder> folders) async {
-    await folderRepository.updateFoldersOrder(folders);
+  void call(Map<int, Folder> folders) {
+    folderRepository.updateFoldersOrder(folders);
   }
 }

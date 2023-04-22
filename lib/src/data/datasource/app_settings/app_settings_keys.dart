@@ -1,0 +1,4 @@
+enum AppSettingsKeys {
+  language,
+  theme,
+}

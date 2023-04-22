@@ -5,12 +5,12 @@ class DropDownAction extends Equatable {
   DropDownAction({
     required this.title,
     required this.onTap,
-    required this.icon,
+    this.icon,
     this.isSelected = false,
   });
 
   final String title;
-  final IconData icon;
+  final IconData? icon;
   bool isSelected;
   final Function() onTap;
   Color? tapResponseColor;
