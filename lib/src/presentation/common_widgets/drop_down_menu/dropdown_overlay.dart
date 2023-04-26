@@ -44,6 +44,10 @@ class DropDownOverlayManager {
   static Future<void> _removeHighlightOverlay() async {
     _otherController?.reverse();
     await _menuController.reverse();
+    dispose();
+  }
+
+  static void dispose() {
     _overlayEntry?.remove();
     _overlayEntry = null;
   }

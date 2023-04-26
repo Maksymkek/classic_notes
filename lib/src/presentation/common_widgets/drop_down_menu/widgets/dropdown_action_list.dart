@@ -7,7 +7,7 @@ import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/drop
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_item_model.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/widgets/dropdown_action.dart';
 
-class DropDownActionListWidget extends StatelessWidget {
+class DropDownActionListWidget extends StatefulWidget {
   const DropDownActionListWidget({
     super.key,
     required this.item,
@@ -22,11 +22,17 @@ class DropDownActionListWidget extends StatelessWidget {
   final Animation<double> animation;
 
   @override
+  State<DropDownActionListWidget> createState() =>
+      _DropDownActionListWidgetState();
+}
+
+class _DropDownActionListWidgetState extends State<DropDownActionListWidget> {
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (animation.isCompleted) {
-          onClose();
+        if (widget.animation.isCompleted) {
+          widget.onClose();
         }
       },
       child: Scaffold(
@@ -64,22 +70,23 @@ class DropDownActionListWidget extends StatelessWidget {
   Column buildActionWidgets() {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: item.actions
+      children: widget.item.actions
           .map(
             (action) => GestureDetector(
               onTap: () async {
                 await Future.delayed(
                   const Duration(milliseconds: 150),
                 );
-                if (animation.isCompleted || animation.isDismissed) {
-                  cubit.onActionSelected(action);
+                if (widget.animation.isCompleted ||
+                    widget.animation.isDismissed) {
+                  widget.cubit.onActionSelected(action);
                   Future.delayed(
                     const Duration(milliseconds: 250),
-                  ).whenComplete(() => onClose());
+                  ).whenComplete(() => widget.onClose());
                 }
               },
               onTapDown: (details) {
-                cubit.onActionTapResponse(item, action, true);
+                widget.cubit.onActionTapResponse(widget.item, action, true);
               },
               onTapUp: (details) {
                 _onTapEnd(action);
@@ -88,11 +95,11 @@ class DropDownActionListWidget extends StatelessWidget {
                 _onTapEnd(action);
               },
               child: SizeTransition(
-                sizeFactor: animation,
+                sizeFactor: widget.animation,
                 axis: Axis.vertical,
                 axisAlignment: -1.0,
                 child: BlocBuilder<DropDownMenuCubit, DropDownMenuState>(
-                  bloc: cubit,
+                  bloc: widget.cubit,
                   buildWhen: (prev, current) {
                     return needToRedraw(prev, current, action);
                   },
@@ -128,10 +135,10 @@ class DropDownActionListWidget extends StatelessWidget {
   }
 
   DropDownItem getCurrentItem(DropDownMenuState current) {
-    var index = current.items.indexOf(item);
+    var index = current.items.indexOf(widget.item);
     if (index == -1) {
       for (int i = 0; i < current.items.length; i += 1) {
-        if (current.items[i].title == item.title) {
+        if (current.items[i].title == widget.item.title) {
           index = i;
         }
       }
@@ -141,8 +148,8 @@ class DropDownActionListWidget extends StatelessWidget {
   }
 
   EdgeInsets _getPadding() {
-    var top = cubit.state.dy;
-    int itemId = cubit.getItemId(item);
+    var top = widget.cubit.state.dy;
+    int itemId = widget.cubit.getItemId(widget.item);
     int i = 0;
     while (i <= itemId - 1) {
       top += 21.75;
@@ -155,7 +162,7 @@ class DropDownActionListWidget extends StatelessWidget {
     Future.delayed(
       const Duration(milliseconds: 100),
     ).whenComplete(
-      () => cubit.onActionTapResponse(item, action, false),
+      () => widget.cubit.onActionTapResponse(widget.item, action, false),
     );
   }
 }

@@ -6,7 +6,7 @@ class AppStyles {
   static final smallTextStyle = GoogleFonts.alexandria(
     color: AppColors.darkBrown,
     fontSize: 16,
-    fontWeight: FontWeight.w300,
+    fontWeight: FontWeight.w400,
   );
 
   static final bigBoldTextStyle = GoogleFonts.alexandria(

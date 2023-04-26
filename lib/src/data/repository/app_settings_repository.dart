@@ -2,24 +2,20 @@ import 'package:notes/src/data/datasource/app_settings/app_settings_data_source.
 import 'package:notes/src/data/datasource/app_settings/app_settings_keys.dart';
 import 'package:notes/src/dependencies/settings/app_languages.dart';
 import 'package:notes/src/dependencies/settings/app_theme.dart';
-import 'package:notes/src/domain/entity/app_settings.dart';
+import 'package:notes/src/presentation/app_settings_cubit/app_settings_state.dart';
 
 class AppSettingsRepository {
-  AppSettings settings = AppSettings(
-    theme: AppTheme.light.name,
-    language: AppLanguages.english.name,
-  );
-  final AppSettingsDataSource dataSource = AppSettingsDataSource.getInstance();
+  final AppSettingsDataSource _dataSource = AppSettingsDataSource.getInstance();
 
-  Future<void> getSettings() async {
-    settings = await dataSource.getSettings();
+  Future<AppSettings> getSettings() async {
+    return _dataSource.getSettings();
   }
 
   void setTheme(AppTheme theme) {
-    dataSource.setSetting(AppSettingsKeys.theme, theme.name);
+    _dataSource.setSetting(AppSettingsKeys.theme, theme.name);
   }
 
-  void setLanguage(AppLanguages language) {
-    dataSource.setSetting(AppSettingsKeys.language, language.name);
+  void setLanguage(AppLanguage language) {
+    _dataSource.setSetting(AppSettingsKeys.language, language.name);
   }
 }

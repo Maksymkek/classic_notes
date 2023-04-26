@@ -8,10 +8,10 @@ import 'package:notes/src/domain/use_case/folder_case/delete_folder_interactor.d
 import 'package:notes/src/domain/use_case/folder_case/get_folders_interactor.dart';
 import 'package:notes/src/domain/use_case/folder_case/update_folder_interactor.dart';
 import 'package:notes/src/domain/use_case/folder_case/update_folders_order_interactor.dart';
-import 'package:notes/src/domain/use_case/settings_case/get_sort_by_interactor.dart';
-import 'package:notes/src/domain/use_case/settings_case/get_sort_order_interactor.dart';
-import 'package:notes/src/domain/use_case/settings_case/set_sort_by_interactor.dart';
-import 'package:notes/src/domain/use_case/settings_case/set_sort_order_interactor.dart';
+import 'package:notes/src/domain/use_case/settings_case/item_settings_case/get_sort_by_interactor.dart';
+import 'package:notes/src/domain/use_case/settings_case/item_settings_case/get_sort_order_interactor.dart';
+import 'package:notes/src/domain/use_case/settings_case/item_settings_case/set_sort_by_interactor.dart';
+import 'package:notes/src/domain/use_case/settings_case/item_settings_case/set_sort_order_interactor.dart';
 
 import 'folder_page_state.dart';
 

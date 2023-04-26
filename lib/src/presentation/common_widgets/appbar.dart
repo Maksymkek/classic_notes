@@ -21,6 +21,7 @@ class BuildAppBar extends StatelessWidget {
             height: 20,
           ),
           AppBar(
+            automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
             elevation: 0,
             title: Text('Notes', style: AppStyles.bigBoldTextStyle),

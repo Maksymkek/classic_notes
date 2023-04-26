@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/cubit/dropdown_menu_cubit.dart';
-import 'package:notes/src/presentation/common_widgets/drop_down_menu/dropdown_button_widget.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_item_model.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/visual_effects/item_states/active_item.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/widgets/dropdown_action_list.dart';
@@ -109,7 +108,7 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
     );
     cubit = DropDownMenuCubit(
       widget.dropDownItems,
-      dropDownWidgetKey.globalPaintBounds?.bottom ?? 80,
+      (widget.key as GlobalKey?)?.globalPaintBounds?.bottom ?? 120,
     );
     borderRadius = const BorderRadius.all(Radius.circular(10.0));
     cubit.uncheckItem();
@@ -117,7 +116,8 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
 
   @override
   void dispose() {
-    _removeHighlightOverlay();
+    overlayEntry?.remove();
+    overlayEntry = null;
     animationController?.dispose();
     super.dispose();
   }
@@ -155,7 +155,7 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
     widget.overlayState.insert(overlayEntry!);
   }
 
-  void _removeHighlightOverlay() async {
+  Future<void> _removeHighlightOverlay() async {
     canClose = false;
     await animationController?.reverse();
     overlayEntry?.remove();

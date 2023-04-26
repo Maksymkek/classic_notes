@@ -3,6 +3,7 @@ import 'package:flutter_logs/flutter_logs.dart';
 import 'package:notes/src/domain/entity/folder.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_styles.dart';
+import 'package:notes/src/presentation/notes_screen/screen/notes_screen_widget.dart';
 
 class FolderWidget extends StatefulWidget {
   const FolderWidget({
@@ -33,7 +34,10 @@ class _FolderWidgetState extends State<FolderWidget>
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
-        controller.forward().whenComplete(() => controller.reverse());
+        controller.forward();
+        Navigator.of(context)
+            .pushNamed(NotesScreenWidget.screenName, arguments: widget.folder)
+            .whenComplete(() => controller.reverse());
       },
       onTapDown: (details) {
         controller.forward();

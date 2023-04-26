@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/src/domain/entity/folder.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
-import 'package:notes/src/presentation/common_widgets/app_buttons/appTextButton.dart';
+import 'package:notes/src/presentation/common_widgets/app_buttons/app_text_button.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_cubit.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_state.dart';
 import 'package:notes/src/presentation/folder_form_screen/models/color_picker_model.dart';

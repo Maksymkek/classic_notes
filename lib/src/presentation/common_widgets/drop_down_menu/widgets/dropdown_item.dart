@@ -7,6 +7,7 @@ import 'package:notes/src/presentation/common_widgets/drop_down_menu/cubit/dropd
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_item_model.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/widgets/dropdown_icon.dart';
 
+//TODO try to reconstruct widget
 class DropDownItemWidget extends StatelessWidget {
   const DropDownItemWidget({
     super.key,
@@ -35,29 +36,23 @@ class DropDownItemWidget extends StatelessWidget {
                 borderRadius: _getBorderRadius(),
               ),
               width: item.visualState.itemWidth,
-              duration: const Duration(milliseconds: 250),
               padding: EdgeInsets.symmetric(
                 horizontal: item.visualState.horizontalPadding,
                 vertical: item.visualState.verticalPadding,
               ),
+              duration: const Duration(milliseconds: 250),
               clipBehavior: Clip.antiAlias,
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+                child: Row(
                   children: [
-                    Row(
-                      children: [
-                        buildIconWidget(),
-                        SizedBox(width: item.visualState.firstSpace),
-                        buildTextSpaceWidget(),
-                        const Expanded(
-                          child: SizedBox(),
-                        ),
-                        buildArrowWidget()
-                      ],
+                    buildIconWidget(),
+                    SizedBox(width: item.visualState.firstSpace),
+                    buildTextSpaceWidget(),
+                    const Expanded(
+                      child: SizedBox(),
                     ),
+                    buildArrowWidget()
                   ],
                 ),
               ),
@@ -74,7 +69,7 @@ class DropDownItemWidget extends StatelessWidget {
       duration: const Duration(milliseconds: 250),
       curve: Curves.easeInOut,
       width: item.visualState.itemWidth,
-      height: item == cubit.state.items.last || item.isActive ? 0 : 0.1,
+      height: item == cubit.state.items.last || item.isActive ? 0 : 0.3,
       decoration: BoxDecoration(color: item.visualState.dividerColor),
     );
   }
@@ -96,11 +91,6 @@ class DropDownItemWidget extends StatelessWidget {
     );
   }
 
-  /* Icon(
-  Icons.arrow_forward_ios,
-  size: 12,
-  color: animation.value,
-  ),*/
   SizedBox buildTextSpaceWidget() {
     return SizedBox(
       width: item.visualState.maxTextSpace,
@@ -133,11 +123,6 @@ class DropDownItemWidget extends StatelessWidget {
     );
   }
 
-/*Icon(
-        widget.item.icon,
-        size: 16,
-        color: animation.value,
-      )*/
   bool needToReDraw(DropDownMenuState prev, DropDownMenuState current) {
     for (int i = 0; i < prev.items.length; i += 1) {
       var currentObj = current.items[i];
