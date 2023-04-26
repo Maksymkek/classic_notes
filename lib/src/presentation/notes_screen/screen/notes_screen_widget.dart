@@ -1,47 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes/src/dependencies/di.dart';
 import 'package:notes/src/dependencies/settings/sort_by.dart';
 import 'package:notes/src/dependencies/settings/sort_order.dart';
-import 'package:notes/src/domain/entity/app_settings.dart';
+import 'package:notes/src/domain/entity/folder.dart';
+import 'package:notes/src/domain/entity/note.dart';
 import 'package:notes/src/presentation/app_colors.dart';
+import 'package:notes/src/presentation/app_icons.dart';
+import 'package:notes/src/presentation/common_widgets/app_buttons/icon_button.dart';
 import 'package:notes/src/presentation/common_widgets/appbar.dart';
 import 'package:notes/src/presentation/common_widgets/appbar_list_data.dart';
 import 'package:notes/src/presentation/common_widgets/circle_progress_indicator.dart';
+import 'package:notes/src/presentation/common_widgets/drop_down_menu/dropdown_overlay.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_action_model.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_item_model.dart';
-import 'package:notes/src/presentation/folder_form_screen/folder_form_button.dart';
-import 'package:notes/src/presentation/folders_screen/cubit/folder_page_cubit.dart';
-import 'package:notes/src/presentation/folders_screen/cubit/folder_page_state.dart';
-import 'package:notes/src/presentation/folders_screen/screen/folder_list_widget.dart';
+import 'package:notes/src/presentation/note_form_screen/screen/note_form_screen.dart';
+import 'package:notes/src/presentation/notes_app.dart';
+import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
+import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_state.dart';
+import 'package:notes/src/presentation/notes_screen/screen/notes_list_widget.dart';
 
-class FolderScreen extends StatefulWidget {
-  const FolderScreen({super.key});
+class NotesScreenWidget extends StatefulWidget {
+  const NotesScreenWidget({super.key, required this.folder});
 
-  static const screenName = 'folder_screen';
+  static const screenName = 'notes_screen';
+
+  final Folder folder;
 
   @override
-  State<FolderScreen> createState() => _FolderScreenState();
+  State<NotesScreenWidget> createState() => _NotesScreenWidgetState();
 }
 
-class _FolderScreenState extends State<FolderScreen> {
-  late final FolderPageCubit cubit;
-  late final Future<void> future;
+class _NotesScreenWidgetState extends State<NotesScreenWidget> with RouteAware {
   late final List<DropDownItem> dropDownItems;
-  late final AppSettings appSettings;
+  late final NotePageCubit cubit;
+  late final Future<void> screenLoad;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
-      floatingActionButton: const FolderFormButtonWidget(),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(right: 7.0, bottom: 5.0),
+        child: AppIconButtonWidget(
+          iconSize: 36,
+          color: AppColors.darkBrown,
+          activeColor: AppColors.lightBrown,
+          icon: AppIcons.newNote,
+          onPressed: () {
+            Navigator.of(context).pushNamed(
+              NoteFormScreenWidget.screenName,
+              arguments: Note(
+                id: -1,
+                text: '',
+                name: '',
+                dateOfLastChange: DateTime.now(),
+              ),
+            );
+          },
+        ),
+      ),
       appBar: PreferredSize(
         preferredSize: const Size(double.infinity, 80),
         child: FutureBuilder(
-          future: future,
+          future: screenLoad,
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return BuildAppBar(dropdownItems: dropDownItems);
+            if (ConnectionState.done == snapshot.connectionState) {
+              return BuildAppBar(
+                dropdownItems: dropDownItems,
+              );
             } else {
               return Container();
             }
@@ -52,29 +78,29 @@ class _FolderScreenState extends State<FolderScreen> {
         width: double.infinity,
         height: double.infinity,
         child: FutureBuilder(
-          future: future,
+          future: screenLoad,
           builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return BlocBuilder<FolderPageCubit, FolderPageState>(
+            if (ConnectionState.done == snapshot.connectionState) {
+              return BlocBuilder<NotePageCubit, NotePageState>(
                 bloc: cubit,
                 buildWhen: (prev, current) {
-                  if (current.folders.length != prev.folders.length ||
+                  if (current.notes.length != prev.notes.length ||
                       current.sortOrder != prev.sortOrder ||
                       current.sortBy != prev.sortBy) {
                     return true;
                   }
                   return false;
                 },
-                builder: (context, state) {
+                builder: (context, snapshot) {
                   return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 5),
                       AppBarListData(
-                        title: '${cubit.state.folders.length} folders',
+                        title: '${cubit.state.notes.length} notes',
+                        folderName: widget.folder.name,
                       ),
                       const SizedBox(height: 10),
-                      FolderListWidget(cubit: cubit)
+                      NoteListWidget(cubit: cubit),
                     ],
                   );
                 },
@@ -91,8 +117,8 @@ class _FolderScreenState extends State<FolderScreen> {
   @override
   void initState() {
     super.initState();
-    cubit = DI.getInstance().folderPageCubit;
-    future = cubit.onScreenLoad();
+    cubit = NotePageCubit(widget.folder);
+    screenLoad = cubit.onScreenLoad();
     dropDownItems = [
       DropDownItem(
         title: 'Sort by',
@@ -137,5 +163,23 @@ class _FolderScreenState extends State<FolderScreen> {
         ],
       ),
     ];
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    NotesApp.routeObserver.unsubscribe(this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    NotesApp.routeObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
+  void didPop() {
+    super.didPop();
+    DropDownOverlayManager.dispose();
   }
 }

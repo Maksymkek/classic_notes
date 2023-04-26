@@ -56,6 +56,10 @@ class FolderFormOverlayManager {
     AnimationController animationController,
   ) async {
     await animationController.reverse();
+    dispose();
+  }
+
+  static void dispose() {
     _overlayEntry?.remove();
     _overlayEntry = null;
   }

@@ -39,15 +39,17 @@ class DropDownMenuCubit extends Cubit<DropDownMenuState> {
   }
 
   void onActionSelected(DropDownAction selectedAction) {
-    selectedAction.onTap();
-    List<DropDownItem> newItems = state.items.map((item) {
-      var newItem = DropDownItem.from(item);
-      if (newItem.actions.contains(selectedAction)) {
-        _switchSelectedAction(newItem, selectedAction);
-      }
-      return newItem;
-    }).toList();
-    _copyWith(items: newItems);
+    if (selectedAction.isSelected == false) {
+      selectedAction.onTap();
+      List<DropDownItem> newItems = state.items.map((item) {
+        var newItem = DropDownItem.from(item);
+        if (newItem.actions.contains(selectedAction)) {
+          _switchSelectedAction(newItem, selectedAction);
+        }
+        return newItem;
+      }).toList();
+      _copyWith(items: newItems);
+    }
   }
 
   void onItemClick(DropDownItem selectedItem) {

@@ -2,7 +2,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:notes/src/data/datasource/app_settings/app_settings_keys.dart';
 import 'package:notes/src/dependencies/settings/app_languages.dart';
 import 'package:notes/src/dependencies/settings/app_theme.dart';
-import 'package:notes/src/domain/entity/app_settings.dart';
+import 'package:notes/src/presentation/app_settings_cubit/app_settings_state.dart';
 
 class AppSettingsDataSource {
   AppSettingsDataSource._();
@@ -17,7 +17,7 @@ class AppSettingsDataSource {
     _box = await Hive.openBox(_boxName);
     final String theme = _box.get(_themeKey, defaultValue: AppTheme.light.name);
     final String language =
-        _box.get(_languageKey, defaultValue: AppLanguages.english.name);
+        _box.get(_languageKey, defaultValue: AppLanguage.english.name);
     await _box.close();
     return AppSettings(theme: theme, language: language);
   }
