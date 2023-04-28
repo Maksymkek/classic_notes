@@ -26,9 +26,13 @@ class DropDownActionWidget extends StatelessWidget {
               const SizedBox(
                 width: 10,
               ),
-              Icon(
-                action.icon,
-                size: 16,
+              SizedBox(
+                width: 16,
+                child: Icon(
+                  action.icon,
+                  size: action.iconSize ?? 16,
+                  color: AppColors.darkBrown,
+                ),
               ),
               const SizedBox(
                 width: 8.0,
@@ -50,6 +54,7 @@ class DropDownActionWidget extends StatelessWidget {
           Icon(
             Icons.done_rounded,
             size: 14,
+            color: AppColors.darkBrown,
           ),
           SizedBox(
             width: 10,

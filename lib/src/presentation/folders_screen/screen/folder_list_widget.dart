@@ -6,7 +6,7 @@ import 'package:notes/src/dependencies/settings/sort_order.dart';
 import 'package:notes/src/presentation/common_widgets/custom_drag_item.dart';
 import 'package:notes/src/presentation/folders_screen/cubit/folder_page_cubit.dart';
 import 'package:notes/src/presentation/folders_screen/cubit/folder_page_state.dart';
-import 'package:notes/src/presentation/folders_screen/screen/folder_widget_actions.dart';
+import 'package:notes/src/presentation/folders_screen/screen/folder_actions_widget.dart';
 
 class FolderListWidget extends StatefulWidget {
   const FolderListWidget({super.key, required this.cubit});

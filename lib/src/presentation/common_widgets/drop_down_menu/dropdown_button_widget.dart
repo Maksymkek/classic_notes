@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/src/dependencies/di.dart';
 import 'package:notes/src/dependencies/settings/app_languages.dart';
@@ -10,10 +10,6 @@ import 'package:notes/src/presentation/common_widgets/drop_down_menu/dropdown_ov
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_action_model.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_item_model.dart';
 
-//final dropDownWidgetKey = GlobalKey();
-
-//TODO need to replace dropDownKey
-// must have a global key or dy position of menu will be 120
 class DropDownButtonWidget extends StatefulWidget {
   const DropDownButtonWidget({super.key, required this.dropdownItems});
 
@@ -58,10 +54,10 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
               buttonAnimationController.reverse();
             },
             child: Icon(
-              Icons.more_horiz,
+              CupertinoIcons.ellipsis,
               key: null, //dropDownWidgetKey,
               color: buttonAnimation.value ?? AppColors.darkBrown,
-              size: 36,
+              size: 34,
             ),
           );
         },
@@ -104,44 +100,44 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
   List<DropDownItem> _getSettingsItems(AppSettings settings) {
     return [
       DropDownItem(
-        title: 'Change theme',
-        icon: Icons.light_mode_outlined,
+        title: 'Theme',
+        icon: CupertinoIcons.sun_max,
         actions: [
           DropDownAction(
             title: AppTheme.light.name,
             onTap: () => cubit.onThemeChanged(AppTheme.light),
             isSelected: settings.theme == AppTheme.light.name,
-            icon: Icons.light_mode_rounded,
+            icon: CupertinoIcons.sun_max_fill,
           ),
           DropDownAction(
             title: AppTheme.dark.name,
             onTap: () => cubit.onThemeChanged(AppTheme.dark),
             isSelected: settings.theme == AppTheme.dark.name,
-            icon: Icons.dark_mode_rounded,
+            icon: CupertinoIcons.moon_stars,
           ),
           DropDownAction(
             title: AppTheme.auto.name,
             onTap: () => cubit.onThemeChanged(AppTheme.auto),
             isSelected: settings.theme == AppTheme.auto.name,
-            icon: Icons.auto_awesome_outlined,
+            icon: CupertinoIcons.sparkles,
           ),
         ],
       ),
       DropDownItem(
         title: 'Language',
-        icon: Icons.language,
+        icon: CupertinoIcons.globe,
         actions: [
           DropDownAction(
             title: AppLanguage.english.name,
             onTap: () => cubit.onLanguageChanged(AppLanguage.english),
             isSelected: settings.language == AppLanguage.english.name,
-            icon: Icons.notes_rounded,
+            icon: CupertinoIcons.line_horizontal_3,
           ),
           DropDownAction(
             title: AppLanguage.ukrainian.name,
             onTap: () => cubit.onLanguageChanged(AppLanguage.ukrainian),
             isSelected: settings.language == AppLanguage.ukrainian.name,
-            icon: Icons.notes_rounded,
+            icon: CupertinoIcons.line_horizontal_3,
           ),
         ],
       )

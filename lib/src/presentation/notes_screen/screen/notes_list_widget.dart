@@ -91,10 +91,11 @@ class _NoteListWidgetState extends State<NoteListWidget>
             },
             builder: (context, state) {
               return NoteActionsWidget(
-                  note: note,
-                  cubit: cubit,
-                  animationController: animationController,
-                  animation: animation);
+                note: note,
+                cubit: cubit,
+                animationController: animationController,
+                animation: animation,
+              );
             },
           ),
           name: note.name,

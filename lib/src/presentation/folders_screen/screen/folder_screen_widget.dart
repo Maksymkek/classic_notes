@@ -1,10 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/src/dependencies/di.dart';
 import 'package:notes/src/dependencies/settings/sort_by.dart';
 import 'package:notes/src/dependencies/settings/sort_order.dart';
-import 'package:notes/src/presentation/app_settings_cubit/app_settings_state.dart';
 import 'package:notes/src/presentation/app_colors.dart';
+import 'package:notes/src/presentation/app_settings_cubit/app_settings_state.dart';
 import 'package:notes/src/presentation/common_widgets/appbar.dart';
 import 'package:notes/src/presentation/common_widgets/appbar_list_data.dart';
 import 'package:notes/src/presentation/common_widgets/circle_progress_indicator.dart';
@@ -106,43 +107,47 @@ class _FolderScreenState extends State<FolderScreen> with RouteAware {
     dropDownItems = [
       DropDownItem(
         title: 'Sort by',
-        icon: Icons.sort_rounded,
+        icon: CupertinoIcons.list_dash,
+        iconSize: 14.5,
         actions: [
           DropDownAction(
             title: SortBy.date.name,
             onTap: () => cubit.onSortByChanged(SortBy.date.name),
             isSelected: cubit.state.sortBy == SortBy.date.name,
-            icon: Icons.date_range_rounded,
+            icon: CupertinoIcons.calendar,
           ),
           DropDownAction(
             title: SortBy.name.name,
             onTap: () => cubit.onSortByChanged(SortBy.name.name),
             isSelected: cubit.state.sortBy == SortBy.name.name,
-            icon: Icons.abc,
+            icon: CupertinoIcons.textformat,
           ),
           DropDownAction(
             title: SortBy.custom.name,
             onTap: () => cubit.onSortByChanged(SortBy.custom.name),
             isSelected: cubit.state.sortBy == SortBy.custom.name,
-            icon: Icons.edit_outlined,
+            icon: CupertinoIcons.pencil,
           ),
         ],
       ),
       DropDownItem(
         title: 'Sort order',
-        icon: Icons.swap_vert_rounded,
+        icon: CupertinoIcons.arrow_up_arrow_down,
+        iconSize: 13,
         actions: [
           DropDownAction(
             title: SortOrder.descending.name,
             onTap: () => cubit.onSortOrderChanged(SortOrder.descending.name),
             isSelected: cubit.state.sortOrder == SortOrder.descending.name,
-            icon: Icons.arrow_downward_rounded,
+            icon: CupertinoIcons.arrow_down,
+            iconSize: 13,
           ),
           DropDownAction(
             title: SortOrder.ascending.name,
             onTap: () => cubit.onSortOrderChanged(SortOrder.ascending.name),
             isSelected: cubit.state.sortOrder == SortOrder.ascending.name,
-            icon: Icons.arrow_upward_rounded,
+            icon: CupertinoIcons.arrow_up,
+            iconSize: 13,
           ),
         ],
       ),

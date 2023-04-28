@@ -5,21 +5,25 @@ import 'package:notes/src/presentation/common_widgets/drop_down_menu/cubit/dropd
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/cubit/dropdown_menu_state.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_action_model.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_item_model.dart';
+import 'package:notes/src/presentation/common_widgets/drop_down_menu/visual_effects/item_states/active_item.dart';
+import 'package:notes/src/presentation/common_widgets/drop_down_menu/visual_effects/item_states/disabled_item.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/widgets/dropdown_action.dart';
 
 class DropDownActionListWidget extends StatefulWidget {
-  const DropDownActionListWidget({
-    super.key,
-    required this.item,
-    required this.cubit,
-    required this.onClose,
-    required this.animation,
-  });
+  const DropDownActionListWidget(
+      {super.key,
+      required this.item,
+      required this.cubit,
+      required this.onClose,
+      required this.animation,
+      required,
+      required this.parentPosition});
 
   final VoidCallback onClose;
   final DropDownItem item;
   final DropDownMenuCubit cubit;
   final Animation<double> animation;
+  final Offset parentPosition;
 
   @override
   State<DropDownActionListWidget> createState() =>
@@ -40,7 +44,7 @@ class _DropDownActionListWidgetState extends State<DropDownActionListWidget> {
         body: Padding(
           padding: _getPadding(),
           child: Align(
-            alignment: Alignment.topRight,
+            alignment: Alignment.topLeft,
             child: ClipRRect(
               clipBehavior: Clip.antiAlias,
               borderRadius: const BorderRadius.vertical(
@@ -51,12 +55,6 @@ class _DropDownActionListWidgetState extends State<DropDownActionListWidget> {
                 width: 200,
                 decoration: const BoxDecoration(
                   color: AppColors.white,
-                  border: Border(
-                    top: BorderSide(
-                      color: AppColors.lightBrown,
-                      width: 0.2,
-                    ),
-                  ),
                 ),
                 child: buildActionWidgets(),
               ),
@@ -152,10 +150,11 @@ class _DropDownActionListWidgetState extends State<DropDownActionListWidget> {
     int itemId = widget.cubit.getItemId(widget.item);
     int i = 0;
     while (i <= itemId - 1) {
-      top += 21.75;
+      top += DisabledItemState.getInstance().itemHeight;
       i += 1;
     }
-    return EdgeInsets.fromLTRB(0.0, top + 29.8, 19.6, 0.0);
+    return EdgeInsets.fromLTRB(widget.parentPosition.dx,
+        top + ActiveItemState.getInstance().itemHeight, 0.0, 0.0);
   }
 
   void _onTapEnd(DropDownAction action) {

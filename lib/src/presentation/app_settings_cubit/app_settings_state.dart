@@ -1,4 +1,3 @@
-//TODO need use cases
 class AppSettings {
   AppSettings({required this.theme, required this.language});
 
