@@ -5,14 +5,17 @@ import 'package:notes/src/dependencies/extensions/date_time_extension.dart';
 import 'package:notes/src/domain/entity/note.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/note_form_screen/screen/note_form_screen.dart';
+import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
 
 class NoteWidget extends StatefulWidget {
   const NoteWidget({
     super.key,
     required this.note,
+    required this.cubit,
   });
 
   final Note note;
+  final NotePageCubit cubit;
 
   @override
   State<NoteWidget> createState() => _NoteWidgetState();
@@ -28,15 +31,23 @@ class _NoteWidgetState extends State<NoteWidget>
     FlutterLogs.logInfo(
       'Presentation',
       'note-screen',
-      'note ${widget.note.name}',
+      'note ${widget.note.title}',
     );
+    final screenWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
         controller.forward();
-        Navigator.of(context)
-            .pushNamed(NoteFormScreenWidget.screenName, arguments: widget.note)
-            .whenComplete(() => controller.reverse());
+        Navigator.of(context).pushNamed(
+          NoteFormScreenWidget.screenName,
+          arguments: <dynamic>[widget.note, widget.cubit],
+        ).whenComplete(() {
+          try {
+            if (!controller.isDismissed) {
+              controller.reverse();
+            }
+          } catch (_) {}
+        });
       },
       onTapDown: (details) {
         controller.forward();
@@ -58,7 +69,7 @@ class _NoteWidgetState extends State<NoteWidget>
             Expanded(
               child: SizedBox(
                 child: Text(
-                  widget.note.name,
+                  widget.note.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: const TextStyle(
@@ -70,8 +81,8 @@ class _NoteWidgetState extends State<NoteWidget>
             ),
             Row(
               children: [
-                SizedBox(
-                  width: 200,
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: screenWidth * 0.6),
                   child: Text(
                     reformatText(),
                     maxLines: 1,
@@ -83,14 +94,17 @@ class _NoteWidgetState extends State<NoteWidget>
                     ),
                   ),
                 ),
-                const Expanded(child: SizedBox()),
-                Text(
-                  widget.note.dateOfLastChange.getDateTimeString(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.alexandria(
-                    color: AppColors.hintGrey,
-                    fontSize: 14,
+                // const Expanded(child: SizedBox()),
+                Expanded(
+                  child: Text(
+                    widget.note.dateOfLastChange.getDateTimeString(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.alexandria(
+                      color: AppColors.hintGrey,
+                      fontSize: 14,
+                    ),
+                    textAlign: TextAlign.right,
                   ),
                 ),
               ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:notes/src/domain/entity/note.dart';
 
 class Folder {
   Folder({
@@ -15,21 +14,19 @@ class Folder {
   Color background;
   Icon icon;
   DateTime dateOfLastChange;
-  List<Note>? notes;
 
-  static Folder from(Folder folder) {
-    var newFolder = Folder(
-      id: folder.id,
-      name: folder.name,
-      background: folder.background,
-      icon: folder.icon,
-      dateOfLastChange: folder.dateOfLastChange,
+  Folder copyWith({
+    String? name,
+    Color? background,
+    Icon? icon,
+    DateTime? dateOfLastChange,
+  }) {
+    return Folder(
+      id: id,
+      name: name ?? this.name,
+      background: background ?? this.background,
+      icon: icon ?? this.icon,
+      dateOfLastChange: dateOfLastChange ?? this.dateOfLastChange,
     );
-    return newFolder;
   }
-
-/*  @override
-  bool operator ==(Object other) {
-    return id == (other as Folder).id;
-  }*/
 }

@@ -6,7 +6,7 @@ class AddNoteInteractor {
 
   NoteRepository noteRepository;
 
-  void call(Note note) {
-    noteRepository.addNote(note);
+  Future<void> call(Note note) async {
+    await noteRepository.addNote(note);
   }
 }

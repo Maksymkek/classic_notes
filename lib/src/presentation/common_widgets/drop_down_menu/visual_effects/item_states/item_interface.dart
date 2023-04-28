@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 
+//TODO sort
 abstract class ItemState {
+  double itemHeight = 0;
+
   double itemWidth = 0;
 
   double textSize = 0;

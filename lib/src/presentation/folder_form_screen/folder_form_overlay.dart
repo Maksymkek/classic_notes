@@ -32,6 +32,7 @@ class FolderFormOverlayManager {
                     background: AppColors.lightYellow,
                     icon: const Icon(
                       AppIcons.folder,
+                      color: AppColors.darkBrown,
                       size: 28,
                     ),
                     dateOfLastChange: DateTime.now(),

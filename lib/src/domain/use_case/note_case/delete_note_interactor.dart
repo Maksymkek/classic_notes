@@ -6,7 +6,7 @@ class DeleteNoteInteractor {
 
   NoteRepository noteRepository;
 
-  void call(Note note) {
-    noteRepository.deleteNote(note);
+  Future<void> call(Note note) async {
+    await noteRepository.deleteNote(note);
   }
 }

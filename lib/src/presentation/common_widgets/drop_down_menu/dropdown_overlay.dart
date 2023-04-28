@@ -20,17 +20,19 @@ class DropDownOverlayManager {
     _menuController = animationController;
     _otherController = otherController;
     _overlayState = Overlay.of(context);
+    RenderBox box = context.findRenderObject() as RenderBox;
+    Offset position = box.localToGlobal(Offset(0, box.constraints.maxHeight));
     _overlayEntry = OverlayEntry(
       builder: (appContext) {
         return Material(
           color: Colors.transparent,
           child: Align(
             child: DropDownItemListWidget(
-              key: context.widget.key,
               itemAnimation: animation,
               onClose: _removeHighlightOverlay,
               overlayState: _overlayState,
               dropDownItems: dropDownItems,
+              parentPosition: position,
             ),
           ),
         );

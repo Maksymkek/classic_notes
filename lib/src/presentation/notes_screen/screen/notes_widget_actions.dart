@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:notes/src/domain/entity/note.dart';
@@ -39,7 +39,7 @@ class NoteActionsWidget extends StatelessWidget {
             extentRatio: 0.25,
             children: [
               SlidableActionWidget(
-                icon: Icons.delete_outline,
+                icon: CupertinoIcons.delete,
                 color: AppColors.carmineRed,
                 onTap: () {
                   cubit.onDeleteNoteClick(note);
@@ -49,6 +49,7 @@ class NoteActionsWidget extends StatelessWidget {
           ),
           child: NoteWidget(
             note: note,
+            cubit: cubit,
           ),
         ),
       ),

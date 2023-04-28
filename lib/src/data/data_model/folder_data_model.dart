@@ -1,20 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
+import 'package:notes/src/data/data_model/adapter_id/adapter_id.dart';
 import 'package:notes/src/domain/entity/folder.dart';
 
 part 'folder_data_model.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: AdapterId.folderId)
 class FolderDataModel extends HiveObject {
-  FolderDataModel(
-      {required this.id,
-      required this.name,
-      required this.background,
-      required this.icon,
-      required this.dateOfLastChange,
-      required this.iconSize,
-      required this.iconColor,
-      required this.iconFamily});
+  FolderDataModel({
+    required this.id,
+    required this.name,
+    required this.background,
+    required this.icon,
+    required this.dateOfLastChange,
+    required this.iconSize,
+    required this.iconColor,
+    this.iconFamily,
+    this.iconPackage,
+  });
 
   @HiveField(0)
   String name;
@@ -40,13 +43,20 @@ class FolderDataModel extends HiveObject {
   @HiveField(7)
   String? iconFamily;
 
+  @HiveField(8)
+  String? iconPackage;
+
   Folder toFolder() {
     final folder = Folder(
       id: id,
       name: name,
       background: Color(background),
       icon: Icon(
-        IconData(icon, fontFamily: iconFamily),
+        IconData(
+          icon,
+          fontFamily: iconFamily,
+          fontPackage: iconPackage,
+        ),
         color: Color(iconColor),
         size: iconSize,
       ),
@@ -64,7 +74,8 @@ class FolderDataModel extends HiveObject {
       dateOfLastChange: folder.dateOfLastChange.toString(),
       iconSize: folder.icon.size!,
       iconColor: folder.icon.color!.value,
-      iconFamily: folder.icon.icon!.fontFamily,
+      iconFamily: folder.icon.icon?.fontFamily,
+      iconPackage: folder.icon.icon?.fontPackage,
     );
   }
 }

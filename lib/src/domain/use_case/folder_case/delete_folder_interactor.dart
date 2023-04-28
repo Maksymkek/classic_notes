@@ -6,7 +6,7 @@ class DeleteFolderInteractor {
 
   FolderRepository folderRepository;
 
-  void call(Folder folder) {
-    folderRepository.deleteFolder(folder);
+  Future<void> call(Folder folder) async {
+    await folderRepository.deleteFolder(folder);
   }
 }

@@ -29,7 +29,9 @@ class IconPickerWidget extends StatelessWidget {
             shape: BoxShape.circle,
             boxShadow: model.isActive ? [shadow] : null,
           ),
-          child: Icon(model.icon, size: model.iconSize),
+          child: Align(
+              alignment: Alignment.center,
+              child: Icon(model.icon, size: model.iconSize)),
         ),
       ),
     );

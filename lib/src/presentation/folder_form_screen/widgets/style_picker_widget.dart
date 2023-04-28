@@ -148,7 +148,7 @@ class _ItemPickerWidget extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(20.0)),
         ),
         child: RawScrollbar(
-          pressDuration: const Duration(milliseconds: 100),
+          pressDuration: const Duration(seconds: 1),
           controller: controller,
           thickness: 2.0,
           trackVisibility: true,

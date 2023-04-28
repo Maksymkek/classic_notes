@@ -6,7 +6,7 @@ class UpdateNotesOrderInteractor {
 
   NoteRepository noteRepository;
 
-  void call(Map<int, Note> notes) {
-    noteRepository.updateNotesOrder(notes);
+  Future<void> call(Map<int, Note> notes) async {
+    await noteRepository.updateNotesOrder(notes);
   }
 }

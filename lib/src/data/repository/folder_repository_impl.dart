@@ -4,53 +4,51 @@ import 'package:notes/src/domain/entity/folder.dart';
 import 'package:notes/src/domain/repository/folder_repository.dart';
 
 class FolderRepositoryImpl extends FolderRepository {
-  final FolderDataSource folderDataSource = FolderDataSource.getInstance();
+  final FolderDataSource _dataSource = FolderDataSource.getInstance();
 
   @override
   Future<void> addFolder(Folder folder) async {
-    folderDataSource.putFolder(folder);
+    await _dataSource.putFolder(folder);
   }
 
   @override
   Future<void> deleteFolder(Folder folder) async {
-    folderDataSource.deleteFolder(folder);
+    await _dataSource.deleteFolder(folder);
   }
 
   @override
   Future<Map<int, Folder>?> getFolders() async {
-    return folderDataSource.getFolders();
+    return _dataSource.getFolders();
   }
 
   @override
   Future<void> updateFolder(Folder folder) async {
-    folderDataSource.putFolder(folder);
+    await _dataSource.putFolder(folder);
   }
 
   @override
   Future<void> updateFoldersOrder(Map<int, Folder> folders) async {
-    folderDataSource.putFolders(folders);
+    await _dataSource.putFolders(folders);
   }
 
   @override
   Future<void> updateSortByValue(String sortBy) async {
-    folderDataSource.settings
-        .writeSetting(ItemSettingsDataSource.sortBy, sortBy);
+    _dataSource.settings.writeSetting(ItemSettingsDataSource.sortBy, sortBy);
   }
 
   @override
   Future<void> updateSortOrderValue(String sortOrder) async {
-    folderDataSource.settings
+    _dataSource.settings
         .writeSetting(ItemSettingsDataSource.sortOrder, sortOrder);
   }
 
   @override
   Future<String> getSortByValue() async {
-    return folderDataSource.settings.readSetting(ItemSettingsDataSource.sortBy);
+    return _dataSource.settings.readSetting(ItemSettingsDataSource.sortBy);
   }
 
   @override
   Future<String> getSortOrderValue() async {
-    return folderDataSource.settings
-        .readSetting(ItemSettingsDataSource.sortOrder);
+    return _dataSource.settings.readSetting(ItemSettingsDataSource.sortOrder);
   }
 }

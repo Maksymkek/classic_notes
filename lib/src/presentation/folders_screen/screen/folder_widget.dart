@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_logs/flutter_logs.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:notes/src/dependencies/extensions/date_time_extension.dart';
 import 'package:notes/src/domain/entity/folder.dart';
 import 'package:notes/src/presentation/app_colors.dart';
-import 'package:notes/src/presentation/app_styles.dart';
 import 'package:notes/src/presentation/notes_screen/screen/notes_screen_widget.dart';
 
 class FolderWidget extends StatefulWidget {
@@ -34,10 +35,20 @@ class _FolderWidgetState extends State<FolderWidget>
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
-        controller.forward();
-        Navigator.of(context)
-            .pushNamed(NotesScreenWidget.screenName, arguments: widget.folder)
-            .whenComplete(() => controller.reverse());
+        if (!widget.previewMode) {
+          controller.forward();
+          Navigator.of(context)
+              .pushNamed(NotesScreenWidget.screenName, arguments: widget.folder)
+              .whenComplete(() {
+            if (!controller.isDismissed) {
+              try {
+                if (!controller.isDismissed) {
+                  controller.reverse();
+                }
+              } catch (_) {}
+            }
+          });
+        }
       },
       onTapDown: (details) {
         controller.forward();
@@ -53,34 +64,57 @@ class _FolderWidgetState extends State<FolderWidget>
           color: widget.previewMode ? AppColors.white : animation.value,
         ),
         padding: EdgeInsets.zero,
-        child: Row(
+        child: Stack(
           children: [
-            Container(
-              height: double.maxFinite,
-              width: 54,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: widget.folder.background,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  bottomLeft: Radius.circular(8),
+            Row(
+              children: [
+                Container(
+                  height: double.maxFinite,
+                  width: 54,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: widget.folder.background,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(8),
+                      bottomLeft: Radius.circular(8),
+                    ),
+                  ),
+                  child: widget.folder.icon,
                 ),
-              ),
-              child: widget.folder.icon,
+                const SizedBox(
+                  width: 15,
+                ),
+                Expanded(
+                  child: SizedBox(
+                    child: Text(
+                      widget.folder.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontFamily: 'Helvetica',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(
-              width: 15,
-            ),
-            Expanded(
-              child: SizedBox(
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 10.0, bottom: 2.0),
                 child: Text(
-                  widget.folder.name,
+                  widget.folder.dateOfLastChange.getDateTimeString(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppStyles.middleBolderTextStyle,
+                  style: GoogleFonts.alexandria(
+                    color: AppColors.hintGrey,
+                    fontSize: 11,
+                  ),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),
