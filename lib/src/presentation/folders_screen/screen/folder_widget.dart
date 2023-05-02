@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_logs/flutter_logs.dart';
 import 'package:notes/src/domain/entity/folder.dart';
 import 'package:notes/src/presentation/app_colors.dart';
-import 'package:notes/src/presentation/app_styles.dart';
 import 'package:notes/src/presentation/notes_screen/screen/notes_screen_widget.dart';
 
 class FolderWidget extends StatefulWidget {
@@ -77,7 +76,11 @@ class _FolderWidgetState extends State<FolderWidget>
                   widget.folder.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: AppStyles.middleBolderTextStyle,
+                  style: const TextStyle(
+                    fontFamily: 'Helvetica',
+                    fontSize: 18,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
             ),

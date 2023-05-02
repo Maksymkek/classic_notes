@@ -1,4 +1,3 @@
-//TODO how to store image
 class Note {
   Note({
     required this.id,

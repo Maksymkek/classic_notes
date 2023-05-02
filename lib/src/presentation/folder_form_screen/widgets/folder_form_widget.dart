@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/src/domain/entity/folder.dart';
@@ -54,8 +55,8 @@ final List<IconPickerModel> _iconPickers = [
   IconPickerModel(icon: AppIcons.medicine, iconSize: 18, trueIconSize: 24),
   IconPickerModel(icon: AppIcons.selected, iconSize: 22, trueIconSize: 32),
   IconPickerModel(icon: AppIcons.media, iconSize: 22, trueIconSize: 32),
-  IconPickerModel(icon: AppIcons.book, iconSize: 22, trueIconSize: 32),
-  IconPickerModel(icon: AppIcons.time, iconSize: 22, trueIconSize: 32),
+  IconPickerModel(icon: CupertinoIcons.book, iconSize: 22, trueIconSize: 32),
+  IconPickerModel(icon: CupertinoIcons.timer, iconSize: 22, trueIconSize: 32),
   IconPickerModel(icon: AppIcons.newNote, iconSize: 22, trueIconSize: 32)
 ];
 

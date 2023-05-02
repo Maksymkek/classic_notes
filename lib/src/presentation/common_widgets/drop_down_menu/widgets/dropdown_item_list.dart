@@ -5,21 +5,22 @@ import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/drop
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/visual_effects/item_states/active_item.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/widgets/dropdown_action_list.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/widgets/dropdown_item.dart';
-import 'package:notes/src/presentation/common_widgets/drop_down_menu/widgets/widget_offset_key.dart';
 
 class DropDownItemListWidget extends StatefulWidget {
   const DropDownItemListWidget({
-    required super.key,
+    super.key,
     required this.onClose,
     required this.overlayState,
     required this.itemAnimation,
     required this.dropDownItems,
+    required this.parentPosition,
   });
 
   final VoidCallback onClose;
   final OverlayState overlayState;
   final Animation<double> itemAnimation;
   final List<DropDownItem> dropDownItems;
+  final Offset parentPosition;
 
   @override
   State<DropDownItemListWidget> createState() => _DropDownItemListWidgetState();
@@ -31,7 +32,6 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
   OverlayEntry? overlayEntry;
   AnimationController? animationController;
   Animation<double>? actionAnimation;
-  late BorderRadius borderRadius;
   bool canClose = true;
 
   @override
@@ -48,40 +48,16 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
               padding: _getOffset(),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 250),
-                clipBehavior: Clip.antiAlias,
                 width: 200,
-                decoration: BoxDecoration(
-                  borderRadius: borderRadius,
-                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: cubit.state.items
                       .map(
-                        (item) => GestureDetector(
-                          onTap: () {
-                            _onTap(item);
-                          },
-                          onTapDown: (details) {
-                            cubit.onItemTapResponse(item, true);
-                          },
-                          onTapUp: (details) {
-                            _onTapEnd(item);
-                          },
-                          onTapCancel: () {
-                            _onTapEnd(item);
-                          },
-                          child: SizeTransition(
-                            sizeFactor: widget.itemAnimation,
-                            axis: Axis.vertical,
-                            axisAlignment: -1.0,
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: DropDownItemWidget(
-                                item: item,
-                                cubit: cubit,
-                              ),
-                            ),
-                          ),
+                        (item) => DropDownItemWidget(
+                          item: item,
+                          cubit: cubit,
+                          itemAnimation: widget.itemAnimation,
+                          onTap: _onItemTap,
                         ),
                       )
                       .toList(),
@@ -108,9 +84,9 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
     );
     cubit = DropDownMenuCubit(
       widget.dropDownItems,
-      (widget.key as GlobalKey?)?.globalPaintBounds?.bottom ?? 120,
+      widget.parentPosition.dy,
     );
-    borderRadius = const BorderRadius.all(Radius.circular(10.0));
+
     cubit.uncheckItem();
   }
 
@@ -161,26 +137,11 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
     overlayEntry?.remove();
     overlayEntry = null;
     cubit.uncheckItem();
-    _setRoundedCorners();
+
     canClose = true;
   }
 
-  void _setRectangleBorders() {
-    if (borderRadius !=
-        const BorderRadius.vertical(top: Radius.circular(10.0))) {
-      borderRadius = const BorderRadius.vertical(top: Radius.circular(10.0));
-      setState(() {});
-    }
-  }
-
-  void _setRoundedCorners() {
-    if (borderRadius != const BorderRadius.all(Radius.circular(10.0))) {
-      borderRadius = const BorderRadius.all(Radius.circular(10.0));
-      setState(() {});
-    }
-  }
-
-  Future<void> _onTap(DropDownItem item) async {
+  Future<void> _onItemTap(DropDownItem item, Offset position) async {
     await Future.delayed(
       const Duration(milliseconds: 150),
     );
@@ -189,25 +150,16 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
         canClose == true) {
       cubit.onItemClick(item);
       canClose = true;
-      if (item == cubit.state.items.last) {
-        _setRectangleBorders();
-      }
+
       _buildDropDownAction(
         DropDownActionListWidget(
           item: item,
           cubit: cubit,
           onClose: _removeHighlightOverlay,
           animation: actionAnimation!,
+          parentPosition: position,
         ),
       );
     }
-  }
-
-  void _onTapEnd(DropDownItem item) {
-    Future.delayed(
-      const Duration(milliseconds: 100),
-    ).whenComplete(() {
-      cubit.onItemTapResponse(item, false);
-    });
   }
 }

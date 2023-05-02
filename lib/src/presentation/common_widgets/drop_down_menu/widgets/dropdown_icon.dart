@@ -30,10 +30,13 @@ class _DropDownIconWidgetState extends State<DropDownIconWidget>
   Widget build(BuildContext context) {
     checkColor();
 
-    return Icon(
-      widget.icon,
-      size: widget.iconSize,
-      color: animation.value,
+    return SizedBox(
+      width: 16,
+      child: Icon(
+        widget.icon,
+        size: widget.iconSize,
+        color: animation.value,
+      ),
     );
   }
 

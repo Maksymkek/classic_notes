@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:notes/src/domain/entity/folder.dart';
@@ -40,7 +40,7 @@ class FolderActionsWidget extends StatelessWidget {
             extentRatio: 0.5,
             children: [
               SlidableActionWidget(
-                icon: Icons.edit_outlined,
+                icon: CupertinoIcons.pencil,
                 color: AppColors.brightBlue,
                 onTap: () {
                   FolderFormOverlayManager.buildOverlay(
@@ -52,7 +52,7 @@ class FolderActionsWidget extends StatelessWidget {
                 },
               ),
               SlidableActionWidget(
-                icon: Icons.delete_outline,
+                icon: CupertinoIcons.delete_simple,
                 color: AppColors.carmineRed,
                 onTap: () {
                   cubit.onDeleteFolderClick(folder);

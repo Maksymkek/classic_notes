@@ -35,10 +35,13 @@ class DisabledItemState implements ItemState {
   double horizontalPadding = 7.5;
 
   @override
-  Color dividerColor = AppColors.darkBrown;
+  Color dividerColor = AppColors.white;
 
   @override
   Color textColor = AppColors.white;
+
+  @override
+  double itemHeight = 24.0;
 
   static DisabledItemState getInstance() {
     return _instance ?? (_instance = DisabledItemState._());

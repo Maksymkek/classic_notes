@@ -29,16 +29,19 @@ class ActiveItemState implements ItemState {
   double scale = 1.0;
 
   @override
-  double verticalPadding = 7;
+  double verticalPadding = 5;
 
   @override
   double horizontalPadding = 10;
 
   @override
-  Color dividerColor = AppColors.lightBrown;
+  Color dividerColor = AppColors.darkBrown;
 
   @override
   Color textColor = AppColors.darkBrown;
+
+  @override
+  double itemHeight = 28.0;
 
   static ActiveItemState getInstance() {
     return _instance ?? (_instance = ActiveItemState._());
