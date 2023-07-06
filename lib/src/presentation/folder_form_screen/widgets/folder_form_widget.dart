@@ -57,7 +57,8 @@ final List<IconPickerModel> _iconPickers = [
   IconPickerModel(icon: AppIcons.media, iconSize: 22, trueIconSize: 32),
   IconPickerModel(icon: CupertinoIcons.book, iconSize: 22, trueIconSize: 32),
   IconPickerModel(icon: CupertinoIcons.timer, iconSize: 22, trueIconSize: 32),
-  IconPickerModel(icon: AppIcons.newNote, iconSize: 22, trueIconSize: 32)
+  IconPickerModel(icon: AppIcons.newNote, iconSize: 22, trueIconSize: 32),
+  IconPickerModel(icon: CupertinoIcons.lock, iconSize: 22, trueIconSize: 32)
 ];
 
 final BoxShadow shadow = BoxShadow(

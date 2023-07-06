@@ -6,7 +6,7 @@ class UpdateFolderInteractor {
 
   FolderRepository folderRepository;
 
-  void call(Folder folder) {
-    folderRepository.updateFolder(folder);
+  Future<void> call(Folder folder) async {
+    await folderRepository.updateFolder(folder);
   }
 }

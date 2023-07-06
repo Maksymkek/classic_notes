@@ -7,61 +7,62 @@ class AppBarListData extends StatelessWidget {
     required this.title,
     this.folder,
     super.key,
-    this.noteName,
   });
 
   final String title;
   final Folder? folder;
-  final String? noteName;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: buildListData(),
+      child: _buildListData(context),
     );
   }
 
-  Widget buildListData() {
-    if (noteName == null) {
-      return Row(
-        children: [
-          Text(
-            title,
-            style: AppStyles.smallTextStyle,
-          ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Icon(
-                  folder?.icon.icon,
-                  size: 18,
-                ),
-                const SizedBox(width: 6.0),
-                Text(
-                  folder?.name ?? '',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppStyles.smallTextStyle,
-                  textAlign: TextAlign.right,
-                ),
-              ],
-            ),
-          )
-        ],
-      );
-    } else {
-      return Align(
-        alignment: Alignment.center,
-        child: Text(
-          noteName!,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+  Widget _buildListData(BuildContext context) {
+    double screenSize = MediaQuery.of(context).size.width;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          title,
           style: AppStyles.smallTextStyle,
-          textAlign: TextAlign.left,
+        ),
+        _buildFolderDetails(screenSize),
+      ],
+    );
+  }
+
+  Widget _buildFolderDetails(double screenSize) {
+    if (folder != null) {
+      return Expanded(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Expanded(child: SizedBox()),
+            Icon(
+              folder?.icon.icon,
+              size: 18,
+            ),
+            const SizedBox(width: 6.0),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: screenSize * 0.5),
+              child: Text(
+                folder?.name ?? '',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                softWrap: true,
+                style: AppStyles.smallTextStyle,
+                textAlign: TextAlign.left,
+              ),
+            )
+          ],
         ),
       );
+    } else {
+      return Container();
     }
   }
 }

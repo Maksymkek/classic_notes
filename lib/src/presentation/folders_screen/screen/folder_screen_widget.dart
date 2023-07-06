@@ -35,13 +35,6 @@ class _FolderScreenState extends State<FolderScreen> with RouteAware {
   late final AppSettings appSettings;
 
   @override
-  void didPop() {
-    super.didPop();
-    DropDownOverlayManager.dispose();
-    FolderFormOverlayManager.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.white,
@@ -69,12 +62,7 @@ class _FolderScreenState extends State<FolderScreen> with RouteAware {
               return BlocBuilder<FolderPageCubit, FolderPageState>(
                 bloc: cubit,
                 buildWhen: (prev, current) {
-                  if (current.folders.length != prev.folders.length ||
-                      current.sortOrder != prev.sortOrder ||
-                      current.sortBy != prev.sortBy) {
-                    return true;
-                  }
-                  return false;
+                  return (needRedraw(current, prev));
                 },
                 builder: (context, state) {
                   return Column(
@@ -97,6 +85,29 @@ class _FolderScreenState extends State<FolderScreen> with RouteAware {
         ),
       ),
     );
+  }
+
+  @override
+  void didPop() {
+    super.didPop();
+    DropDownOverlayManager.dispose();
+    FolderFormOverlayManager.dispose();
+  }
+
+  bool needRedraw(FolderPageState current, FolderPageState prev) {
+    bool needToRedraw = current.folders.length != prev.folders.length ||
+        current.sortOrder != prev.sortOrder ||
+        current.sortBy != prev.sortBy;
+    if (needToRedraw) {
+      return true;
+    }
+    for (int i = 0; i < current.folders.length; i += 1) {
+      if (current.folders[i]?.dateOfLastChange !=
+          prev.folders[i]?.dateOfLastChange) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @override

@@ -72,17 +72,17 @@ class FolderPageCubit extends Cubit<FolderPageState> {
   }
 
   Future<void> onAddFolderClick(Folder folder) async {
-    _addFolderInteractor(folder);
+    await _addFolderInteractor(folder);
     _copyWith(folders: await getFolders());
   }
 
   Future<void> onUpdateFolderClick(Folder folder) async {
-    _updateFolderInteractor(folder);
+    await _updateFolderInteractor(folder);
     _copyWith(folders: await getFolders());
   }
 
   Future<void> onDeleteFolderClick(Folder folder) async {
-    _deleteFolderInteractor(folder);
+    await _deleteFolderInteractor(folder);
     _copyWith(folders: await getFolders());
   }
 
@@ -94,6 +94,7 @@ class FolderPageCubit extends Cubit<FolderPageState> {
   void onItemDragged(int oldItemIndex, int newItemIndex) {
     if (oldItemIndex != newItemIndex && state.sortBy == SortBy.custom.name) {
       Map<int, Folder> newFolders = {};
+
       for (int i = 0; i < state.folders.length; i++) {
         if (i == newItemIndex) {
           newFolders[i] = state.folders[oldItemIndex]!;

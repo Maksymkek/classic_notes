@@ -7,7 +7,6 @@ import 'package:notes/src/presentation/common_widgets/drop_down_menu/cubit/dropd
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_item_model.dart';
 import 'package:notes/src/presentation/common_widgets/drop_down_menu/widgets/dropdown_icon.dart';
 
-//TODO try to reconstruct widget
 class DropDownItemWidget extends StatelessWidget {
   const DropDownItemWidget({
     super.key,

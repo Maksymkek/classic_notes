@@ -15,6 +15,7 @@ import 'package:notes/src/domain/use_case/settings_case/item_settings_case/get_s
 import 'package:notes/src/domain/use_case/settings_case/item_settings_case/get_sort_order_interactor.dart';
 import 'package:notes/src/domain/use_case/settings_case/item_settings_case/set_sort_by_interactor.dart';
 import 'package:notes/src/domain/use_case/settings_case/item_settings_case/set_sort_order_interactor.dart';
+import 'package:notes/src/presentation/folders_screen/cubit/folder_page_cubit.dart';
 import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_state.dart';
 
 class NotePageCubit extends Cubit<NotePageState> {
@@ -25,12 +26,13 @@ class NotePageCubit extends Cubit<NotePageState> {
             sortBy: SortBy.date.name,
             sortOrder: SortOrder.descending.name,
             notes: {},
-            folder: folder,
           ),
         ) {
-    _initUseCases();
+    _init();
   }
+
   final Folder folder;
+  late final FolderPageCubit _folderPageCubit;
   late final NoteRepository _noteRepository;
   late final GetNotesInteractor _getNotesInteractor;
   late final AddNoteInteractor _addNoteInteractor;
@@ -42,8 +44,8 @@ class NotePageCubit extends Cubit<NotePageState> {
   late final GetSortOrderInteractor _getSortOrderInteractor;
   late final GetSortByInteractor _getSortByInteractor;
 
-  void _initUseCases() {
-    _noteRepository = MockNoteRepositoryImpl(folder: folder);
+  void _init() {
+    _noteRepository = NoteRepositoryImpl(folder: folder);
     _getNotesInteractor = GetNotesInteractor(_noteRepository);
     _updateNotesOrderInteractor = UpdateNotesOrderInteractor(_noteRepository);
     _addNoteInteractor = AddNoteInteractor(_noteRepository);
@@ -54,6 +56,7 @@ class NotePageCubit extends Cubit<NotePageState> {
     _setSortByInteractor = di.setSortByInteractor;
     _getSortOrderInteractor = di.getSortOrderInteractor;
     _getSortByInteractor = di.getSortByInteractor;
+    _folderPageCubit = di.folderPageCubit;
   }
 
   void _copyWith({
@@ -66,7 +69,6 @@ class NotePageCubit extends Cubit<NotePageState> {
         sortBy: sortBy ?? state.sortBy,
         sortOrder: sortOrder ?? state.sortOrder,
         notes: notes ?? state.notes,
-        folder: folder,
       ),
     );
   }
@@ -83,17 +85,20 @@ class NotePageCubit extends Cubit<NotePageState> {
   }
 
   Future<void> onAddNoteClick(Note note) async {
-    _addNoteInteractor(note);
+    await _folderPageCubit.onUpdateFolderClick(folder);
+    await _addNoteInteractor(note);
     _copyWith(notes: await getNotes());
   }
 
   Future<void> onUpdateNoteClick(Note note) async {
-    _updateNoteInteractor(note);
+    await _folderPageCubit.onUpdateFolderClick(folder);
+    await _updateNoteInteractor(note);
     _copyWith(notes: await getNotes());
   }
 
   Future<void> onDeleteNoteClick(Note note) async {
-    _deleteNoteInteractor(note);
+    await _folderPageCubit.onUpdateFolderClick(folder);
+    await _deleteNoteInteractor(note);
     _copyWith(notes: await getNotes());
   }
 

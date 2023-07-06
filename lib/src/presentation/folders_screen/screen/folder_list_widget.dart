@@ -1,11 +1,9 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/src/dependencies/settings/sort_by.dart';
 import 'package:notes/src/dependencies/settings/sort_order.dart';
 import 'package:notes/src/presentation/common_widgets/custom_drag_item.dart';
 import 'package:notes/src/presentation/folders_screen/cubit/folder_page_cubit.dart';
-import 'package:notes/src/presentation/folders_screen/cubit/folder_page_state.dart';
 import 'package:notes/src/presentation/folders_screen/screen/folder_actions_widget.dart';
 
 class FolderListWidget extends StatefulWidget {
@@ -76,27 +74,11 @@ class _FolderListWidgetState extends State<FolderListWidget>
       return MapEntry(
         key,
         CustomDragAndDropItem(
-          child: BlocBuilder<FolderPageCubit, FolderPageState>(
-            bloc: cubit,
-            buildWhen: (prev, current) {
-              if (current.folders[key] != folder) {
-                try {
-                  folder = current.folders[key]!;
-                  return true;
-                } catch (_) {
-                  return true;
-                }
-              }
-              return false;
-            },
-            builder: (context, state) {
-              return FolderActionsWidget(
-                folder: folder,
-                cubit: cubit,
-                animationController: animationController,
-                animation: animation,
-              );
-            },
+          child: FolderActionsWidget(
+            folder: folder,
+            cubit: cubit,
+            animationController: animationController,
+            animation: animation,
           ),
           name: folder.name,
           dateOfLastChange: folder.dateOfLastChange,

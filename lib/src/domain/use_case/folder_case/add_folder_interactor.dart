@@ -6,7 +6,7 @@ class AddFolderInteractor {
 
   FolderRepository folderRepository;
 
-  void call(Folder folder) {
-    folderRepository.addFolder(folder);
+  Future<void> call(Folder folder) async {
+    await folderRepository.addFolder(folder);
   }
 }

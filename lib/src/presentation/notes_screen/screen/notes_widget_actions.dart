@@ -49,6 +49,7 @@ class NoteActionsWidget extends StatelessWidget {
           ),
           child: NoteWidget(
             note: note,
+            cubit: cubit,
           ),
         ),
       ),

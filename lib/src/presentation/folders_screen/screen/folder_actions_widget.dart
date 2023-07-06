@@ -33,8 +33,8 @@ class FolderActionsWidget extends StatelessWidget {
           endActionPane: ActionPane(
             motion: const DrawerMotion(),
             dismissible: DismissiblePane(
-              onDismissed: () {
-                cubit.onDeleteFolderClick(folder);
+              onDismissed: () async {
+                await cubit.onDeleteFolderClick(folder);
               },
             ),
             extentRatio: 0.5,
@@ -54,8 +54,8 @@ class FolderActionsWidget extends StatelessWidget {
               SlidableActionWidget(
                 icon: CupertinoIcons.delete_simple,
                 color: AppColors.carmineRed,
-                onTap: () {
-                  cubit.onDeleteFolderClick(folder);
+                onTap: () async {
+                  await cubit.onDeleteFolderClick(folder);
                 },
               ),
             ],

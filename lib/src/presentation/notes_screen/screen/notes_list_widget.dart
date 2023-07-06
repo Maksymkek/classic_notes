@@ -1,11 +1,9 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/src/dependencies/settings/sort_by.dart';
 import 'package:notes/src/dependencies/settings/sort_order.dart';
 import 'package:notes/src/presentation/common_widgets/custom_drag_item.dart';
 import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
-import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_state.dart';
 import 'package:notes/src/presentation/notes_screen/screen/notes_widget_actions.dart';
 
 class NoteListWidget extends StatefulWidget {
@@ -76,29 +74,13 @@ class _NoteListWidgetState extends State<NoteListWidget>
       return MapEntry(
         key,
         CustomDragAndDropItem(
-          child: BlocBuilder<NotePageCubit, NotePageState>(
-            bloc: cubit,
-            buildWhen: (prev, current) {
-              if (current.notes[key] != note) {
-                try {
-                  note = current.notes[key]!;
-                  return true;
-                } catch (_) {
-                  return true;
-                }
-              }
-              return false;
-            },
-            builder: (context, state) {
-              return NoteActionsWidget(
-                note: note,
-                cubit: cubit,
-                animationController: animationController,
-                animation: animation,
-              );
-            },
+          child: NoteActionsWidget(
+            note: note,
+            cubit: cubit,
+            animationController: animationController,
+            animation: animation,
           ),
-          name: note.name,
+          name: note.title,
           dateOfLastChange: note.dateOfLastChange,
         ),
       );

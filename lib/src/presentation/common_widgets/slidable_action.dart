@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:notes/src/presentation/app_colors.dart';
 
 class SlidableActionWidget extends StatefulWidget {
   const SlidableActionWidget({
@@ -19,29 +18,8 @@ class SlidableActionWidget extends StatefulWidget {
 
 class _SlidableActionWidgetState extends State<SlidableActionWidget>
     with SingleTickerProviderStateMixin {
-  late Animation<Color?> animation;
+  late Animation<double> animation;
   late AnimationController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller = AnimationController(
-      duration: const Duration(milliseconds: 0),
-      vsync: this,
-      reverseDuration: const Duration(seconds: 1),
-    );
-    animation = ColorTween(end: widget.color, begin: AppColors.darkBrown)
-        .animate(controller);
-    animation.addListener(() {
-      setState(() {});
-    });
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,23 +31,26 @@ class _SlidableActionWidgetState extends State<SlidableActionWidget>
             maxWidth: constraints.maxWidth,
             child: GestureDetector(
               onTap: () {
-                controller.forward().whenComplete(() => controller.reverse());
+                controller.reverse().whenComplete(() => controller.forward());
                 widget.onTap();
               },
               onTapDown: (details) {
-                controller.forward();
+                controller.reverse();
               },
               onTapCancel: () {
-                controller.reverse();
+                controller.forward();
               },
               child: Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Align(
                   alignment: Alignment.center,
-                  child: Icon(
-                    widget.icon,
-                    size: 32,
-                    color: animation.value,
+                  child: ScaleTransition(
+                    scale: animation,
+                    child: Icon(
+                      widget.icon,
+                      size: 32,
+                      color: widget.color,
+                    ),
                   ),
                 ),
               ),
@@ -78,5 +59,31 @@ class _SlidableActionWidgetState extends State<SlidableActionWidget>
         },
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+      lowerBound: 0.3,
+      upperBound: 1.0,
+      reverseDuration: const Duration(milliseconds: 0),
+    );
+    animation = CurvedAnimation(
+      parent: controller,
+      curve: Curves.fastOutSlowIn,
+    );
+    controller.forward();
+    animation.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 }

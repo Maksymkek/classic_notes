@@ -32,10 +32,11 @@ class NotesScreenWidget extends StatefulWidget {
 }
 
 class _NotesScreenWidgetState extends State<NotesScreenWidget> with RouteAware {
-  late final List<DropDownItem> dropDownItems;
+  late List<DropDownItem> dropDownItems;
   late final NotePageCubit cubit;
   late final Future<void> screenLoad;
 
+//TODO default note variable and folder
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,12 +51,15 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget> with RouteAware {
           onPressed: () {
             Navigator.of(context).pushNamed(
               NoteFormScreenWidget.screenName,
-              arguments: Note(
-                id: -1,
-                text: '',
-                name: '',
-                dateOfLastChange: DateTime.now(),
-              ),
+              arguments: <dynamic>[
+                Note(
+                  id: -1,
+                  text: '',
+                  title: '',
+                  dateOfLastChange: DateTime.now(),
+                ),
+                cubit
+              ],
             );
           },
         ),
@@ -66,6 +70,7 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget> with RouteAware {
           future: screenLoad,
           builder: (context, snapshot) {
             if (ConnectionState.done == snapshot.connectionState) {
+              _initDropdownItems();
               return BuildAppBar(
                 dropdownItems: dropDownItems,
               );
@@ -85,12 +90,7 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget> with RouteAware {
               return BlocBuilder<NotePageCubit, NotePageState>(
                 bloc: cubit,
                 buildWhen: (prev, current) {
-                  if (current.notes.length != prev.notes.length ||
-                      current.sortOrder != prev.sortOrder ||
-                      current.sortBy != prev.sortBy) {
-                    return true;
-                  }
-                  return false;
+                  return (needRedraw(current, prev));
                 },
                 builder: (context, snapshot) {
                   return Column(
@@ -115,11 +115,30 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget> with RouteAware {
     );
   }
 
+  bool needRedraw(NotePageState current, NotePageState prev) {
+    bool needToRedraw = current.notes.length != prev.notes.length ||
+        current.sortOrder != prev.sortOrder ||
+        current.sortBy != prev.sortBy;
+    if (needToRedraw) {
+      return true;
+    }
+    for (int i = 0; i < current.notes.length; i += 1) {
+      if (current.notes[i]?.dateOfLastChange !=
+          prev.notes[i]?.dateOfLastChange) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @override
   void initState() {
     super.initState();
     cubit = NotePageCubit(widget.folder);
     screenLoad = cubit.onScreenLoad();
+  }
+
+  void _initDropdownItems() {
     dropDownItems = [
       DropDownItem(
         title: 'Sort by',
