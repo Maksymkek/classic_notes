@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:notes/src/dependencies/di.dart';
-import 'package:notes/src/presentation/common_widgets/circle_progress_indicator.dart';
 
 import 'router/router.dart';
 
@@ -16,25 +15,35 @@ class NotesApp extends StatefulWidget {
 }
 
 class _NotesAppState extends State<NotesApp> {
-  final diInit = DI.getInstance().init();
+  late final Future<void> diInit;
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: diInit,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return MaterialApp(
-            navigatorObservers: [NotesApp.routeObserver],
-            routes: NotesApp.navigation.routes,
-            theme: ThemeData(useMaterial3: true),
-            initialRoute: NotesApp.navigation.initialRoute,
-            onGenerateRoute: NotesApp.navigation.onGenerateRoot,
-          );
-        } else {
-          return const CircleProgressIndicatorWidget();
-        }
-      },
+    return MaterialApp(
+      navigatorObservers: [NotesApp.routeObserver],
+      routes: NotesApp.navigation.routes,
+      theme: ThemeData(useMaterial3: true),
+      onGenerateRoute: NotesApp.navigation.onGenerateRoot,
+      home: FutureBuilder(
+        future: diInit,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            final myFoo =
+                NotesApp.navigation.routes[NotesApp.navigation.initialRoute];
+            return myFoo!(context);
+          } else {
+            final myFoo =
+                NotesApp.navigation.routes[NotesApp.navigation.loadRoute];
+            return myFoo!(context);
+          }
+        },
+      ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    diInit = DI.getInstance().init();
   }
 }

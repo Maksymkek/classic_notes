@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_logs/flutter_logs.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/src/dependencies/extensions/date_time_extension.dart';
-import 'package:notes/src/domain/entity/folder.dart';
+import 'package:notes/src/domain/entity/item/folder.dart';
 import 'package:notes/src/presentation/app_colors.dart';
+import 'package:notes/src/presentation/app_text_styles.dart';
+import 'package:notes/src/presentation/folder_form_screen/widgets/folder_form_widget.dart';
 import 'package:notes/src/presentation/notes_screen/screen/notes_screen_widget.dart';
 
 class FolderWidget extends StatefulWidget {
@@ -24,14 +25,10 @@ class _FolderWidgetState extends State<FolderWidget>
     with SingleTickerProviderStateMixin {
   late final Animation<Color?> animation;
   late final AnimationController controller;
+  final double size = 52;
 
   @override
   Widget build(BuildContext context) {
-    FlutterLogs.logInfo(
-      'Presentation',
-      'folder-screen',
-      'folder${widget.folder.name}',
-    );
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
@@ -57,12 +54,8 @@ class _FolderWidgetState extends State<FolderWidget>
         controller.reverse();
       },
       child: Container(
-        height: 52,
+        height: size,
         width: double.maxFinite,
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
-          color: widget.previewMode ? AppColors.white : animation.value,
-        ),
         padding: EdgeInsets.zero,
         child: Stack(
           children: [
@@ -70,32 +63,34 @@ class _FolderWidgetState extends State<FolderWidget>
               children: [
                 Container(
                   height: double.maxFinite,
-                  width: 54,
+                  width: size,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: widget.folder.background,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(8),
-                      bottomLeft: Radius.circular(8),
-                    ),
+                    boxShadow: widget.previewMode ? [shadow] : [],
+                    borderRadius: const BorderRadius.all(Radius.circular(15.0)),
                   ),
                   child: widget.folder.icon,
                 ),
                 const SizedBox(
-                  width: 15,
+                  width: 10,
                 ),
                 Expanded(
-                  child: SizedBox(
-                    child: Text(
-                      widget.folder.name,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontFamily: 'Helvetica',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w400,
-                      ),
+                  child: Container(
+                    height: size,
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      boxShadow: widget.previewMode ? [shadow] : [],
+                      color: widget.previewMode
+                          ? AppColors.white
+                          : animation.value,
                     ),
+                    child: Text(widget.folder.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppTextStyles.middleStyle),
                   ),
                 ),
               ],
@@ -130,7 +125,7 @@ class _FolderWidgetState extends State<FolderWidget>
       reverseDuration: const Duration(seconds: 1),
     );
     animation = ColorTween(
-      begin: AppColors.lightGrey,
+      begin: AppColors.light,
       end: AppColors.lightPressedGrey,
     ).animate(controller);
     animation.addListener(() {

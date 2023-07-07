@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_logs/flutter_logs.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/src/dependencies/extensions/date_time_extension.dart';
-import 'package:notes/src/domain/entity/note.dart';
+import 'package:notes/src/domain/entity/item/note.dart';
 import 'package:notes/src/presentation/app_colors.dart';
+import 'package:notes/src/presentation/app_text_styles.dart';
 import 'package:notes/src/presentation/note_form_screen/screen/note_form_screen.dart';
 import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
 
@@ -28,11 +27,6 @@ class _NoteWidgetState extends State<NoteWidget>
 
   @override
   Widget build(BuildContext context) {
-    FlutterLogs.logInfo(
-      'Presentation',
-      'note-screen',
-      'note ${widget.note.title}',
-    );
     final screenWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
@@ -72,10 +66,7 @@ class _NoteWidgetState extends State<NoteWidget>
                   widget.note.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontFamily: 'Helvetica',
-                    fontSize: 20,
-                  ),
+                  style: AppTextStyles.middlePlusStyle,
                 ),
               ),
             ),
@@ -87,11 +78,7 @@ class _NoteWidgetState extends State<NoteWidget>
                     reformatText(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontFamily: 'Helvetica',
-                      color: AppColors.hintGrey,
-                      fontSize: 14,
-                    ),
+                    style: AppTextStyles.smallHintStyle,
                   ),
                 ),
                 // const Expanded(child: SizedBox()),
@@ -100,10 +87,7 @@ class _NoteWidgetState extends State<NoteWidget>
                     widget.note.dateOfLastChange.getDateTimeString(),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.alexandria(
-                      color: AppColors.hintGrey,
-                      fontSize: 14,
-                    ),
+                    style: AppTextStyles.smallHintStyle,
                     textAlign: TextAlign.right,
                   ),
                 ),
@@ -124,7 +108,7 @@ class _NoteWidgetState extends State<NoteWidget>
       reverseDuration: const Duration(seconds: 1),
     );
     animation = ColorTween(
-      begin: AppColors.lightGrey,
+      begin: AppColors.light,
       end: AppColors.lightPressedGrey,
     ).animate(controller);
     animation.addListener(() {

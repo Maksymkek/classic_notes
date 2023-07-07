@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/src/presentation/app_colors.dart';
+import 'package:notes/src/presentation/app_text_styles.dart';
 import 'package:notes/src/presentation/note_form_screen/cubit/note_form_cubit.dart';
 import 'package:rich_text_editor_controller/rich_text_editor_controller.dart';
 
@@ -31,12 +31,10 @@ class NoteInputWidget extends StatelessWidget {
             contentPadding: EdgeInsets.only(bottom: 10),
             isCollapsed: true,
             hintText: 'Enter text of the note',
-            hintStyle: TextStyle(color: AppColors.hintGrey, fontSize: 26),
+            hintStyle: AppTextStyles.bigHintStyle,
           ),
           onChanged: cubit.onTextChanged,
-          style: GoogleFonts.roboto(
-            fontSize: 18,
-          ),
+          style: AppTextStyles.middleStyle,
           cursorColor: AppColors.darkBrown,
           cursorRadius: const Radius.circular(8.0),
           //onChanged: ,

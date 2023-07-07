@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_logs/flutter_logs.dart';
-import 'package:notes/src/domain/entity/note.dart';
+import 'package:notes/src/domain/entity/item/note.dart';
 import 'package:notes/src/presentation/note_form_screen/cubit/note_form_cubit.dart';
 import 'package:notes/src/presentation/note_form_screen/extensions/text_metadata_extension.dart';
 import 'package:notes/src/presentation/note_form_screen/note_text_controller/list_controller/base_list.dart';
@@ -15,20 +15,23 @@ import 'package:rich_text_editor_controller/rich_text_editor_controller.dart';
 /// powerful class which describes controller for rich text redactor
 class NoteTextController {
   NoteTextController(this._cubit, {Map<String, dynamic>? controllerMap}) {
-    if (controllerMap != null) {
-      _controller = RichTextEditorController.fromMap(controllerMap);
-      _oldTextDeltas = List.from(_controller.deltas);
-    } else {
-      _controller = RichTextEditorController();
-    }
-
-    //--------------------------
+    _initController(controllerMap);
     _textOffset = TextOffset(_controller, _oldTextDeltas, _cubit);
     _textOffset.oldBaseSelectionOffset = _controller.deltas.length;
     _undoController = RichUndoController(_controller, _cubit);
     _setCursorListener();
     _noteTitle =
         NoteTitle(_controller, _cubit, _oldTextDeltas, _textOffset, null);
+  }
+
+  /// initialize [_controller]
+  void _initController(Map<String, dynamic>? controllerMap) {
+    if (controllerMap != null) {
+      _controller = RichTextEditorController.fromMap(controllerMap);
+      _oldTextDeltas = List.from(_controller.deltas);
+    } else {
+      _controller = RichTextEditorController();
+    }
   }
 
   /// add listener to the [_controller] for the [_textOffset] detection
@@ -83,10 +86,8 @@ class NoteTextController {
   /// corrects styles for new text
   int _updateDeltas() {
     var baseOffset = _controller.selection.baseOffset;
-    //для избежания повторов
     bool textAdded = false;
     bool textDeleted = false;
-    // проверка на то что символ один
     if (_controller.deltas.length <= 1) {
       _oldTextDeltas.clear();
       if (_controller.deltas.length == 1) {
@@ -100,15 +101,12 @@ class NoteTextController {
       } else {
         return -1;
       }
-    }
-    // проверка на удаление символов
-    else if (_oldTextDeltas.length > _controller.deltas.length) {
+    } else if (_oldTextDeltas.length > _controller.deltas.length) {
       textDeleted = true;
     } else if (_oldTextDeltas.length <= _controller.deltas.length) {
       textAdded = true;
     }
     _textOffset.oldBaseSelectionOffset = _controller.selection.baseOffset;
-    //удаление текста
     if (textDeleted) {
       return _updateDeletedDeltas(baseOffset);
     }
@@ -339,6 +337,7 @@ class NoteTextController {
     }
   }
 
+  ///unitest [List] of symbols in [String]
   String _uniteInString(List<String> symbolsToAdd) {
     String newText = '';
     for (final char in symbolsToAdd) {
@@ -351,6 +350,7 @@ class NoteTextController {
     return baseOffset == _controller.text.length || _controller.deltas.isEmpty;
   }
 
+  /// if [ListStatus] from state is not null adds the list separator in text
   void _listWatcher() {
     if (_cubit.state.listStatus != ListStatus.none) {
       List<String> separator = _listInput?.getSeparator(
@@ -362,6 +362,7 @@ class NoteTextController {
     }
   }
 
+  /// toggles current [ListStatus] to another(or deactivates if )
   void toggleList(ListInput listInput) {
     if (!textCanBeStyled()) {
       return;
@@ -375,6 +376,7 @@ class NoteTextController {
     }
   }
 
+  /// sets new deltas to controller
   void _setControllerDeltas(List<TextDelta> deltas, String text) {
     _controller.setDeltas(deltas);
     _oldTextDeltas = List.from(deltas);
@@ -396,7 +398,8 @@ class NoteTextController {
     }
   }
 
-  bool save(Note note) {
+  /// need to call before save. Returns whether can be saved
+  bool prepareToSave(Note note) {
     if (_undoController.bufferIterator == 0) {
       return false;
     }

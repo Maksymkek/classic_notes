@@ -1,24 +1,22 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes/src/dependencies/settings/sort_by.dart';
-import 'package:notes/src/dependencies/settings/sort_order.dart';
-import 'package:notes/src/domain/entity/folder.dart';
-import 'package:notes/src/domain/entity/note.dart';
+import 'package:notes/src/domain/entity/item/folder.dart';
+import 'package:notes/src/domain/entity/item/note.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
-import 'package:notes/src/presentation/common_widgets/app_buttons/icon_button.dart';
-import 'package:notes/src/presentation/common_widgets/appbar.dart';
-import 'package:notes/src/presentation/common_widgets/appbar_list_data.dart';
-import 'package:notes/src/presentation/common_widgets/circle_progress_indicator.dart';
-import 'package:notes/src/presentation/common_widgets/drop_down_menu/dropdown_overlay.dart';
-import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_action_model.dart';
-import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_item_model.dart';
+import 'package:notes/src/presentation/mixins/screen_need_redraw.dart';
 import 'package:notes/src/presentation/note_form_screen/screen/note_form_screen.dart';
 import 'package:notes/src/presentation/notes_app.dart';
 import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
 import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_state.dart';
-import 'package:notes/src/presentation/notes_screen/screen/notes_list_widget.dart';
+import 'package:notes/src/presentation/notes_screen/screen/notes_widget_actions.dart';
+import 'package:notes/src/presentation/reusable_widgets/app_buttons/icon_button.dart';
+import 'package:notes/src/presentation/reusable_widgets/appbar/appbar.dart';
+import 'package:notes/src/presentation/reusable_widgets/appbar/appbar_list_data.dart';
+import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/dropdown_overlay.dart';
+import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/models/dropdown_item_model.dart';
+import 'package:notes/src/presentation/reusable_widgets/item_screen/item_list_widget.dart';
+import 'package:notes/src/presentation/reusable_widgets/progress_indicator/circle_progress_indicator.dart';
 
 class NotesScreenWidget extends StatefulWidget {
   const NotesScreenWidget({super.key, required this.folder});
@@ -31,12 +29,12 @@ class NotesScreenWidget extends StatefulWidget {
   State<NotesScreenWidget> createState() => _NotesScreenWidgetState();
 }
 
-class _NotesScreenWidgetState extends State<NotesScreenWidget> with RouteAware {
+class _NotesScreenWidgetState extends State<NotesScreenWidget>
+    with RouteAware, ScreenRedraw {
   late List<DropDownItem> dropDownItems;
   late final NotePageCubit cubit;
   late final Future<void> screenLoad;
 
-//TODO default note variable and folder
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +42,7 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget> with RouteAware {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(right: 7.0, bottom: 5.0),
         child: AppIconButtonWidget(
-          iconSize: 36,
+          iconSize: 42,
           color: AppColors.darkBrown,
           activeColor: AppColors.lightBrown,
           icon: AppIcons.newNote,
@@ -54,8 +52,8 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget> with RouteAware {
               arguments: <dynamic>[
                 Note(
                   id: -1,
-                  text: '',
                   title: '',
+                  text: '',
                   dateOfLastChange: DateTime.now(),
                 ),
                 cubit
@@ -70,9 +68,8 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget> with RouteAware {
           future: screenLoad,
           builder: (context, snapshot) {
             if (ConnectionState.done == snapshot.connectionState) {
-              _initDropdownItems();
               return BuildAppBar(
-                dropdownItems: dropDownItems,
+                dropdownItems: cubit.dropDownItems ?? [],
               );
             } else {
               return Container();
@@ -90,18 +87,20 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget> with RouteAware {
               return BlocBuilder<NotePageCubit, NotePageState>(
                 bloc: cubit,
                 buildWhen: (prev, current) {
-                  return (needRedraw(current, prev));
+                  return needRedraw<Note>(current, prev);
                 },
                 builder: (context, snapshot) {
                   return Column(
                     children: [
                       const SizedBox(height: 5),
                       AppBarListData(
-                        title: '${cubit.state.notes.length} notes',
+                        title: '${cubit.state.items.length} notes',
                         folder: widget.folder,
                       ),
-                      const SizedBox(height: 10),
-                      NoteListWidget(cubit: cubit),
+                      ItemListWidget<Note, NotePageState, NotePageCubit>(
+                        cubit: cubit,
+                        actionsWidget: NoteActionsWidget.new,
+                      ),
                     ],
                   );
                 },
@@ -115,78 +114,11 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget> with RouteAware {
     );
   }
 
-  bool needRedraw(NotePageState current, NotePageState prev) {
-    bool needToRedraw = current.notes.length != prev.notes.length ||
-        current.sortOrder != prev.sortOrder ||
-        current.sortBy != prev.sortBy;
-    if (needToRedraw) {
-      return true;
-    }
-    for (int i = 0; i < current.notes.length; i += 1) {
-      if (current.notes[i]?.dateOfLastChange !=
-          prev.notes[i]?.dateOfLastChange) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   @override
   void initState() {
     super.initState();
     cubit = NotePageCubit(widget.folder);
     screenLoad = cubit.onScreenLoad();
-  }
-
-  void _initDropdownItems() {
-    dropDownItems = [
-      DropDownItem(
-        title: 'Sort by',
-        icon: CupertinoIcons.list_dash,
-        iconSize: 14.5,
-        actions: [
-          DropDownAction(
-            title: SortBy.date.name,
-            onTap: () => cubit.onSortByChanged(SortBy.date.name),
-            isSelected: cubit.state.sortBy == SortBy.date.name,
-            icon: CupertinoIcons.calendar,
-          ),
-          DropDownAction(
-            title: SortBy.name.name,
-            onTap: () => cubit.onSortByChanged(SortBy.name.name),
-            isSelected: cubit.state.sortBy == SortBy.name.name,
-            icon: CupertinoIcons.textformat,
-          ),
-          DropDownAction(
-            title: SortBy.custom.name,
-            onTap: () => cubit.onSortByChanged(SortBy.custom.name),
-            isSelected: cubit.state.sortBy == SortBy.custom.name,
-            icon: CupertinoIcons.pencil,
-          ),
-        ],
-      ),
-      DropDownItem(
-        title: 'Sort order',
-        icon: CupertinoIcons.arrow_up_arrow_down,
-        iconSize: 13,
-        actions: [
-          DropDownAction(
-            title: SortOrder.descending.name,
-            onTap: () => cubit.onSortOrderChanged(SortOrder.descending.name),
-            isSelected: cubit.state.sortOrder == SortOrder.descending.name,
-            icon: CupertinoIcons.arrow_down,
-            iconSize: 13,
-          ),
-          DropDownAction(
-            title: SortOrder.ascending.name,
-            onTap: () => cubit.onSortOrderChanged(SortOrder.ascending.name),
-            isSelected: cubit.state.sortOrder == SortOrder.ascending.name,
-            icon: CupertinoIcons.arrow_up,
-            iconSize: 13,
-          ),
-        ],
-      ),
-    ];
   }
 
   @override

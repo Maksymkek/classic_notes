@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_cubit.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_state.dart';
-import 'package:notes/src/presentation/folder_form_screen/widgets/folder_form_widget.dart';
 import 'package:notes/src/presentation/folders_screen/screen/folder_widget.dart';
 
 class FolderPreviewWidget extends StatelessWidget {
@@ -15,20 +14,14 @@ class FolderPreviewWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-            boxShadow: [shadow],
-          ),
-          child: BlocBuilder<FolderFormCubit, FolderFormState>(
-            bloc: cubit,
-            builder: (context, state) {
-              return FolderWidget(
-                folder: cubit.state.folder,
-                previewMode: true,
-              );
-            },
-          ),
+        BlocBuilder<FolderFormCubit, FolderFormState>(
+          bloc: cubit,
+          builder: (context, state) {
+            return FolderWidget(
+              folder: cubit.state.folder,
+              previewMode: true,
+            );
+          },
         ),
         Padding(
           padding: const EdgeInsets.only(top: 3.0),

@@ -1,15 +1,10 @@
-import 'package:notes/src/dependencies/settings/sort_by.dart';
-import 'package:notes/src/dependencies/settings/sort_order.dart';
-import 'package:notes/src/domain/entity/folder.dart';
+import 'package:notes/src/domain/entity/item/folder.dart';
+import 'package:notes/src/domain/entity/item/item_settings_model.dart';
+import 'package:notes/src/presentation/interfaces/screen_state.dart';
 
-class FolderPageState {
+class FolderPageState extends ScreenState<Folder> {
   FolderPageState({
-    required this.sortBy,
-    required this.sortOrder,
-    required this.folders,
-  });
-
-  Map<int, Folder> folders;
-  String sortBy = SortBy.date.name;
-  String sortOrder = SortOrder.descending.name;
+    required ItemSettingsModel settings,
+    required Map<int, Folder> folders,
+  }) : super(folders, settings);
 }

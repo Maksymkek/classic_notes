@@ -1,9 +1,8 @@
+import 'package:notes/src/domain/entity/item/item_settings_model.dart';
+import 'package:notes/src/domain/entity/settings/item_setting.dart';
+
 abstract class SettingsRepository {
-  Future<void> updateSortByValue(String sortBy);
+  Future<void> setSetting(ItemSetting setting);
 
-  Future<void> updateSortOrderValue(String sortOrder);
-
-  Future<String> getSortOrderValue();
-
-  Future<String> getSortByValue();
+  Future<ItemSettingsModel> getSetting();
 }

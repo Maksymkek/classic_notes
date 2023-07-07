@@ -1,3 +1,4 @@
+/// needed to check whether buffer can redo or undo
 class BufferStatus {
   BufferStatus({this.canRedo = false, this.canUndo = false});
 

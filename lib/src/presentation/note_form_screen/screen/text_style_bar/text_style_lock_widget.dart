@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes/src/presentation/app_icons.dart';
 import 'package:notes/src/presentation/note_form_screen/cubit/note_form_cubit.dart';
 import 'package:notes/src/presentation/note_form_screen/cubit/note_form_state.dart';
 import 'package:notes/src/presentation/note_form_screen/note_text_controller/metadata_model/metadata_styles.dart';
@@ -46,7 +47,7 @@ class _TextStyleLockWidgetState extends State<TextStyleLockWidget> {
           duration: const Duration(milliseconds: 250),
           builder: (BuildContext context, double size, Widget? child) {
             return Icon(
-              CupertinoIcons.padlock_solid,
+              AppIcons.lock,
               size: size,
             );
           },

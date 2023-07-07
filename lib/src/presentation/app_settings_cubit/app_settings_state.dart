@@ -1,6 +1,10 @@
+
+import 'package:notes/src/domain/entity/settings/app/app_languages.dart';
+import 'package:notes/src/domain/entity/settings/app/app_theme.dart';
+
 class AppSettings {
   AppSettings({required this.theme, required this.language});
 
-  String theme;
-  String language;
+  AppTheme theme;
+  AppLanguage language;
 }

@@ -30,7 +30,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
             borderRadius: BorderRadius.circular(10.0),
             borderSide: BorderSide.none,
           ),
-          fillColor: Colors.white,
+          fillColor: AppColors.white,
           filled: true,
           hintStyle: const TextStyle(color: AppColors.hintGrey),
           hintText: 'Folder name',
@@ -44,7 +44,7 @@ class _TextFieldWidgetState extends State<TextFieldWidget> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.cubit.state.folder.name);
+    _controller = TextEditingController(text: widget.cubit.state.folder.title);
     _controller.selection = TextSelection.fromPosition(
       TextPosition(offset: _controller.text.length),
     );

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notes/src/dependencies/di.dart';
-import 'package:notes/src/domain/entity/folder.dart';
+import 'package:notes/src/domain/entity/item/folder.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
 import 'package:notes/src/presentation/folder_form_screen/widgets/folder_form_widget.dart';
@@ -13,36 +13,32 @@ class FolderFormOverlayManager {
 
   static void buildOverlay({
     required BuildContext context,
-    required Animation<double> animation,
-    required AnimationController animationController,
     Folder? folder,
   }) {
     _overlayState = Overlay.of(context);
     _overlayEntry = OverlayEntry(
       builder: (appContext) {
         return Material(
-          color: Colors.transparent,
+          color: AppColors.transparent,
           child: Align(
             alignment: Alignment.bottomCenter,
             child: FolderFormWidget(
               folder: folder ??
                   Folder(
                     id: -1,
-                    name: 'Quick Notes',
-                    background: AppColors.lightYellow,
+                    title: 'Quick Notes',
+                    background: AppColors.darkBrown,
                     icon: const Icon(
                       AppIcons.folder,
-                      color: AppColors.darkBrown,
+                      color: AppColors.seashellWhite,
                       size: 28,
                     ),
                     dateOfLastChange: DateTime.now(),
                   ),
-              onClose: _removeHighlightOverlay,
-              animation: animation,
+              onClose: dispose,
               onDone: folder != null
                   ? DI.getInstance().folderPageCubit.onUpdateFolderClick
                   : DI.getInstance().folderPageCubit.onAddFolderClick,
-              animationController: animationController,
             ),
           ),
         );
@@ -50,14 +46,6 @@ class FolderFormOverlayManager {
     );
 
     _overlayState.insert(_overlayEntry!);
-    animationController.forward();
-  }
-
-  static Future<void> _removeHighlightOverlay(
-    AnimationController animationController,
-  ) async {
-    await animationController.reverse();
-    dispose();
   }
 
   static void dispose() {
