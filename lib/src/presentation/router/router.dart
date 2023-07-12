@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:notes/src/domain/entity/folder.dart';
-import 'package:notes/src/domain/entity/note.dart';
+import 'package:notes/src/domain/entity/item/folder.dart';
+import 'package:notes/src/domain/entity/item/note.dart';
 import 'package:notes/src/presentation/folders_screen/screen/folder_screen_widget.dart';
+import 'package:notes/src/presentation/load_screen/load_screen.dart';
 import 'package:notes/src/presentation/note_form_screen/screen/note_form_screen.dart';
 import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
 import 'package:notes/src/presentation/notes_screen/screen/notes_screen_widget.dart';
 
 class AppNavigation {
   final initialRoute = FolderScreen.screenName;
+  final loadRoute = LoadScreen.screenName;
 
   final routes = <String, Widget Function(BuildContext)>{
-    FolderScreen.screenName: (context) => const FolderScreen()
+    FolderScreen.screenName: (context) => const FolderScreen(),
+    LoadScreen.screenName: (context) => const LoadScreen()
   };
 
   Route<Object> onGenerateRoot(RouteSettings settings) {
@@ -26,12 +29,14 @@ class AppNavigation {
         List<dynamic> arguments = settings.arguments as List<dynamic>;
         final note = arguments[0] as Note;
         final notePageCubit = arguments[1] as NotePageCubit;
-        return MaterialPageRoute(builder: (context) {
-          return NoteFormScreenWidget(
-            note: note,
-            notePageCubit: notePageCubit,
-          );
-        });
+        return MaterialPageRoute(
+          builder: (context) {
+            return NoteFormScreenWidget(
+              note: note,
+              notePageCubit: notePageCubit,
+            );
+          },
+        );
       default:
         const defaultWidget = Text('Navigation error :(');
         return MaterialPageRoute(builder: (context) => defaultWidget);

@@ -1,25 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:notes/src/domain/entity/note.dart';
+import 'package:notes/src/domain/entity/item/note.dart';
 import 'package:notes/src/presentation/app_colors.dart';
-import 'package:notes/src/presentation/common_widgets/slidable_action.dart';
+import 'package:notes/src/presentation/app_icons.dart';
 import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
 import 'package:notes/src/presentation/notes_screen/screen/note_widget.dart';
+import 'package:notes/src/presentation/reusable_widgets/slidable_action/slidable_action.dart';
 
 class NoteActionsWidget extends StatelessWidget {
-  const NoteActionsWidget({
+  const NoteActionsWidget(
+    this.note,
+    this.cubit, {
     super.key,
-    required this.note,
-    required this.cubit,
-    required this.animationController,
-    required this.animation,
   });
 
   final NotePageCubit cubit;
   final Note note;
-  final AnimationController animationController;
-  final Animation<double> animation;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +36,7 @@ class NoteActionsWidget extends StatelessWidget {
             extentRatio: 0.25,
             children: [
               SlidableActionWidget(
-                icon: CupertinoIcons.delete,
+                icon: AppIcons.trashBox,
                 color: AppColors.carmineRed,
                 onTap: () {
                   cubit.onDeleteNoteClick(note);

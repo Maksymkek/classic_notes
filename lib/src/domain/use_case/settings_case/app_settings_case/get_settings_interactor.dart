@@ -3,7 +3,9 @@ import 'package:notes/src/presentation/app_settings_cubit/app_settings_state.dar
 
 class GetSettingsInteractor {
   GetSettingsInteractor(this.appSettingsRepository);
+
   AppSettingsRepository appSettingsRepository;
+
   Future<AppSettings> call() async {
     return appSettingsRepository.getSettings();
   }

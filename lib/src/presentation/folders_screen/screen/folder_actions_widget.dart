@@ -1,26 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:notes/src/domain/entity/folder.dart';
+import 'package:notes/src/domain/entity/item/folder.dart';
 import 'package:notes/src/presentation/app_colors.dart';
-import 'package:notes/src/presentation/common_widgets/slidable_action.dart';
+import 'package:notes/src/presentation/app_icons.dart';
 import 'package:notes/src/presentation/folder_form_screen/folder_form_overlay.dart';
 import 'package:notes/src/presentation/folders_screen/cubit/folder_page_cubit.dart';
 import 'package:notes/src/presentation/folders_screen/screen/folder_widget.dart';
+import 'package:notes/src/presentation/reusable_widgets/slidable_action/slidable_action.dart';
 
 class FolderActionsWidget extends StatelessWidget {
-  const FolderActionsWidget({
+  const FolderActionsWidget(
+    this.item,
+    this.cubit, {
     super.key,
-    required this.folder,
-    required this.cubit,
-    required this.animationController,
-    required this.animation,
   });
 
   final FolderPageCubit cubit;
-  final Folder folder;
-  final AnimationController animationController;
-  final Animation<double> animation;
+  final Folder item;
 
   @override
   Widget build(BuildContext context) {
@@ -29,39 +26,37 @@ class FolderActionsWidget extends StatelessWidget {
           Padding(
         padding: const EdgeInsets.only(bottom: 10),
         child: Slidable(
-          key: ValueKey(folder.id),
+          key: ValueKey(item.id),
           endActionPane: ActionPane(
             motion: const DrawerMotion(),
             dismissible: DismissiblePane(
               onDismissed: () async {
-                await cubit.onDeleteFolderClick(folder);
+                await cubit.onDeleteFolderClick(item);
               },
             ),
             extentRatio: 0.5,
             children: [
               SlidableActionWidget(
-                icon: CupertinoIcons.pencil,
+                icon: AppIcons.pencil,
                 color: AppColors.brightBlue,
                 onTap: () {
                   FolderFormOverlayManager.buildOverlay(
                     context: context,
-                    animation: animation,
-                    folder: folder,
-                    animationController: animationController,
+                    folder: item,
                   );
                 },
               ),
               SlidableActionWidget(
-                icon: CupertinoIcons.delete_simple,
+                icon: AppIcons.trashBox,
                 color: AppColors.carmineRed,
                 onTap: () async {
-                  await cubit.onDeleteFolderClick(folder);
+                  await cubit.onDeleteFolderClick(item);
                 },
               ),
             ],
           ),
           child: FolderWidget(
-            folder: folder,
+            folder: item,
           ),
         ),
       ),

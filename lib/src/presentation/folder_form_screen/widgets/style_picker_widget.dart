@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_logs/flutter_logs.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_cubit.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_state.dart';
@@ -27,7 +26,7 @@ class _StylePickerWidgetState extends State<StylePickerWidget> {
       width: double.infinity,
       height: 124,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         borderRadius: const BorderRadius.all(Radius.circular(10.0)),
         boxShadow: [shadow],
       ),
@@ -79,11 +78,6 @@ class _StylePickerWidgetState extends State<StylePickerWidget> {
             return res;
           },
           builder: (context, state) {
-            FlutterLogs.logInfo(
-              'Presentation',
-              'folder-form',
-              'iconPicker${iconPicker.icon}',
-            );
             return IconPickerWidget(
               model: iconPicker,
               onPressed: widget.cubit.onIconSelected,
@@ -112,11 +106,6 @@ class _StylePickerWidgetState extends State<StylePickerWidget> {
             return res;
           },
           builder: (context, state) {
-            FlutterLogs.logInfo(
-              'Presentation',
-              'folder-form',
-              'colorPicker${colorPicker.color}',
-            );
             return ColorPickerWidget(
               model: colorPicker,
               onPressed: widget.cubit.onColorSelected,
@@ -157,7 +146,7 @@ class _ItemPickerWidget extends StatelessWidget {
           radius: const Radius.circular(2.0),
           padding: const EdgeInsets.symmetric(horizontal: 24),
           trackRadius: const Radius.circular(2.0),
-          trackColor: Colors.grey,
+          trackColor: AppColors.grey,
           interactive: true,
           child: listView,
         ),

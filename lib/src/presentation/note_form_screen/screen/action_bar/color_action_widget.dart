@@ -81,4 +81,10 @@ class _ColorActionWidgetState extends State<ColorActionWidget>
         CurvedAnimation(parent: scaleController, curve: Curves.fastOutSlowIn);
     scaleController.forward();
   }
+
+  @override
+  void dispose() {
+    scaleController.dispose();
+    super.dispose();
+  }
 }

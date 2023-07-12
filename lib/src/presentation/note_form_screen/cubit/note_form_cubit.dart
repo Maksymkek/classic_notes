@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes/src/domain/entity/note.dart';
+import 'package:notes/src/domain/entity/item/note.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/note_form_screen/cubit/note_form_state.dart';
 import 'package:notes/src/presentation/note_form_screen/metadata/font_style_data.dart';
@@ -171,7 +171,7 @@ class NoteFormCubit extends Cubit<NoteForm> {
   }
 
   void saveNote() {
-    if (_noteTextController.save(state.note)) {
+    if (_noteTextController.prepareToSave(state.note)) {
       if (state.note.id != -1) {
         _notePageCubit.onUpdateNoteClick(state.note);
       } else {

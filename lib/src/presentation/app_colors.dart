@@ -9,13 +9,15 @@ abstract class AppColors {
 
   static const sapphireBlue = Color.fromRGBO(15, 82, 186, 1.0);
 
-  static const lightGrey = Color.fromRGBO(250, 250, 250, 1.0);
+  static const light = Color.fromRGBO(250, 250, 250, 1.0);
 
   static const darkGrey = Color.fromRGBO(25, 25, 25, 1.0);
 
   static const seashellWhite = Color.fromRGBO(255, 245, 238, 1.0);
 
   static const brightBlue = Color.fromRGBO(0, 150, 255, 1.0);
+
+  static const lightBlue = Color.fromRGBO(194, 231, 255, 1.0);
 
   static const lightBrown = Color.fromRGBO(196, 164, 132, 1.0);
 
@@ -31,7 +33,17 @@ abstract class AppColors {
 
   static const lightPressedGrey = Color.fromRGBO(235, 235, 235, 1.0);
 
+  static const darkGreen = Color.fromRGBO(22, 59, 19, 1.0);
+
+  static const darkPurple = Color.fromRGBO(108, 33, 52, 1.0);
+
   static const white = Colors.white;
 
+  static const transparent = Colors.transparent;
+
   static const black = Colors.black;
+
+  static const grey = Colors.grey;
+
+  static const green = Colors.green;
 }

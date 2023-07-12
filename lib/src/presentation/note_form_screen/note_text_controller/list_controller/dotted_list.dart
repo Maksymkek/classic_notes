@@ -4,7 +4,7 @@ import 'package:notes/src/presentation/note_form_screen/note_text_controller/lis
 class DottedList implements ListInput {
   @override
   List<String> getSeparator(String text, int baseOffset) {
-    return ['\u00B7', '\u2002'];
+    return ['\u2022', '\u2002'];
   }
 
   @override

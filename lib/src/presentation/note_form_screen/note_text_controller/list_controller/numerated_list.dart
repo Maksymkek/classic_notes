@@ -5,7 +5,6 @@ class NumList implements ListInput {
   int _currentLine = 0;
 
   get currentLine => _currentLine;
-  //нужен вызов если что-то было изменено в тексте
 
   void updateLine(String text, int baseOffset) {
     var prevLineIndex =

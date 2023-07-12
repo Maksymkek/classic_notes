@@ -3,6 +3,7 @@ import 'package:flutter_logs/flutter_logs.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notes/src/presentation/notes_app.dart';
 
+//TODO remove left dependencies in yaml
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();

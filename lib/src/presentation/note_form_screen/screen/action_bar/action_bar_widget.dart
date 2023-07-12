@@ -1,16 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:notes/src/presentation/app_colors.dart';
-import 'package:notes/src/presentation/common_widgets/app_buttons/app_text_button.dart';
-import 'package:notes/src/presentation/common_widgets/app_buttons/app_toggle_button.dart';
-import 'package:notes/src/presentation/common_widgets/app_buttons/icon_button.dart';
+import 'package:notes/src/presentation/app_icons.dart';
 import 'package:notes/src/presentation/note_form_screen/cubit/note_form_cubit.dart';
 import 'package:notes/src/presentation/note_form_screen/metadata/font_style_data.dart';
 import 'package:notes/src/presentation/note_form_screen/note_text_controller/list_controller/list_status.dart';
 import 'package:notes/src/presentation/note_form_screen/screen/action_bar/action_row_widget.dart';
 import 'package:notes/src/presentation/note_form_screen/screen/action_bar/color_action_widget.dart';
-import 'package:notes/src/presentation/note_form_screen/screen/note_action_widget.dart';
+import 'package:notes/src/presentation/note_form_screen/screen/action_bar/note_action_widget.dart';
+import 'package:notes/src/presentation/reusable_widgets/app_buttons/app_text_button.dart';
+import 'package:notes/src/presentation/reusable_widgets/app_buttons/app_toggle_button.dart';
+import 'package:notes/src/presentation/reusable_widgets/app_buttons/icon_button.dart';
 
 class ActionBarWidget extends StatefulWidget {
   const ActionBarWidget({
@@ -42,18 +42,6 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
         axisAlignment: 1.0,
         child: Column(
           children: [
-            AppIconButtonWidget(
-              icon: isExpanded
-                  ? CupertinoIcons.chevron_compact_up
-                  : CupertinoIcons.chevron_compact_down,
-              onPressed: () {
-                isExpanded = isExpanded == false;
-                setState(() {});
-              },
-              color: AppColors.darkBrown,
-              activeColor: AppColors.lightBrown,
-              iconSize: 26,
-            ),
             Stack(
               alignment: Alignment.bottomCenter,
               children: [
@@ -70,7 +58,7 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       AppToggleButtonWidget(
-                        icon: CupertinoIcons.chevron_left,
+                        icon: AppIcons.backChevron,
                         onPressed: widget.cubit.onUndoClicked,
                         color: AppColors.darkBrown,
                         activeColor: AppColors.lightBrown,
@@ -82,7 +70,7 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
                         },
                       ),
                       AppToggleButtonWidget(
-                        icon: CupertinoIcons.increase_indent,
+                        icon: AppIcons.indent,
                         onPressed: widget.cubit.onIndentClicked,
                         color: AppColors.darkBrown,
                         activeColor: AppColors.lightBrown,
@@ -93,7 +81,7 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
                         },
                       ),
                       AppToggleButtonWidget(
-                        icon: CupertinoIcons.list_number,
+                        icon: AppIcons.listNum,
                         onPressed: widget.cubit.onNumListClicked,
                         color: AppColors.darkBrown,
                         activeColor: AppColors.lightBrown,
@@ -104,8 +92,20 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
                               ListStatus.enumerated;
                         },
                       ),
+                      AppIconButtonWidget(
+                        icon: isExpanded
+                            ? AppIcons.chevronCompactUp
+                            : AppIcons.chevronCompactDown,
+                        onPressed: () {
+                          isExpanded = isExpanded == false;
+                          setState(() {});
+                        },
+                        color: AppColors.darkBrown,
+                        activeColor: AppColors.lightBrown,
+                        iconSize: 26,
+                      ),
                       AppToggleButtonWidget(
-                        icon: CupertinoIcons.list_bullet,
+                        icon: AppIcons.listDotted,
                         onPressed: widget.cubit.onDotListClicked,
                         color: AppColors.darkBrown,
                         activeColor: AppColors.lightBrown,
@@ -117,7 +117,7 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
                         },
                       ),
                       AppToggleButtonWidget(
-                        icon: CupertinoIcons.list_bullet_indent,
+                        icon: AppIcons.subList,
                         onPressed: widget.cubit.onSubListClicked,
                         color: AppColors.darkBrown,
                         activeColor: AppColors.lightBrown,
@@ -129,7 +129,7 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
                         },
                       ),
                       AppToggleButtonWidget(
-                        icon: CupertinoIcons.chevron_right,
+                        icon: AppIcons.forwardChevron,
                         onPressed: widget.cubit.onRedoClicked,
                         color: AppColors.darkBrown,
                         activeColor: AppColors.lightBrown,
@@ -170,7 +170,7 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
             cubit: widget.cubit,
             actions: [
               NoteActionWidget(
-                icon: CupertinoIcons.eyedropper,
+                icon: AppIcons.eyedropper,
                 iconSize: 26,
                 onPressed: () {
                   colorPickerDialog().whenComplete(
@@ -193,7 +193,7 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
             cubit: widget.cubit,
             actions: [
               NoteActionWidget(
-                icon: CupertinoIcons.italic,
+                icon: AppIcons.italic,
                 iconSize: 28,
                 onPressed: () {
                   widget.cubit.onMetadataButtonPressed(MetadataValue.italic);
@@ -206,7 +206,7 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
                 width: 1.0,
               ),
               NoteActionWidget(
-                icon: CupertinoIcons.bold,
+                icon: AppIcons.bold,
                 iconSize: 28,
                 onPressed: () {
                   widget.cubit.onMetadataButtonPressed(MetadataValue.bold);
@@ -219,7 +219,7 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
                 width: 1.0,
               ),
               NoteActionWidget(
-                icon: CupertinoIcons.underline,
+                icon: AppIcons.underline,
                 iconSize: 28,
                 onPressed: () {
                   widget.cubit.onMetadataButtonPressed(MetadataValue.underline);
@@ -231,7 +231,7 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
                 width: 1.0,
               ),
               NoteActionWidget(
-                icon: CupertinoIcons.strikethrough,
+                icon: AppIcons.strikethrough,
                 iconSize: 28,
                 onPressed: () {
                   widget.cubit
@@ -244,7 +244,7 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
             cubit: widget.cubit,
             actions: [
               NoteActionWidget(
-                icon: CupertinoIcons.chevron_up,
+                icon: AppIcons.textFormatSize,
                 iconSize: 28,
                 onPressed: () {
                   widget.cubit
@@ -257,7 +257,7 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
                 width: 1.0,
               ),
               NoteActionWidget(
-                icon: CupertinoIcons.clear,
+                icon: AppIcons.pencilSlash,
                 iconSize: 28,
                 onPressed: () {
                   widget.cubit.onMetadataButtonPressed(MetadataValue.baseText);
@@ -287,7 +287,7 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         content: SingleChildScrollView(
@@ -305,7 +305,7 @@ class _ActionBarWidgetState extends State<ActionBarWidget> {
               bottom: 0.0,
             ),
             child: AppTextButtonWidget(
-              icon: CupertinoIcons.check_mark,
+              icon: AppIcons.selected,
               text: 'Done',
               onPressed: () {
                 Navigator.of(context).pop(false);

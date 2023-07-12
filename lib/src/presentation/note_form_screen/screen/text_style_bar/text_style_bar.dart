@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:notes/src/presentation/app_colors.dart';
+import 'package:notes/src/presentation/app_icons.dart';
 import 'package:notes/src/presentation/note_form_screen/cubit/note_form_cubit.dart';
 import 'package:notes/src/presentation/note_form_screen/metadata/font_style_data.dart';
 import 'package:notes/src/presentation/note_form_screen/screen/text_style_bar/text_style_icon_widget.dart';
@@ -16,14 +17,16 @@ class TextStyleBar extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         buildTextStylingLock(),
-        buildTextStyleIcon(CupertinoIcons.chevron_up, MetadataValue.headerText),
-        //const SizedBox(width: 10),
+        buildTextStyleIcon(
+          AppIcons.textFormatSize,
+          MetadataValue.headerText,
+        ),
         AnimatedContainer(
           constraints: const BoxConstraints(minHeight: 14, minWidth: 30),
           duration: const Duration(seconds: 1),
           curve: Curves.elasticInOut,
           decoration: const BoxDecoration(
-            color: AppColors.lightGrey,
+            color: AppColors.light,
             borderRadius: BorderRadius.all(Radius.circular(20.0)),
           ),
           child: Padding(
@@ -33,19 +36,19 @@ class TextStyleBar extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 buildTextStyleIcon(
-                  CupertinoIcons.bold,
+                  AppIcons.bold,
                   MetadataValue.bold,
                 ),
                 buildTextStyleIcon(
-                  CupertinoIcons.italic,
+                  AppIcons.italic,
                   MetadataValue.italic,
                 ),
                 buildTextStyleIcon(
-                  CupertinoIcons.underline,
+                  AppIcons.underline,
                   MetadataValue.underline,
                 ),
                 buildTextStyleIcon(
-                  CupertinoIcons.strikethrough,
+                  AppIcons.strikethrough,
                   MetadataValue.strikeThrough,
                 )
               ],

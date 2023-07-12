@@ -1,25 +1,28 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:notes/src/domain/entity/note.dart';
+import 'package:notes/src/domain/entity/item/note.dart';
 import 'package:notes/src/presentation/app_colors.dart';
-import 'package:notes/src/presentation/common_widgets/app_buttons/icon_button.dart';
-import 'package:notes/src/presentation/common_widgets/drop_down_menu/dropdown_button_widget.dart';
-import 'package:notes/src/presentation/common_widgets/drop_down_menu/dropdown_overlay.dart';
-import 'package:notes/src/presentation/common_widgets/drop_down_menu/models/dropdown_item_model.dart';
+import 'package:notes/src/presentation/app_icons.dart';
 import 'package:notes/src/presentation/note_form_screen/cubit/note_form_cubit.dart';
 import 'package:notes/src/presentation/note_form_screen/screen/text_input/note_input_widget.dart';
 import 'package:notes/src/presentation/note_form_screen/screen/text_style_bar/text_style_bar.dart';
 import 'package:notes/src/presentation/notes_app.dart';
 import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
+import 'package:notes/src/presentation/reusable_widgets/app_buttons/icon_button.dart';
+import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/dropdown_button_widget.dart';
+import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/dropdown_overlay.dart';
+import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/models/dropdown_item_model.dart';
 
 import 'action_bar/action_bar_widget.dart';
 
 class NoteFormScreenWidget extends StatefulWidget {
-  const NoteFormScreenWidget(
-      {super.key, required this.note, required this.notePageCubit});
+  const NoteFormScreenWidget({
+    super.key,
+    required this.note,
+    required this.notePageCubit,
+  });
 
   final Note note;
   final NotePageCubit notePageCubit;
@@ -94,18 +97,18 @@ class _NoteFormScreenWidgetState extends State<NoteFormScreenWidget>
     dropDownItems = [
       DropDownItem(
         title: 'Share',
-        icon: CupertinoIcons.share,
+        icon: AppIcons.share,
         actions: const [],
         onTap: () {},
       ),
       DropDownItem(
         title: 'Save',
-        icon: CupertinoIcons.arrow_down_circle,
+        icon: AppIcons.save,
         actions: const [],
         onTap: cubit.saveNote,
       ),
     ];
-    actionBarColor = AppColors.lightGrey;
+    actionBarColor = AppColors.light;
     actionBarController = AnimationController(
       duration: const Duration(seconds: 1),
       reverseDuration: const Duration(milliseconds: 500),
@@ -163,7 +166,7 @@ class _NoteFormScreenWidgetState extends State<NoteFormScreenWidget>
       leading: Padding(
         padding: const EdgeInsets.only(top: 5),
         child: AppIconButtonWidget(
-          icon: CupertinoIcons.chevron_left,
+          icon: AppIcons.backChevron,
           onPressed: () {
             Navigator.of(context).pop();
           },

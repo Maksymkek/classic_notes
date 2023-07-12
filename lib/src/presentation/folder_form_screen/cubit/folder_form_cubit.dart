@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes/src/domain/entity/folder.dart';
+import 'package:notes/src/domain/entity/item/folder.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_state.dart';
 import 'package:notes/src/presentation/folder_form_screen/models/color_picker_model.dart';
 import 'package:notes/src/presentation/folder_form_screen/models/icon_picker_model.dart';
@@ -67,7 +67,7 @@ class FolderFormCubit extends Cubit<FolderFormState> {
 
   void onTextEntered(String text) {
     Folder folder = state.folder;
-    folder.name = text;
+    folder.title = text;
     _copyWith(folder: folder);
   }
 }
