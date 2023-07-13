@@ -1,0 +1,32 @@
+{
+  "folders":{
+    "zero":"no folders",
+    "one": "{} folder",
+    "many": "{} folders",
+    "other": "{} folders"
+  },
+  "notes": {
+    "zero":"no notes",
+    "one": "{} note",
+    "many": "{} notes",
+    "other": "{} notes"
+  },
+  "done": "Done",
+  "folderFormTitle": "New folder",
+  "sortBy": "Sort by",
+  "date": "date",
+  "name": "name",
+  "custom": "custom",
+  "sortOrder": "Sort order",
+  "descending": "descending",
+  "ascending": "ascending",
+  "theme": "Theme",
+  "light": "light",
+  "dark": "dark",
+  "auto": "auto",
+  "language": "Language",
+  "english": "english",
+  "ukrainian" : "ukrainian",
+  "share": "Share",
+  "save": "Save"
+}

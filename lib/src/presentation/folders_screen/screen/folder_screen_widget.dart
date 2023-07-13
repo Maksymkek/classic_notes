@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes/generated/locale_keys.g.dart';
 import 'package:notes/src/dependencies/di.dart';
 import 'package:notes/src/domain/entity/item/folder.dart';
 import 'package:notes/src/presentation/app_colors.dart';
@@ -70,7 +72,8 @@ class _FolderScreenState extends State<FolderScreen>
                     children: [
                       const SizedBox(height: 5),
                       AppBarListData(
-                        title: '${cubit.state.items.length} folders',
+                        title:
+                            LocaleKeys.folders.plural(cubit.state.items.length),
                       ),
 
                       //FolderListWidget(cubit: cubit)
