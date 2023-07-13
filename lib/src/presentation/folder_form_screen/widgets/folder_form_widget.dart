@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:notes/generated/locale_keys.g.dart';
 import 'package:notes/src/domain/entity/item/folder.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
@@ -200,7 +202,7 @@ class _FolderFormWidgetState extends State<FolderFormWidget>
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'New folder',
+          LocaleKeys.folderFormTitle.tr(),
           style: GoogleFonts.alexandria(
             fontSize: 34,
             color: AppColors.darkBrown,
@@ -222,7 +224,7 @@ class _FolderFormWidgetState extends State<FolderFormWidget>
         ),
         AppTextButtonWidget(
           icon: AppIcons.selected,
-          text: 'Done',
+          text: LocaleKeys.done.tr(),
           onPressed: () {
             widget.onDone(cubit.state.folder);
             onClose();

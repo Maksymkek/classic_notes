@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes/generated/locale_keys.g.dart';
 import 'package:notes/src/dependencies/di.dart';
 import 'package:notes/src/domain/entity/settings/app/app_languages.dart';
 import 'package:notes/src/domain/entity/settings/app/app_theme.dart';
@@ -88,23 +90,23 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
   List<DropDownItem> _getSettingsItems(AppSettings settings) {
     return [
       DropDownItem(
-        title: 'Theme',
+        title: LocaleKeys.theme.tr(),
         icon: AppIcons.changeTheme,
         actions: [
           DropDownAction(
-            title: AppTheme.light.name,
+            title: LocaleKeys.light.tr(),
             onTap: () => cubit.onThemeChanged(AppTheme.light),
             isSelected: settings.theme == AppTheme.light,
             icon: AppIcons.light,
           ),
           DropDownAction(
-            title: AppTheme.dark.name,
+            title: LocaleKeys.dark.tr(),
             onTap: () => cubit.onThemeChanged(AppTheme.dark),
             isSelected: settings.theme == AppTheme.dark,
             icon: AppIcons.dark,
           ),
           DropDownAction(
-            title: AppTheme.auto.name,
+            title: LocaleKeys.auto.tr(),
             onTap: () => cubit.onThemeChanged(AppTheme.auto),
             isSelected: settings.theme == AppTheme.auto,
             icon: AppIcons.magic,
@@ -112,17 +114,17 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
         ],
       ),
       DropDownItem(
-        title: 'Language',
+        title: LocaleKeys.language.tr(),
         icon: AppIcons.planet,
         actions: [
           DropDownAction(
-            title: AppLanguage.english.name,
+            title: LocaleKeys.english.tr(),
             onTap: () => cubit.onLanguageChanged(AppLanguage.english),
             isSelected: settings.language == AppLanguage.english,
             icon: AppIcons.listItem,
           ),
           DropDownAction(
-            title: AppLanguage.ukrainian.name,
+            title: LocaleKeys.ukrainian.tr(),
             onTap: () => cubit.onLanguageChanged(AppLanguage.ukrainian),
             isSelected: settings.language == AppLanguage.ukrainian,
             icon: AppIcons.listItem,
