@@ -16,7 +16,7 @@ class AppNavigation {
     LoadScreen.screenName: (context) => const LoadScreen()
   };
 
-  Route<Object> onGenerateRoot(RouteSettings settings) {
+  Route<dynamic> onGenerateRoot(RouteSettings settings) {
     switch (settings.name) {
       case NotesScreenWidget.screenName:
         final folder = settings.arguments as Folder;

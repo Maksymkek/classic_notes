@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:notes/generated/locale_keys.g.dart';
 import 'package:notes/src/domain/entity/item/note.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
@@ -26,7 +28,7 @@ class NoteFormScreenWidget extends StatefulWidget {
 
   final Note note;
   final NotePageCubit notePageCubit;
-  static const screenName = 'note_form';
+  static const screenName = '/note_form';
 
   @override
   State<NoteFormScreenWidget> createState() => _NoteFormScreenWidgetState();
@@ -37,7 +39,6 @@ class _NoteFormScreenWidgetState extends State<NoteFormScreenWidget>
   late final List<DropDownItem> dropDownItems;
   late StreamSubscription<bool> keyboardSubscription;
   late NoteFormCubit cubit;
-  late Color actionBarColor;
   late bool showActionBar;
   late final Future<void> screenLoad;
   late final AnimationController actionBarController;
@@ -96,19 +97,19 @@ class _NoteFormScreenWidgetState extends State<NoteFormScreenWidget>
     screenLoad = cubit.onScreenLoad();
     dropDownItems = [
       DropDownItem(
-        title: 'Share',
+        title: LocaleKeys.share.tr(),
         icon: AppIcons.share,
         actions: const [],
         onTap: () {},
       ),
       DropDownItem(
-        title: 'Save',
+        title: LocaleKeys.save.tr(),
         icon: AppIcons.save,
         actions: const [],
         onTap: cubit.saveNote,
       ),
     ];
-    actionBarColor = AppColors.light;
+
     actionBarController = AnimationController(
       duration: const Duration(seconds: 1),
       reverseDuration: const Duration(milliseconds: 500),
@@ -152,7 +153,7 @@ class _NoteFormScreenWidgetState extends State<NoteFormScreenWidget>
     }
     return ActionBarWidget(
       animation: actionBarAnimation,
-      color: actionBarColor,
+      color: AppColors.light,
       cubit: cubit,
     );
   }

@@ -162,12 +162,12 @@ class NoteFormCubit extends Cubit<NoteForm> {
     _noteTextController.toggleList(SubList());
   }
 
-  void onUndoClicked() {
-    _noteTextController.undo();
+  Future<void> onUndoClicked() {
+    return _noteTextController.undo();
   }
 
-  void onRedoClicked() {
-    _noteTextController.redo();
+  Future<void> onRedoClicked() {
+    return _noteTextController.redo();
   }
 
   void saveNote() {

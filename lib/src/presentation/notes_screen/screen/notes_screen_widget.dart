@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes/generated/locale_keys.g.dart';
 import 'package:notes/src/domain/entity/item/folder.dart';
 import 'package:notes/src/domain/entity/item/note.dart';
 import 'package:notes/src/presentation/app_colors.dart';
@@ -21,7 +23,7 @@ import 'package:notes/src/presentation/reusable_widgets/progress_indicator/circl
 class NotesScreenWidget extends StatefulWidget {
   const NotesScreenWidget({super.key, required this.folder});
 
-  static const screenName = 'notes_screen';
+  static const screenName = '/notes_screen';
 
   final Folder folder;
 
@@ -94,7 +96,8 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget>
                     children: [
                       const SizedBox(height: 5),
                       AppBarListData(
-                        title: '${cubit.state.items.length} notes',
+                        title:
+                            LocaleKeys.notes.plural(cubit.state.items.length),
                         folder: widget.folder,
                       ),
                       ItemListWidget<Note, NotePageState, NotePageCubit>(
@@ -117,14 +120,14 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget>
   @override
   void initState() {
     super.initState();
-    cubit = NotePageCubit(widget.folder);
+    cubit = NotePageCubit.fromCache(widget.folder);
     screenLoad = cubit.onScreenLoad();
   }
 
   @override
   void dispose() {
-    super.dispose();
     NotesApp.routeObserver.unsubscribe(this);
+    super.dispose();
   }
 
   @override
@@ -135,7 +138,7 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget>
 
   @override
   void didPop() {
-    super.didPop();
     DropDownOverlayManager.dispose();
+    super.didPop();
   }
 }

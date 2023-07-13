@@ -1,6 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:notes/src/dependencies/di.dart';
 
+//import 'generated/locale_keys.g.dart';
 import 'router/router.dart';
 
 class NotesApp extends StatefulWidget {
@@ -22,12 +24,16 @@ class _NotesAppState extends State<NotesApp> {
     return MaterialApp(
       navigatorObservers: [NotesApp.routeObserver],
       routes: NotesApp.navigation.routes,
+      localizationsDelegates: context.localizationDelegates,
+      supportedLocales: context.supportedLocales,
+      locale: context.locale,
       theme: ThemeData(useMaterial3: true),
       onGenerateRoute: NotesApp.navigation.onGenerateRoot,
       home: FutureBuilder(
         future: diInit,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
+            setCurrentLocale(context);
             final myFoo =
                 NotesApp.navigation.routes[NotesApp.navigation.initialRoute];
             return myFoo!(context);
@@ -38,6 +44,12 @@ class _NotesAppState extends State<NotesApp> {
           }
         },
       ),
+    );
+  }
+
+  void setCurrentLocale(BuildContext context) {
+    context.setLocale(
+      Locale(DI.getInstance().appSettingsCubit.state.language.value),
     );
   }
 

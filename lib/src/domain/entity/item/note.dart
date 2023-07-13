@@ -17,7 +17,9 @@ class Note implements Item {
 
   @override
   String title;
+
   String text;
+
   Map<String, dynamic>? controllerMap;
 
   Note copyWith({

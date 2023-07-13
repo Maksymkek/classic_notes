@@ -4,8 +4,8 @@ import 'package:notes/src/domain/entity/settings/app_setting.dart';
 import 'package:notes/src/domain/entity/settings/settings_keys.dart';
 
 enum AppLanguage implements AppSetting {
-  english('english'),
-  ukrainian('ukrainian');
+  english('en'),
+  ukrainian('uk');
 
   const AppLanguage(this.value, {this.key = SettingKey.language});
 

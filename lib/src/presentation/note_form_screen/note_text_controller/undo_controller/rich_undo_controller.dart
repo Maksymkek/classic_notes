@@ -62,23 +62,29 @@ class RichUndoController {
   /// [deltas] - deltas to store
   ///
   /// [text] - text to store
-  void updateBuffer(String lastChar, List<TextDelta> deltas, String text) {
-    if (_buffer.length > _maxBufferValue) {
-      _buffer.removeAt(0);
-    }
-    _buffer.add(RichUndoModel(List.from(deltas), text));
-    if (_needToCompact(lastChar)) {
-      _compact();
-    }
-    _bufferIterator = _buffer.length - 1;
-    if (!_cubit.state.bufferStatus.canUndo) {
-      _checkBufferStatus();
-    }
-    if (_cubit.state.bufferStatus.canRedo) {
-      _cubit.copyWith(
-        bufferStatus: _cubit.state.bufferStatus.copyWith(canRedo: false),
-      );
-    }
+  Future<void> updateBuffer(
+    String lastChar,
+    List<TextDelta> deltas,
+    String text,
+  ) async {
+    await Future<void>(() {
+      if (_buffer.length > _maxBufferValue) {
+        _buffer.removeAt(0);
+      }
+      _buffer.add(RichUndoModel(List.from(deltas), text));
+      if (_needToCompact(lastChar)) {
+        _compact();
+      }
+      _bufferIterator = _buffer.length - 1;
+      if (!_cubit.state.bufferStatus.canUndo) {
+        _checkBufferStatus();
+      }
+      if (_cubit.state.bufferStatus.canRedo) {
+        _cubit.copyWith(
+          bufferStatus: _cubit.state.bufferStatus.copyWith(canRedo: false),
+        );
+      }
+    });
   }
 
   void _checkBufferStatus() {
@@ -106,25 +112,29 @@ class RichUndoController {
   }
 
   /// move to newer changes
-  RichUndoModel? redo() {
-    _bufferIterator += 1;
-    _checkBufferStatus();
-    if (_bufferIterator < _buffer.length) {
-      return _buffer[_bufferIterator];
-    }
-    _bufferIterator -= 1;
-    return null;
+  Future<RichUndoModel?> redo() {
+    return Future<RichUndoModel?>(() {
+      _bufferIterator += 1;
+      _checkBufferStatus();
+      if (_bufferIterator < _buffer.length) {
+        return _buffer[_bufferIterator];
+      }
+      _bufferIterator -= 1;
+      return null;
+    });
   }
 
   /// revert to previous change
-  RichUndoModel? undo() {
-    _bufferIterator -= 1;
-    _checkBufferStatus();
-    if (_bufferIterator >= 0) {
-      return _buffer[_bufferIterator];
-    }
-    _bufferIterator += 1;
-    return null;
+  Future<RichUndoModel?> undo() {
+    return Future<RichUndoModel?>(() {
+      _bufferIterator -= 1;
+      _checkBufferStatus();
+      if (_bufferIterator >= 0) {
+        return _buffer[_bufferIterator];
+      }
+      _bufferIterator += 1;
+      return null;
+    });
   }
 
   void _compact() {

@@ -1,4 +1,6 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes/generated/locale_keys.g.dart';
 import 'package:notes/src/domain/entity/item/item.dart';
 import 'package:notes/src/domain/entity/settings/item/sort_by.dart';
 import 'package:notes/src/domain/entity/settings/item/sort_order.dart';
@@ -24,24 +26,24 @@ abstract class ScreenCubit<Entity extends Item,
   void initSettingItems() {
     dropDownItems ??= [
       DropDownItem(
-        title: 'Sort by',
+        title: LocaleKeys.sortBy.tr(),
         icon: AppIcons.listDash,
         iconSize: 14.5,
         actions: [
           DropDownAction(
-            title: SortBy.date.name,
+            title: LocaleKeys.date.tr(),
             onTap: () => onSortByChanged(SortBy.date),
             isSelected: state.settings.sortBy == SortBy.date,
             icon: AppIcons.calendar,
           ),
           DropDownAction(
-            title: SortBy.name.name,
+            title: LocaleKeys.name.tr(),
             onTap: () => onSortByChanged(SortBy.name),
             isSelected: state.settings.sortBy == SortBy.name,
             icon: AppIcons.textFormat,
           ),
           DropDownAction(
-            title: SortBy.custom.name,
+            title: LocaleKeys.custom.tr(),
             onTap: () => onSortByChanged(SortBy.custom),
             isSelected: state.settings.sortBy == SortBy.custom,
             icon: AppIcons.pencil,
@@ -49,19 +51,19 @@ abstract class ScreenCubit<Entity extends Item,
         ],
       ),
       DropDownItem(
-        title: 'Sort order',
+        title: LocaleKeys.sortOrder.tr(),
         icon: AppIcons.arrowsUpDown,
         iconSize: 13,
         actions: [
           DropDownAction(
-            title: SortOrder.descending.name,
+            title: LocaleKeys.descending.tr(),
             onTap: () => onSortOrderChanged(SortOrder.descending),
             isSelected: state.settings.sortOrder == SortOrder.descending,
             icon: AppIcons.arrowDown,
             iconSize: 13,
           ),
           DropDownAction(
-            title: SortOrder.ascending.name,
+            title: LocaleKeys.ascending.tr(),
             onTap: () => onSortOrderChanged(SortOrder.ascending),
             isSelected: state.settings.sortOrder == SortOrder.ascending,
             icon: AppIcons.arrowUp,

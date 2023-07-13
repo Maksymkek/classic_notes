@@ -31,7 +31,11 @@ class NotePageCubit extends ScreenCubit<Note, NotePageState> {
         ) {
     _init();
   }
+  factory NotePageCubit.fromCache(Folder folder) {
+    return _cache.putIfAbsent(folder.id, () => NotePageCubit(folder));
+  }
 
+  static final Map<int, NotePageCubit> _cache = {};
   final Folder folder;
   late final FolderPageCubit _folderPageCubit;
   late final ItemRepository<Note> _noteRepository;
@@ -75,10 +79,12 @@ class NotePageCubit extends ScreenCubit<Note, NotePageState> {
   }
 
   Future<void> onScreenLoad() async {
-    final settings = await _getItemSettingInteractor();
-    final folders = await getNotes();
-    _copyWith(notes: folders, settings: settings);
-    initSettingItems();
+    if (dropDownItems == null) {
+      final settings = await _getItemSettingInteractor();
+      final folders = await getNotes();
+      _copyWith(notes: folders, settings: settings);
+      initSettingItems();
+    }
   }
 
   Future<Map<int, Note>> getNotes() async {

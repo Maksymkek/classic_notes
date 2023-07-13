@@ -1,5 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes/generated/locale_keys.g.dart';
 import 'package:notes/src/dependencies/di.dart';
 import 'package:notes/src/domain/entity/settings/app/app_languages.dart';
 import 'package:notes/src/domain/entity/settings/app/app_theme.dart';
@@ -21,10 +23,10 @@ class DropDownButtonWidget extends StatefulWidget {
 }
 
 class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController buttonAnimationController;
   late Animation<Color?> buttonAnimation;
-  late List<DropDownItem> appSettingsItems;
+  late List<DropDownItem> settingsItems;
   late Future<void> setAppSettingsFuture;
   late AppSettingsCubit cubit;
 
@@ -41,7 +43,7 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
               DropDownOverlayManager.buildOverlay(
                 context: context,
                 otherController: buttonAnimationController,
-                dropDownItems: widget.dropdownItems,
+                dropDownItems: settingsItems,
               );
             },
             onTapDown: (details) {
@@ -81,30 +83,30 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
   }
 
   void _setItems() {
-    appSettingsItems = _getSettingsItems(cubit.state);
-    widget.dropdownItems.addAll(appSettingsItems);
+    settingsItems = _getAppSettingsItems(cubit.state)
+      ..insertAll(0, widget.dropdownItems);
   }
 
-  List<DropDownItem> _getSettingsItems(AppSettings settings) {
+  List<DropDownItem> _getAppSettingsItems(AppSettings settings) {
     return [
       DropDownItem(
-        title: 'Theme',
+        title: LocaleKeys.theme.tr(),
         icon: AppIcons.changeTheme,
         actions: [
           DropDownAction(
-            title: AppTheme.light.name,
+            title: LocaleKeys.light.tr(),
             onTap: () => cubit.onThemeChanged(AppTheme.light),
             isSelected: settings.theme == AppTheme.light,
             icon: AppIcons.light,
           ),
           DropDownAction(
-            title: AppTheme.dark.name,
+            title: LocaleKeys.dark.tr(),
             onTap: () => cubit.onThemeChanged(AppTheme.dark),
             isSelected: settings.theme == AppTheme.dark,
             icon: AppIcons.dark,
           ),
           DropDownAction(
-            title: AppTheme.auto.name,
+            title: LocaleKeys.auto.tr(),
             onTap: () => cubit.onThemeChanged(AppTheme.auto),
             isSelected: settings.theme == AppTheme.auto,
             icon: AppIcons.magic,
@@ -112,17 +114,17 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
         ],
       ),
       DropDownItem(
-        title: 'Language',
+        title: LocaleKeys.language.tr(),
         icon: AppIcons.planet,
         actions: [
           DropDownAction(
-            title: AppLanguage.english.name,
+            title: LocaleKeys.english.tr(),
             onTap: () => cubit.onLanguageChanged(AppLanguage.english),
             isSelected: settings.language == AppLanguage.english,
             icon: AppIcons.listItem,
           ),
           DropDownAction(
-            title: AppLanguage.ukrainian.name,
+            title: LocaleKeys.ukrainian.tr(),
             onTap: () => cubit.onLanguageChanged(AppLanguage.ukrainian),
             isSelected: settings.language == AppLanguage.ukrainian,
             icon: AppIcons.listItem,
@@ -133,8 +135,8 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
   }
 
   void rewriteItems() {
-    int start = widget.dropdownItems.length - appSettingsItems.length;
-    widget.dropdownItems.removeRange(start, widget.dropdownItems.length);
+    int start = settingsItems.length - widget.dropdownItems.length;
+    settingsItems.removeRange(start, settingsItems.length);
     _setItems();
   }
 
