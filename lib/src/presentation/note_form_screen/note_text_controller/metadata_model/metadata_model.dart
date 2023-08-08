@@ -26,23 +26,23 @@ class CurrentMetadata {
   bool isMetaDataActive(MetadataValue metadataValue) {
     bool isActive = false;
     switch (metadataValue) {
-      // ignore: missing_enum_constant_in_switch
       case MetadataValue.bold:
         isActive = metadata.fontWeight == FontWeight.bold;
-        break;
+
       case MetadataValue.italic:
         isActive = metadata.fontStyle == FontStyle.italic;
-        break;
+
       case MetadataValue.underline:
         isActive = metadata.decoration == TextDecorationEnum.underline;
-        break;
+
       case MetadataValue.strikeThrough:
         isActive = metadata.decoration == TextDecorationEnum.strikeThrough;
-        break;
+
       case MetadataValue.baseText:
-        break;
+        isActive = metadata == TextMetaDataStyles.baseText;
       case MetadataValue.headerText:
         isActive = metadata.fontSize == TextMetaDataStyles.headerText.fontSize;
+      case MetadataValue.color:
         break;
     }
     return isActive;

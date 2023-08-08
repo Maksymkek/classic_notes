@@ -23,7 +23,7 @@ import 'package:notes/src/presentation/reusable_widgets/progress_indicator/circl
 class NotesScreenWidget extends StatefulWidget {
   const NotesScreenWidget({super.key, required this.folder});
 
-  static const screenName = 'notes_screen';
+  static const screenName = '/notes_screen';
 
   final Folder folder;
 
@@ -120,14 +120,14 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget>
   @override
   void initState() {
     super.initState();
-    cubit = NotePageCubit(widget.folder);
+    cubit = NotePageCubit.fromCache(widget.folder);
     screenLoad = cubit.onScreenLoad();
   }
 
   @override
   void dispose() {
-    super.dispose();
     NotesApp.routeObserver.unsubscribe(this);
+    super.dispose();
   }
 
   @override
@@ -138,7 +138,7 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget>
 
   @override
   void didPop() {
-    super.didPop();
     DropDownOverlayManager.dispose();
+    super.didPop();
   }
 }

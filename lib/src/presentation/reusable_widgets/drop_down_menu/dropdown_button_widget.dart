@@ -23,10 +23,10 @@ class DropDownButtonWidget extends StatefulWidget {
 }
 
 class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   late AnimationController buttonAnimationController;
   late Animation<Color?> buttonAnimation;
-  late List<DropDownItem> appSettingsItems;
+  late List<DropDownItem> settingsItems;
   late Future<void> setAppSettingsFuture;
   late AppSettingsCubit cubit;
 
@@ -43,7 +43,7 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
               DropDownOverlayManager.buildOverlay(
                 context: context,
                 otherController: buttonAnimationController,
-                dropDownItems: widget.dropdownItems,
+                dropDownItems: settingsItems,
               );
             },
             onTapDown: (details) {
@@ -83,11 +83,11 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
   }
 
   void _setItems() {
-    appSettingsItems = _getSettingsItems(cubit.state);
-    widget.dropdownItems.addAll(appSettingsItems);
+    settingsItems = _getAppSettingsItems(cubit.state)
+      ..insertAll(0, widget.dropdownItems);
   }
 
-  List<DropDownItem> _getSettingsItems(AppSettings settings) {
+  List<DropDownItem> _getAppSettingsItems(AppSettings settings) {
     return [
       DropDownItem(
         title: LocaleKeys.theme.tr(),
@@ -135,8 +135,8 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
   }
 
   void rewriteItems() {
-    int start = widget.dropdownItems.length - appSettingsItems.length;
-    widget.dropdownItems.removeRange(start, widget.dropdownItems.length);
+    int start = settingsItems.length - widget.dropdownItems.length;
+    settingsItems.removeRange(start, settingsItems.length);
     _setItems();
   }
 

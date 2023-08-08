@@ -23,7 +23,7 @@ import 'package:notes/src/presentation/reusable_widgets/progress_indicator/circl
 class FolderScreen extends StatefulWidget {
   const FolderScreen({super.key});
 
-  static const screenName = 'folder_screen';
+  static const screenName = '/folder_screen';
 
   @override
   State<FolderScreen> createState() => _FolderScreenState();

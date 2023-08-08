@@ -337,7 +337,7 @@ class NoteTextController {
     }
   }
 
-  ///unitest [List] of symbols in [String]
+  ///unitTest [List] of symbols in [String]
   String _uniteInString(List<String> symbolsToAdd) {
     String newText = '';
     for (final char in symbolsToAdd) {
@@ -384,15 +384,15 @@ class NoteTextController {
     _controller.text = text;
   }
 
-  void undo() {
-    final undoResult = _undoController.undo();
+  Future<void> undo() async {
+    final undoResult = await _undoController.undo();
     if (undoResult != null) {
       _setControllerDeltas(undoResult.deltas, undoResult.text);
     }
   }
 
-  void redo() {
-    final redoResult = _undoController.redo();
+  Future<void> redo() async {
+    final redoResult = await _undoController.redo();
     if (redoResult != null) {
       _setControllerDeltas(redoResult.deltas, redoResult.text);
     }

@@ -28,7 +28,7 @@ class NoteFormScreenWidget extends StatefulWidget {
 
   final Note note;
   final NotePageCubit notePageCubit;
-  static const screenName = 'note_form';
+  static const screenName = '/note_form';
 
   @override
   State<NoteFormScreenWidget> createState() => _NoteFormScreenWidgetState();

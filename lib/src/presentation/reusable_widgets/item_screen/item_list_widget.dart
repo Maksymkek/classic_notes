@@ -32,8 +32,7 @@ class _ItemListWidgetState<
         Entity extends Item,
         ItemState extends ScreenState<Entity>,
         ItemCubit extends ScreenCubit<Entity, ItemState>>
-    extends State<ItemListWidget<Entity, ItemState, ItemCubit>>
-    with SingleTickerProviderStateMixin {
+    extends State<ItemListWidget<Entity, ItemState, ItemCubit>> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -61,16 +60,6 @@ class _ItemListWidgetState<
         ),
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   List<DragAndDropItem> buildActionWidgetList() {
