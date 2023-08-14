@@ -64,7 +64,7 @@ class _FolderScreenState extends State<FolderScreen>
               return BlocBuilder<FolderPageCubit, FolderPageState>(
                 bloc: cubit,
                 buildWhen: (prev, current) {
-                  return (needRedraw<Folder>(current, prev));
+                  return (needRedraw(current, prev));
                 },
                 builder: (context, state) {
                   return Column(
@@ -108,7 +108,7 @@ class _FolderScreenState extends State<FolderScreen>
   @override
   void initState() {
     super.initState();
-    cubit = DI.getInstance().folderPageCubit;
+    cubit = ServiceLocator.getInstance().folderPageCubit;
     future = cubit.onScreenLoad();
   }
 

@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/cubit/dropdown_menu_cubit.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/cubit/dropdown_menu_state.dart';
@@ -14,20 +17,18 @@ class DropDownItemWidget extends StatefulWidget {
     super.key,
     required this.item,
     required this.cubit,
-    required this.menuController,
   });
 
   final DropDownItem item;
   final DropDownMenuCubit cubit;
-  final Animation<double> menuController;
 
   @override
   State<DropDownItemWidget> createState() => _DropDownItemWidgetState();
 }
 
-class _DropDownItemWidgetState extends State<DropDownItemWidget>
-    with SingleTickerProviderStateMixin {
+class _DropDownItemWidgetState extends State<DropDownItemWidget> {
   OverlayEntry? overlayEntry;
+  Color? tapResponceColor;
 
   @override
   Widget build(BuildContext context) {
@@ -41,31 +42,37 @@ class _DropDownItemWidgetState extends State<DropDownItemWidget>
           widget.item.onTap!();
         }
       },
-      onTapDown: (details) {
-        widget.cubit.onItemTapResponse(widget.item, true);
+      onTapUp: (d) {
+        Future.delayed(const Duration(milliseconds: 200)).whenComplete(() {
+          tapResponceColor = null;
+          setState(() {});
+        });
       },
-      onTapUp: (details) {
-        onTapEnd(widget.item);
+      onTapDown: (details) {
+        tapResponceColor = AppColors.lightPressedGrey;
+        setState(() {});
       },
       onTapCancel: () {
-        onTapEnd(widget.item);
+        Future.delayed(const Duration(milliseconds: 150)).whenComplete(() {
+          tapResponceColor = null;
+          setState(() {});
+        });
       },
-      child: SizeTransition(
-        sizeFactor: widget.menuController,
-        axis: Axis.vertical,
-        axisAlignment: -1.0,
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: BlocBuilder<DropDownMenuCubit, DropDownMenuState>(
-            bloc: widget.cubit,
-            buildWhen: (prev, current) {
-              return needToReDraw(prev, current);
-            },
-            builder: (context, state) {
-              return AnimatedContainer(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: BlocBuilder<DropDownMenuCubit, DropDownMenuState>(
+          bloc: widget.cubit,
+          buildWhen: (prev, current) {
+            return _needToReDraw(prev, current);
+          },
+          builder: (context, state) {
+            return Material(
+              elevation: widget.item.isActive ? 10.0 : 5.0,
+              borderRadius: _getBorderRadius(),
+              animationDuration: const Duration(milliseconds: 250),
+              child: AnimatedContainer(
                 decoration: BoxDecoration(
-                  color: widget.item.tapResponseColor ??
-                      widget.item.visualState.background,
+                  color: tapResponceColor ?? widget.item.visualState.background,
                   borderRadius: _getBorderRadius(),
                   border: null,
                 ),
@@ -83,41 +90,39 @@ class _DropDownItemWidgetState extends State<DropDownItemWidget>
                       ),
                       child: Row(
                         children: [
-                          buildIconWidget(),
+                          _buildIconWidget(),
                           SizedBox(width: widget.item.visualState.firstSpace),
-                          buildTextSpaceWidget(),
+                          _buildTextSpaceWidget(),
                           const Expanded(
                             child: SizedBox(),
                           ),
-                          buildArrowWidget()
+                          _buildArrowWidget()
                         ],
                       ),
                     ),
                     const Expanded(child: SizedBox()),
-                    buildDivider()
+                    _buildDivider()
                   ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     overlayEntry?.remove();
     overlayEntry = null;
-    super.dispose();
-  }
 
-  void onTapEnd(DropDownItem item) {
-    Future.delayed(
-      const Duration(milliseconds: 100),
-    ).whenComplete(() {
-      widget.cubit.onItemTapResponse(item, false);
-    });
+    super.dispose();
   }
 
   void _buildDropDownAction(DropDownActionListWidget actionsWidget) {
@@ -145,9 +150,6 @@ class _DropDownItemWidgetState extends State<DropDownItemWidget>
   }
 
   Future<void> _onTap(DropDownItem item, Offset position) async {
-    await Future.delayed(
-      const Duration(milliseconds: 150),
-    );
     if (item.isActive == false &&
         item.visualState == ActiveItemState.getInstance()) {
       widget.cubit.onItemClick(item);
@@ -163,7 +165,7 @@ class _DropDownItemWidgetState extends State<DropDownItemWidget>
     }
   }
 
-  AnimatedContainer buildDivider() {
+  AnimatedContainer _buildDivider() {
     return AnimatedContainer(
       padding: EdgeInsets.zero,
       duration: const Duration(milliseconds: 250),
@@ -176,7 +178,7 @@ class _DropDownItemWidgetState extends State<DropDownItemWidget>
     );
   }
 
-  AnimatedRotation buildArrowWidget() {
+  AnimatedRotation _buildArrowWidget() {
     if (widget.item.onTap == null) {
       return AnimatedRotation(
         turns: _getRotation(),
@@ -201,7 +203,7 @@ class _DropDownItemWidgetState extends State<DropDownItemWidget>
     }
   }
 
-  SizedBox buildTextSpaceWidget() {
+  SizedBox _buildTextSpaceWidget() {
     return SizedBox(
       width: widget.item.visualState.maxTextSpace,
       child: AnimatedDefaultTextStyle(
@@ -220,7 +222,7 @@ class _DropDownItemWidgetState extends State<DropDownItemWidget>
     );
   }
 
-  AnimatedScale buildIconWidget() {
+  AnimatedScale _buildIconWidget() {
     return AnimatedScale(
       curve: Curves.easeInOut,
       scale: widget.item.visualState.scale,
@@ -233,14 +235,11 @@ class _DropDownItemWidgetState extends State<DropDownItemWidget>
     );
   }
 
-  bool needToReDraw(DropDownMenuState prev, DropDownMenuState current) {
+  bool _needToReDraw(DropDownMenuState prev, DropDownMenuState current) {
     for (int i = 0; i < prev.items.length; i += 1) {
       var currentObj = current.items[i];
       if (currentObj.title == widget.item.title) {
         bool res = currentObj != widget.item;
-        if (res) {
-          widget.item.tapResponseColor = currentObj.tapResponseColor;
-        }
         return res;
       }
     }

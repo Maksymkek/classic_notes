@@ -8,14 +8,14 @@ class DropDownOverlayManager {
 
   static late OverlayState _overlayState;
   static OverlayEntry? _overlayEntry;
-  static AnimationController? _otherController;
+  static AnimationController? _buttonAnimationController;
 
   static void buildOverlay({
     required BuildContext context,
-    AnimationController? otherController,
+    AnimationController? buttonAnimationController,
     required List<DropDownItem> dropDownItems,
   }) {
-    _otherController = otherController;
+    _buttonAnimationController = buttonAnimationController;
     _overlayState = Overlay.of(context);
     RenderBox box = context.findRenderObject() as RenderBox;
     Offset position = box.localToGlobal(Offset(0, box.constraints.maxHeight));
@@ -34,13 +34,12 @@ class DropDownOverlayManager {
         );
       },
     );
-    _otherController?.forward();
+    _buttonAnimationController?.forward();
     _overlayState.insert(_overlayEntry!);
   }
 
   static Future<void> _removeHighlightOverlay() async {
-    _otherController?.reverse();
-
+    _buttonAnimationController?.reverse();
     dispose();
   }
 

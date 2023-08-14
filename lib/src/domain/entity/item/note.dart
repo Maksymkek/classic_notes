@@ -1,22 +1,13 @@
 import 'package:notes/src/domain/entity/item/item.dart';
 
-class Note implements Item {
+class Note extends Item {
   Note({
-    required this.id,
+    required int id,
     required this.text,
-    required this.title,
-    required this.dateOfLastChange,
+    required String title,
+    required DateTime dateOfLastChange,
     this.controllerMap,
-  });
-
-  @override
-  final int id;
-
-  @override
-  DateTime dateOfLastChange;
-
-  @override
-  String title;
+  }) : super(id, title, dateOfLastChange);
 
   String text;
 

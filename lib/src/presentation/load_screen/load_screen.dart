@@ -4,7 +4,9 @@ import 'package:notes/src/presentation/reusable_widgets/progress_indicator/circl
 
 class LoadScreen extends StatelessWidget {
   const LoadScreen({super.key});
+
   static const screenName = 'load_screen';
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(

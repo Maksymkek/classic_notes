@@ -37,8 +37,12 @@ class FolderFormOverlayManager {
                   ),
               onClose: dispose,
               onDone: folder != null
-                  ? DI.getInstance().folderPageCubit.onUpdateFolderClick
-                  : DI.getInstance().folderPageCubit.onAddFolderClick,
+                  ? ServiceLocator.getInstance()
+                      .folderPageCubit
+                      .onUpdateFolderClick
+                  : ServiceLocator.getInstance()
+                      .folderPageCubit
+                      .onAddFolderClick,
             ),
           ),
         );

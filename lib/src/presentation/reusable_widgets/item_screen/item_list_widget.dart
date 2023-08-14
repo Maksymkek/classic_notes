@@ -1,5 +1,8 @@
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:notes/generated/locale_keys.g.dart';
 import 'package:notes/src/domain/entity/item/item.dart';
 import 'package:notes/src/domain/entity/settings/item/sort_by.dart';
 import 'package:notes/src/domain/entity/settings/item/sort_order.dart';
@@ -54,7 +57,8 @@ class _ItemListWidgetState<
           onListReorder: (int oldListIndex, int newListIndex) {},
           children: [
             DragAndDropList(
-              children: buildActionWidgetList(),
+              children: _buildActionWidgetList(),
+              contentsWhenEmpty: const SizedBox(),
             ),
           ],
         ),
@@ -62,7 +66,7 @@ class _ItemListWidgetState<
     );
   }
 
-  List<DragAndDropItem> buildActionWidgetList() {
+  List<DragAndDropItem> _buildActionWidgetList() {
     var itemsMap = widget.cubit.state.items.map((key, item) {
       return MapEntry(
         key,
@@ -73,7 +77,7 @@ class _ItemListWidgetState<
         ),
       );
     });
-    List<CustomDragAndDropItem> sortedItems = sortItems(
+    List<CustomDragAndDropItem> sortedItems = _sortItems(
       itemsMap,
       widget.cubit.state.settings.sortOrder,
       widget.cubit.state.settings.sortBy,
@@ -81,7 +85,7 @@ class _ItemListWidgetState<
     return sortedItems;
   }
 
-  List<CustomDragAndDropItem> sortItems(
+  List<CustomDragAndDropItem> _sortItems(
     Map<int, CustomDragAndDropItem> itemsMap,
     SortOrder sortOrder,
     SortBy sortBy,

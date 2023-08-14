@@ -54,7 +54,7 @@ class NotePageCubit extends ScreenCubit<Note, NotePageState> {
     _addNoteInteractor = AddItemInteractor(_noteRepository);
     _updateNoteInteractor = UpdateItemInteractor(_noteRepository);
     _deleteNoteInteractor = DeleteItemInteractor(_noteRepository);
-    var di = DI.getInstance();
+    var di = ServiceLocator.getInstance();
     _getItemSettingInteractor = GetItemSettingInteractor(_noteRepository);
     _setItemSettingInteractor = SetItemSettingInteractor(_noteRepository);
     _folderPageCubit = di.folderPageCubit;

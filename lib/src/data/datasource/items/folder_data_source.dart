@@ -16,7 +16,7 @@ class FolderDataSource implements DataSource<Folder> {
     );
   }
 
-  late final ItemDataSource<FolderDataModel, Folder> _dataSource;
+  late final ItemDataSource<Folder, FolderDataModel> _dataSource;
 
   @override
   final boxName = 'folders_box';

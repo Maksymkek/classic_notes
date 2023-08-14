@@ -49,13 +49,15 @@ class _NotesAppState extends State<NotesApp> {
 
   void setCurrentLocale(BuildContext context) {
     context.setLocale(
-      Locale(DI.getInstance().appSettingsCubit.state.language.value),
+      Locale(
+        ServiceLocator.getInstance().appSettingsCubit.state.language.value,
+      ),
     );
   }
 
   @override
   void initState() {
     super.initState();
-    diInit = DI.getInstance().init();
+    diInit = ServiceLocator.getInstance().init();
   }
 }

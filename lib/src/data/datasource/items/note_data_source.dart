@@ -16,7 +16,7 @@ class NoteDataSource implements DataSource<Note> {
     );
   }
 
-  late final ItemDataSource<NoteDataModel, Note> _dataSource;
+  late final ItemDataSource<Note, NoteDataModel> _dataSource;
   @override
   late final String boxName;
 

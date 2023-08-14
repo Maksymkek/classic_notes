@@ -27,9 +27,9 @@ class DropDownMenuCubit extends Cubit<DropDownMenuState> {
     }
   }
 
-  void onActionSelected(DropDownAction selectedAction) {
+  void onActionSelected(DropDownAction selectedAction, BuildContext context) {
     if (selectedAction.isSelected == false) {
-      selectedAction.onTap();
+      selectedAction.onTap(context);
       List<DropDownItem> newItems = state.items.map((item) {
         var newItem = DropDownItem.from(item);
         if (newItem.actions.contains(selectedAction)) {
@@ -60,9 +60,7 @@ class DropDownMenuCubit extends Cubit<DropDownMenuState> {
     selectedItem.isActive = selectedItem.isActive ? false : true;
     final newItems = state.items.map((item) {
       if (state.items.indexOf(item) == id) {
-        for (var action in selectedItem.actions) {
-          action.tapResponseColor = null;
-        }
+        for (var action in selectedItem.actions) {}
         return selectedItem;
       } else {
         item.visualState = DisabledItemState.getInstance();
@@ -78,38 +76,7 @@ class DropDownMenuCubit extends Cubit<DropDownMenuState> {
       var newItem = DropDownItem.from(item);
       newItem.visualState = ActiveItemState.getInstance();
       newItem.isActive = false;
-      newItem.tapResponseColor = null;
-      return newItem;
-    }).toList();
-    _copyWith(items: newItems);
-  }
 
-  void onItemTapResponse(DropDownItem item, bool isDown) {
-    var selectedItem = DropDownItem.from(item);
-    final newItems = state.items.map((oldItem) {
-      if (oldItem != item) {
-        return oldItem;
-      }
-      selectedItem.tapResponseColor = isDown ? AppColors.milkWhite : null;
-      return selectedItem;
-    }).toList();
-    _copyWith(items: newItems);
-  }
-
-  void onActionTapResponse(
-    DropDownItem item,
-    DropDownAction action,
-    bool isDown,
-  ) async {
-    final newItems = state.items.map((oldItem) {
-      if (!oldItem.actions.contains(action)) {
-        return oldItem;
-      }
-      final id = _getActionId(action, item);
-      final newItem = DropDownItem.from(item);
-      var selAction = DropDownAction.from(action);
-      selAction.tapResponseColor = isDown ? AppColors.milkWhite : null;
-      newItem.actions[id] = selAction;
       return newItem;
     }).toList();
     _copyWith(items: newItems);

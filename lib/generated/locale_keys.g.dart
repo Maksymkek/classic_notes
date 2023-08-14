@@ -21,5 +21,6 @@ abstract class  LocaleKeys {
   static const ukrainian = 'ukrainian';
   static const share = 'share';
   static const save = 'save';
+  static const restartForChanges = 'restartForChanges';
 
 }

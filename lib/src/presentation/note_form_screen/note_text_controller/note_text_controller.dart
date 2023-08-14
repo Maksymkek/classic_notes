@@ -398,20 +398,22 @@ class NoteTextController {
     }
   }
 
-  /// need to call before save. Returns whether can be saved
-  bool prepareToSave(Note note) {
+  /// need to call before save. Returns whether can be saved and object to save
+  (bool, Note) prepareToSave(Note note) {
     if (_undoController.bufferIterator == 0) {
-      return false;
+      return (false, note);
     }
     var endOfTitle = _controller.text.indexOf('\n');
+    final Note newNote;
     if (endOfTitle != -1) {
-      note.title = _controller.text.substring(0, endOfTitle);
-      note.text = _controller.text.substring(endOfTitle);
-      note.dateOfLastChange = DateTime.now();
+      newNote = note.copyWith(
+          title: _controller.text.substring(0, endOfTitle),
+          text: _controller.text.substring(endOfTitle),
+          dateOfLastChange: DateTime.now());
     } else {
-      note.title = _controller.text;
+      newNote = note.copyWith(title: _controller.text);
     }
-    note.controllerMap = _controller.toMap();
-    return true;
+    newNote.controllerMap = _controller.toMap();
+    return (true, newNote);
   }
 }
