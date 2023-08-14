@@ -67,7 +67,6 @@ class FolderFormCubit extends Cubit<FolderFormState> {
 
   void onTextEntered(String text) {
     Folder folder = state.folder;
-    folder.title = text;
-    _copyWith(folder: folder);
+    _copyWith(folder: folder.copyWith(title: text));
   }
 }

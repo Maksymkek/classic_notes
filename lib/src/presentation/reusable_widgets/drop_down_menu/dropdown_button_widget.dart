@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/generated/locale_keys.g.dart';
 import 'package:notes/src/dependencies/di.dart';
@@ -12,6 +13,7 @@ import 'package:notes/src/presentation/app_settings_cubit/app_settings_state.dar
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/dropdown_overlay.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/models/dropdown_action_model.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/models/dropdown_item_model.dart';
+import 'package:notes/src/presentation/reusable_widgets/snack_bar/snack_bar_widget.dart';
 
 class DropDownButtonWidget extends StatefulWidget {
   const DropDownButtonWidget({super.key, required this.dropdownItems});
@@ -23,7 +25,7 @@ class DropDownButtonWidget extends StatefulWidget {
 }
 
 class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
-    with TickerProviderStateMixin, WidgetsBindingObserver {
+    with TickerProviderStateMixin {
   late AnimationController buttonAnimationController;
   late Animation<Color?> buttonAnimation;
   late List<DropDownItem> settingsItems;
@@ -35,14 +37,14 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
     return Padding(
       padding: const EdgeInsets.only(right: 8.0, top: 6.0),
       child: BlocBuilder<AppSettingsCubit, AppSettings>(
-        bloc: DI.getInstance().appSettingsCubit,
+        bloc: ServiceLocator.getInstance().appSettingsCubit,
         builder: (context, snapshot) {
           return GestureDetector(
             onTap: () {
               rewriteItems();
               DropDownOverlayManager.buildOverlay(
                 context: context,
-                otherController: buttonAnimationController,
+                buttonAnimationController: buttonAnimationController,
                 dropDownItems: settingsItems,
               );
             },
@@ -67,7 +69,7 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
   @override
   void initState() {
     super.initState();
-    cubit = DI.getInstance().appSettingsCubit;
+    cubit = ServiceLocator.getInstance().appSettingsCubit;
     _setItems();
     buttonAnimationController = AnimationController(
       duration: const Duration(milliseconds: 250),
@@ -95,19 +97,19 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
         actions: [
           DropDownAction(
             title: LocaleKeys.light.tr(),
-            onTap: () => cubit.onThemeChanged(AppTheme.light),
+            onTap: (context) => cubit.onThemeChanged(AppTheme.light),
             isSelected: settings.theme == AppTheme.light,
             icon: AppIcons.light,
           ),
           DropDownAction(
             title: LocaleKeys.dark.tr(),
-            onTap: () => cubit.onThemeChanged(AppTheme.dark),
+            onTap: (context) => cubit.onThemeChanged(AppTheme.dark),
             isSelected: settings.theme == AppTheme.dark,
             icon: AppIcons.dark,
           ),
           DropDownAction(
             title: LocaleKeys.auto.tr(),
-            onTap: () => cubit.onThemeChanged(AppTheme.auto),
+            onTap: (context) => cubit.onThemeChanged(AppTheme.auto),
             isSelected: settings.theme == AppTheme.auto,
             icon: AppIcons.magic,
           ),
@@ -119,13 +121,27 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
         actions: [
           DropDownAction(
             title: LocaleKeys.english.tr(),
-            onTap: () => cubit.onLanguageChanged(AppLanguage.english),
+            onTap: (context) {
+              cubit.onLanguageChanged(AppLanguage.english);
+              showSnackBar(
+                context,
+                LocaleKeys.restartForChanges.tr(),
+                CupertinoIcons.restart,
+              );
+            },
             isSelected: settings.language == AppLanguage.english,
             icon: AppIcons.listItem,
           ),
           DropDownAction(
             title: LocaleKeys.ukrainian.tr(),
-            onTap: () => cubit.onLanguageChanged(AppLanguage.ukrainian),
+            onTap: (context) {
+              cubit.onLanguageChanged(AppLanguage.ukrainian);
+              showSnackBar(
+                context,
+                LocaleKeys.restartForChanges.tr(),
+                CupertinoIcons.restart,
+              );
+            },
             isSelected: settings.language == AppLanguage.ukrainian,
             icon: AppIcons.listItem,
           ),

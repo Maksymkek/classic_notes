@@ -28,5 +28,6 @@
   "english": "english",
   "ukrainian" : "ukrainian",
   "share": "Share",
-  "save": "Save"
+  "save": "Save",
+  "restartForChanges": "Restart app for changes"
 }

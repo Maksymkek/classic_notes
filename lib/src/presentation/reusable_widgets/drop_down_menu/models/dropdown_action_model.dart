@@ -14,8 +14,7 @@ class DropDownAction extends Equatable {
   final IconData? icon;
   final double? iconSize;
   bool isSelected;
-  final Function() onTap;
-  Color? tapResponseColor;
+  final Function(BuildContext) onTap;
 
   static DropDownAction from(DropDownAction action) {
     var newAction = DropDownAction(
@@ -25,10 +24,9 @@ class DropDownAction extends Equatable {
         iconSize: action.iconSize);
     newAction.isSelected = action.isSelected;
 
-    newAction.tapResponseColor = action.tapResponseColor;
     return newAction;
   }
 
   @override
-  List<Object?> get props => [title, isSelected, icon, tapResponseColor];
+  List<Object?> get props => [title, isSelected, icon];
 }

@@ -171,11 +171,12 @@ class NoteFormCubit extends Cubit<NoteForm> {
   }
 
   void saveNote() {
-    if (_noteTextController.prepareToSave(state.note)) {
-      if (state.note.id != -1) {
-        _notePageCubit.onUpdateNoteClick(state.note);
+    final saveData = _noteTextController.prepareToSave(state.note);
+    if (saveData.$1) {
+      if (saveData.$2.id != -1) {
+        _notePageCubit.onUpdateNoteClick(saveData.$2);
       } else {
-        _notePageCubit.onAddNoteClick(state.note);
+        _notePageCubit.onAddNoteClick(saveData.$2);
       }
     }
   }

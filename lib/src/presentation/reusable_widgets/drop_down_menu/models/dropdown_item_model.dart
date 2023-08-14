@@ -21,7 +21,6 @@ class DropDownItem extends Equatable {
   final Function()? onTap;
   bool isActive;
   ItemState visualState = ActiveItemState.getInstance();
-  Color? tapResponseColor;
 
   static DropDownItem from(DropDownItem item) {
     var newActions =
@@ -35,11 +34,10 @@ class DropDownItem extends Equatable {
     );
     newItem.visualState = item.visualState;
     newItem.isActive = item.isActive;
-    newItem.tapResponseColor = item.tapResponseColor;
+
     return newItem;
   }
 
   @override
-  List<Object?> get props =>
-      [title, icon, tapResponseColor, isActive, visualState];
+  List<Object?> get props => [title, icon, isActive, visualState];
 }

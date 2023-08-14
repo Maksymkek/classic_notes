@@ -89,7 +89,7 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget>
               return BlocBuilder<NotePageCubit, NotePageState>(
                 bloc: cubit,
                 buildWhen: (prev, current) {
-                  return needRedraw<Note>(current, prev);
+                  return needRedraw(current, prev);
                 },
                 builder: (context, snapshot) {
                   return Column(

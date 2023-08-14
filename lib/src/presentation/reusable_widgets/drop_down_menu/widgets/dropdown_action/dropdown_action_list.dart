@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/src/presentation/app_colors.dart';
+import 'package:notes/src/presentation/folder_form_screen/widgets/folder_form_widget.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/cubit/dropdown_menu_cubit.dart';
-import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/cubit/dropdown_menu_state.dart';
-import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/models/dropdown_action_model.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/models/dropdown_item_model.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/visual_effects/item_states/active_item.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/visual_effects/item_states/disabled_item.dart';
@@ -33,39 +31,20 @@ class _DropDownActionListWidgetState extends State<DropDownActionListWidget>
     with SingleTickerProviderStateMixin {
   late final AnimationController controller;
   late final Animation<double> animation;
+  late double elevation;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onClose,
+      onTap: _onClose,
       child: Scaffold(
         backgroundColor: AppColors.transparent,
         body: Padding(
           padding: _getPadding(),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: ClipRRect(
-              clipBehavior: Clip.antiAlias,
-              borderRadius: const BorderRadius.vertical(
-                bottom: Radius.circular(10.0),
-              ),
-              child: Container(
-                clipBehavior: Clip.antiAlias,
-                width: 200,
-                decoration: const BoxDecoration(
-                  color: AppColors.white,
-                ),
-                child: buildActionWidgets(),
-              ),
-            ),
-          ),
+          child: _buildActionWidgets(),
         ),
       ),
     );
-  }
-
-  void onClose() {
-    controller.reverse().whenComplete(() => widget.onClose());
   }
 
   @override
@@ -80,86 +59,72 @@ class _DropDownActionListWidgetState extends State<DropDownActionListWidget>
       curve: Curves.easeInOut,
       parent: controller,
     );
+
+    elevation = 0;
+    animation.addStatusListener((status) {
+      if (status == AnimationStatus.forward) {
+        setState(() {
+          elevation = 10;
+        });
+      } else if (status == AnimationStatus.reverse) {
+        setState(() {
+          elevation = 0;
+        });
+      }
+    });
     controller.forward();
   }
 
-  Column buildActionWidgets() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: widget.item.actions
-          .map(
-            (action) => GestureDetector(
-              onTap: () async {
-                await Future.delayed(
-                  const Duration(milliseconds: 150),
-                );
-                if (animation.isCompleted || animation.isDismissed) {
-                  widget.cubit.onActionSelected(action);
-                  Future.delayed(
-                    const Duration(milliseconds: 250),
-                  ).whenComplete(() => onClose());
-                }
-              },
-              onTapDown: (details) {
-                widget.cubit.onActionTapResponse(widget.item, action, true);
-              },
-              onTapUp: (details) {
-                _onTapEnd(action);
-              },
-              onTapCancel: () {
-                _onTapEnd(action);
-              },
-              child: SizeTransition(
-                sizeFactor: animation,
-                axis: Axis.vertical,
-                axisAlignment: -1.0,
-                child: BlocBuilder<DropDownMenuCubit, DropDownMenuState>(
-                  bloc: widget.cubit,
-                  buildWhen: (prev, current) {
-                    return needToRedraw(prev, current, action);
-                  },
-                  builder: (context, snapshot) {
-                    return DropDownActionWidget(action: action);
-                  },
-                ),
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  void _onClose() {
+    controller.reverse().whenComplete(() => widget.onClose());
+  }
+
+  Widget _buildActionWidgets() {
+    return Row(
+      children: [
+        const Spacer(),
+        SizeTransition(
+          sizeFactor: animation,
+          axis: Axis.vertical,
+          axisAlignment: -1,
+          child: Padding(
+            padding: _getActionsListPadding(),
+            child: Material(
+              elevation: elevation,
+              animationDuration: const Duration(milliseconds: 250),
+              color: AppColors.transparent,
+              borderRadius:
+                  const BorderRadius.vertical(bottom: Radius.circular(10.0)),
+              clipBehavior: Clip.antiAlias,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: widget.item.actions
+                    .map(
+                      (action) => DropDownActionWidget(
+                        action: action,
+                        cubit: widget.cubit,
+                        item: widget.item,
+                        onClose: _onClose,
+                        animation: animation,
+                      ),
+                    )
+                    .toList(),
               ),
             ),
-          )
-          .toList(),
+          ),
+        ),
+      ],
     );
   }
 
-  bool needToRedraw(
-    DropDownMenuState prev,
-    DropDownMenuState current,
-    DropDownAction action,
-  ) {
-    DropDownItem currentObj = getCurrentItem(current);
-    for (int i = 0; i < currentObj.actions.length; i += 1) {
-      var curAction = currentObj.actions[i];
-      if (curAction.title == action.title) {
-        bool res = curAction != action;
-        if (res) {
-          action.tapResponseColor = curAction.tapResponseColor;
-          action.isSelected = curAction.isSelected;
-        }
-        return res;
-      }
-    }
-    return true;
-  }
-
-  DropDownItem getCurrentItem(DropDownMenuState current) {
-    var index = current.items.indexOf(widget.item);
-    if (index == -1) {
-      for (int i = 0; i < current.items.length; i += 1) {
-        if (current.items[i].title == widget.item.title) {
-          index = i;
-        }
-      }
-    }
-    var currentObj = current.items[index];
-    return currentObj;
+  EdgeInsets _getActionsListPadding() {
+    return const EdgeInsets.only(left: 20, bottom: 30, right: 19.6);
   }
 
   EdgeInsets _getPadding() {
@@ -171,18 +136,10 @@ class _DropDownActionListWidgetState extends State<DropDownActionListWidget>
       i += 1;
     }
     return EdgeInsets.fromLTRB(
-      widget.parentPosition.dx,
+      0,
       top + ActiveItemState.getInstance().itemHeight,
-      0.0,
-      0.0,
-    );
-  }
-
-  void _onTapEnd(DropDownAction action) {
-    Future.delayed(
-      const Duration(milliseconds: 100),
-    ).whenComplete(
-      () => widget.cubit.onActionTapResponse(widget.item, action, false),
+      0,
+      0,
     );
   }
 }

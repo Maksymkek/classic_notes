@@ -2,7 +2,8 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:notes/src/data/data_model/item/item_data_model.dart';
 import 'package:notes/src/domain/entity/item/item.dart';
 
-class ItemDataSource<DataModel extends ItemDataModel, Entity extends Item> {
+class ItemDataSource<Entity extends Item,
+    DataModel extends ItemDataModel<Entity>> {
   late Box<DataModel> box;
   late final String _boxName;
   final DataModel Function(Entity, int) fromItem;
@@ -17,7 +18,7 @@ class ItemDataSource<DataModel extends ItemDataModel, Entity extends Item> {
     final mapFrom = box.keys.toList();
     Map<int, Entity> items = {};
     for (int i = 0; i < mapFrom.length; i++) {
-      items[i] = box.get(mapFrom[i])!.toItem() as Entity;
+      items[i] = box.get(mapFrom[i])!.toItem();
     }
     await box.close();
     return items;

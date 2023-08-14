@@ -26,37 +26,36 @@ class DropDownItemListWidget extends StatefulWidget {
 class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
     with TickerProviderStateMixin {
   late final DropDownMenuCubit cubit;
-
   late final AnimationController menuController;
   late final Animation<double> menuAnimation;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onClose,
+      onTap: _onClose,
       child: FadeTransition(
         opacity: menuAnimation,
         child: Scaffold(
           backgroundColor: AppColors.black.withOpacity(0.04),
-          body: Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: _getOffset(),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 250),
-                width: 200,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: cubit.state.items
-                      .map(
-                        (item) => DropDownItemWidget(
-                          item: item,
-                          cubit: cubit,
-                          menuController: menuAnimation,
-                        ),
-                      )
-                      .toList(),
-                ),
+          body: Padding(
+            padding: _getOffset(),
+            child: ScaleTransition(
+              scale: menuAnimation,
+              alignment: Alignment.topRight,
+              child: Row(
+                children: [
+                  const Spacer(),
+                  Column(
+                    children: cubit.state.items
+                        .map(
+                          (item) => DropDownItemWidget(
+                            item: item,
+                            cubit: cubit,
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ],
               ),
             ),
           ),
@@ -90,11 +89,10 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
   @override
   void dispose() {
     menuController.dispose();
-
     super.dispose();
   }
 
-  void onClose() {
+  void _onClose() {
     cubit.syncChangedSettings(widget.dropDownItems);
     menuController.reverse().whenComplete(() => widget.onClose());
   }

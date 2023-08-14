@@ -1,23 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:notes/src/domain/entity/item/item.dart';
 
-class Folder implements Item {
+class Folder extends Item {
   Folder({
-    required this.id,
-    required this.title,
+    required int id,
+    required String title,
     required this.background,
     required this.icon,
-    required this.dateOfLastChange,
-  });
-
-  @override
-  final int id;
-
-  @override
-  DateTime dateOfLastChange;
-
-  @override
-  String title;
+    required DateTime dateOfLastChange,
+  }) : super(id, title, dateOfLastChange);
 
   Color background;
   Icon icon;

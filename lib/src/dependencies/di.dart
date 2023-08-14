@@ -13,10 +13,10 @@ import 'package:notes/src/presentation/app_settings_cubit/app_settings_cubit.dar
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_cubit.dart';
 import 'package:notes/src/presentation/folders_screen/cubit/folder_page_cubit.dart';
 
-class DI {
-  DI._();
+class ServiceLocator {
+  ServiceLocator._();
 
-  static DI? _instance;
+  static ServiceLocator? _instance;
   late final ItemRepository<Folder> _folderRepository;
   late final GetItemsInteractor<Folder> _getFoldersInteractor;
   late final AddItemInteractor<Folder> _addFolderInteractor;
@@ -30,8 +30,8 @@ class DI {
   late final GetSettingsInteractor _getSettingsInteractor;
   late final SetAppSettingInteractor _setAppSettingInteractor;
 
-  static DI getInstance() {
-    return _instance ?? (_instance = DI._());
+  static ServiceLocator getInstance() {
+    return _instance ?? (_instance = ServiceLocator._());
   }
 
   Future<void> init() async {

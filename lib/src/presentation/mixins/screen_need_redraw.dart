@@ -2,9 +2,9 @@ import 'package:notes/src/domain/entity/item/item.dart';
 import 'package:notes/src/presentation/interfaces/screen_state.dart';
 
 mixin ScreenRedraw {
-  bool needRedraw<Entity extends Item>(
-    ScreenState<Entity> current,
-    ScreenState<Entity> prev,
+  bool needRedraw(
+    ScreenState<Item> current,
+    ScreenState<Item> prev,
   ) {
     bool needToRedraw = current.items.length != prev.items.length ||
         current.settings.sortOrder != prev.settings.sortOrder ||
