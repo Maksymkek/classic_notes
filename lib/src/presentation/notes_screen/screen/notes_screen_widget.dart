@@ -34,7 +34,7 @@ class NotesScreenWidget extends StatefulWidget {
 class _NotesScreenWidgetState extends State<NotesScreenWidget>
     with RouteAware, ScreenRedraw {
   late List<DropDownItem> dropDownItems;
-  late final NotePageCubit cubit;
+  late final NoteScreenCubit cubit;
   late final Future<void> screenLoad;
 
   @override
@@ -44,9 +44,9 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget>
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(right: 7.0, bottom: 5.0),
         child: AppIconButtonWidget(
-          iconSize: 42,
-          color: AppColors.darkBrown,
-          activeColor: AppColors.lightBrown,
+          iconSize: 48,
+          color: AppColors.darkGrey,
+          activeColor: AppColors.lightToggledGrey,
           icon: AppIcons.newNote,
           onPressed: () {
             Navigator.of(context).pushNamed(
@@ -86,7 +86,7 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget>
           future: screenLoad,
           builder: (context, snapshot) {
             if (ConnectionState.done == snapshot.connectionState) {
-              return BlocBuilder<NotePageCubit, NotePageState>(
+              return BlocBuilder<NoteScreenCubit, NotePageState>(
                 bloc: cubit,
                 buildWhen: (prev, current) {
                   return needRedraw(current, prev);
@@ -100,7 +100,7 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget>
                             LocaleKeys.notes.plural(cubit.state.items.length),
                         folder: widget.folder,
                       ),
-                      ItemListWidget<Note, NotePageState, NotePageCubit>(
+                      ItemListWidget<Note, NotePageState, NoteScreenCubit>(
                         cubit: cubit,
                         actionsWidget: NoteActionsWidget.new,
                       ),
@@ -120,7 +120,7 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget>
   @override
   void initState() {
     super.initState();
-    cubit = NotePageCubit.fromCache(widget.folder);
+    cubit = NoteScreenCubit.fromCache(widget.folder);
     screenLoad = cubit.onScreenLoad();
   }
 

@@ -13,12 +13,12 @@ import 'package:notes/src/domain/use_case/item_case/update_item_interactor.dart'
 import 'package:notes/src/domain/use_case/item_case/update_items_order_interactor.dart';
 import 'package:notes/src/domain/use_case/settings_case/item_settings_case/get_setting_interactor.dart';
 import 'package:notes/src/domain/use_case/settings_case/item_settings_case/set_setting_interactor.dart';
-import 'package:notes/src/presentation/folders_screen/cubit/folder_page_cubit.dart';
+import 'package:notes/src/presentation/folders_screen/cubit/folder_screen_cubit.dart';
 import 'package:notes/src/presentation/interfaces/screen_cubit.dart';
 import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_state.dart';
 
-class NotePageCubit extends ScreenCubit<Note, NotePageState> {
-  NotePageCubit(
+class NoteScreenCubit extends ScreenCubit<Note, NotePageState> {
+  NoteScreenCubit(
     this.folder,
   ) : super(
           NotePageState(
@@ -31,13 +31,14 @@ class NotePageCubit extends ScreenCubit<Note, NotePageState> {
         ) {
     _init();
   }
-  factory NotePageCubit.fromCache(Folder folder) {
-    return _cache.putIfAbsent(folder.id, () => NotePageCubit(folder));
+
+  factory NoteScreenCubit.fromCache(Folder folder) {
+    return _cache.putIfAbsent(folder.id, () => NoteScreenCubit(folder));
   }
 
-  static final Map<int, NotePageCubit> _cache = {};
+  static final Map<int, NoteScreenCubit> _cache = {};
   final Folder folder;
-  late final FolderPageCubit _folderPageCubit;
+  late final FolderScreenCubit _folderPageCubit;
   late final ItemRepository<Note> _noteRepository;
   late final GetItemsInteractor<Note> _getNotesInteractor;
   late final AddItemInteractor<Note> _addNoteInteractor;
@@ -92,21 +93,33 @@ class NotePageCubit extends ScreenCubit<Note, NotePageState> {
   }
 
   Future<void> onAddNoteClick(Note note) async {
-    await _folderPageCubit.onUpdateFolderClick(folder);
+    _folderPageCubit.onUpdateFolderClick(folder);
     await _addNoteInteractor(note);
-    _copyWith(notes: await getNotes());
+    Map<int, Note> newNotes = Map.from(state.items)
+      ..[state.items.length] = note.copyWith(
+        id: getId(),
+        dateOfLastChange: DateTime.now(),
+      );
+    _copyWith(notes: newNotes);
   }
 
   Future<void> onUpdateNoteClick(Note note) async {
-    await _folderPageCubit.onUpdateFolderClick(folder);
+    _folderPageCubit.onUpdateFolderClick(folder);
     await _updateNoteInteractor(note);
-    _copyWith(notes: await getNotes());
+    Map<int, Note> newNotes = Map.from(state.items)
+      ..update(
+        getMapKey(note),
+        (value) => note.copyWith(dateOfLastChange: DateTime.now()),
+      );
+    _copyWith(notes: newNotes);
   }
 
   Future<void> onDeleteNoteClick(Note note) async {
-    await _folderPageCubit.onUpdateFolderClick(folder);
+    _folderPageCubit.onUpdateFolderClick(folder);
     await _deleteNoteInteractor(note);
-    _copyWith(notes: await getNotes());
+    Map<int, Note> newNotes = Map.from(state.items)
+      ..removeWhere((key, value) => value == note);
+    _copyWith(notes: reindexMap(newNotes));
   }
 
   @override

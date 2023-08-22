@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/src/presentation/app_colors.dart';
+import 'package:notes/src/presentation/app_shadow.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_cubit.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_state.dart';
 import 'package:notes/src/presentation/folder_form_screen/widgets/color_picker_widget.dart';
-import 'package:notes/src/presentation/folder_form_screen/widgets/folder_form_widget.dart';
 import 'package:notes/src/presentation/folder_form_screen/widgets/icon_picker_widget.dart';
 
 class StylePickerWidget extends StatefulWidget {
@@ -25,10 +25,11 @@ class _StylePickerWidgetState extends State<StylePickerWidget> {
     return Container(
       width: double.infinity,
       height: 124,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-        boxShadow: [shadow],
+        borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+        boxShadow: [AppShadow.baseShadow],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -64,6 +65,7 @@ class _StylePickerWidgetState extends State<StylePickerWidget> {
   ListView buildIconPickerList() {
     return ListView.builder(
       controller: iconPickerController,
+      shrinkWrap: true,
       scrollDirection: Axis.horizontal,
       itemCount: widget.cubit.state.iconPickers.length,
       itemBuilder: (BuildContext context, int index) {
@@ -91,6 +93,7 @@ class _StylePickerWidgetState extends State<StylePickerWidget> {
   ListView buildColorPickerList() {
     return ListView.builder(
       controller: colorPickerController,
+      shrinkWrap: true,
       scrollDirection: Axis.horizontal,
       itemCount: widget.cubit.state.colorPickers.length,
       itemBuilder: (BuildContext context, int index) {
@@ -129,9 +132,8 @@ class _ItemPickerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 41),
+      padding: const EdgeInsets.symmetric(horizontal: 31),
       child: Container(
-        width: double.maxFinite,
         height: 50,
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20.0)),

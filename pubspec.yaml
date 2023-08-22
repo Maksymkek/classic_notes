@@ -29,7 +29,6 @@ dependencies:
   path_provider_android: 2.0.27
   flutter_keyboard_visibility: 5.4.1
   rich_text_editor_controller: 0.0.3
-  flutter_colorpicker: 1.0.3
 
 
 dev_dependencies:

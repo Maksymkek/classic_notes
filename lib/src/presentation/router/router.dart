@@ -28,7 +28,7 @@ class AppNavigation {
       case NoteFormScreenWidget.screenName:
         List<dynamic> arguments = settings.arguments as List<dynamic>;
         final note = arguments[0] as Note;
-        final notePageCubit = arguments[1] as NotePageCubit;
+        final notePageCubit = arguments[1] as NoteScreenCubit;
         return MaterialPageRoute(
           builder: (context) {
             return NoteFormScreenWidget(

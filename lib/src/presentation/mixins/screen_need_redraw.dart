@@ -6,17 +6,11 @@ mixin ScreenRedraw {
     ScreenState<Item> current,
     ScreenState<Item> prev,
   ) {
-    bool needToRedraw = current.items.length != prev.items.length ||
+    bool needToRedraw = current.items != prev.items ||
         current.settings.sortOrder != prev.settings.sortOrder ||
         current.settings.sortBy != prev.settings.sortBy;
     if (needToRedraw) {
       return true;
-    }
-    for (int i = 0; i < current.items.length; i += 1) {
-      if (current.items[i]?.dateOfLastChange !=
-          prev.items[i]?.dateOfLastChange) {
-        return true;
-      }
     }
     return false;
   }

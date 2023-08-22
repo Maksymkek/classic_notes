@@ -5,13 +5,13 @@ import 'package:notes/src/domain/entity/item/item.dart';
 import 'package:notes/src/domain/entity/settings/item/sort_by.dart';
 import 'package:notes/src/domain/entity/settings/item/sort_order.dart';
 import 'package:notes/src/presentation/app_icons.dart';
-import 'package:notes/src/presentation/folders_screen/cubit/folder_page_cubit.dart';
+import 'package:notes/src/presentation/folders_screen/cubit/folder_screen_cubit.dart';
 import 'package:notes/src/presentation/interfaces/screen_state.dart';
 import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/models/dropdown_action_model.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/models/dropdown_item_model.dart';
 
-/// Cubit extension for [NotePageCubit] and [FolderPageCubit]
+/// Cubit extension for [NoteScreenCubit] and [FolderScreenCubit]
 abstract class ScreenCubit<Entity extends Item,
     State extends ScreenState<Entity>> extends Cubit<State> {
   ScreenCubit(super.initialState);
@@ -103,6 +103,37 @@ abstract class ScreenCubit<Entity extends Item,
       return newItems;
     }
     return null;
+  }
+
+  int getMapKey(Entity entity) {
+    int searchedKey = -1;
+    state.items.forEach((key, value) {
+      if (value.id == entity.id) {
+        searchedKey = key;
+        return;
+      }
+    });
+    return searchedKey;
+  }
+
+  Map<int, Entity> reindexMap(Map<int, Entity> map) {
+    Map<int, Entity> reindexedMap = {};
+    int i = 0;
+    for (var value in map.values) {
+      reindexedMap[i] = value;
+      i += 1;
+    }
+    return reindexedMap;
+  }
+
+  int getId() {
+    final idList = state.items.values.map((e) => e.id).toList();
+    if (idList.isEmpty) {
+      return 0;
+    }
+    idList.sort();
+    var newId = idList.last + 1;
+    return newId;
   }
 
   void onSortByChanged(SortBy sortBy);

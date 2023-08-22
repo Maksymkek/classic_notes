@@ -14,7 +14,7 @@ class NoteWidget extends StatefulWidget {
   });
 
   final Note note;
-  final NotePageCubit cubit;
+  final NoteScreenCubit cubit;
 
   @override
   State<NoteWidget> createState() => _NoteWidgetState();
@@ -53,7 +53,7 @@ class _NoteWidgetState extends State<NoteWidget>
         height: 70,
         width: double.maxFinite,
         decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(15.0)),
           color: animation.value,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),

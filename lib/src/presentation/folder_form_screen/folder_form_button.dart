@@ -16,12 +16,12 @@ class FolderFormButtonWidget extends StatelessWidget {
       padding: const EdgeInsets.only(right: 7.0, bottom: 5.0),
       child: AppIconButtonWidget(
         icon: AppIcons.addFolder,
-        activeColor: AppColors.lightBrown,
+        activeColor: AppColors.lightToggledGrey,
         onPressed: () => FolderFormOverlayManager.buildOverlay(
           context: context,
         ),
-        iconSize: 42,
-        color: AppColors.darkBrown,
+        iconSize: 48,
+        color: AppColors.darkGrey,
       ),
     );
   }

@@ -1,11 +1,14 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:notes/generated/locale_keys.g.dart';
 import 'package:notes/src/domain/entity/item/note.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
 import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
 import 'package:notes/src/presentation/notes_screen/screen/note_widget.dart';
+import 'package:notes/src/presentation/reusable_widgets/alert_dialog/alert_dialog.dart';
 import 'package:notes/src/presentation/reusable_widgets/slidable_action/slidable_action.dart';
 
 class NoteActionsWidget extends StatelessWidget {
@@ -15,7 +18,7 @@ class NoteActionsWidget extends StatelessWidget {
     super.key,
   });
 
-  final NotePageCubit cubit;
+  final NoteScreenCubit cubit;
   final Note note;
 
   @override
@@ -28,18 +31,19 @@ class NoteActionsWidget extends StatelessWidget {
           key: ValueKey(note.id),
           endActionPane: ActionPane(
             motion: const DrawerMotion(),
-            dismissible: DismissiblePane(
-              onDismissed: () {
-                cubit.onDeleteNoteClick(note);
-              },
-            ),
             extentRatio: 0.25,
             children: [
               SlidableActionWidget(
                 icon: AppIcons.trashBox,
                 color: AppColors.carmineRed,
                 onTap: () {
-                  cubit.onDeleteNoteClick(note);
+                  AppAlertDialog.showAlertDialog(
+                    context,
+                    () {
+                      cubit.onDeleteNoteClick(note);
+                    },
+                    LocaleKeys.noteDeleteAlert.tr(args: [note.title]),
+                  );
                 },
               ),
             ],

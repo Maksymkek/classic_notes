@@ -14,13 +14,14 @@ class Note extends Item {
   Map<String, dynamic>? controllerMap;
 
   Note copyWith({
+    int? id,
     String? title,
     String? text,
     DateTime? dateOfLastChange,
     Map<String, dynamic>? controllerMap,
   }) {
     return Note(
-      id: id,
+      id: id ?? this.id,
       text: text ?? this.text,
       title: title ?? this.title,
       dateOfLastChange: dateOfLastChange ?? this.dateOfLastChange,

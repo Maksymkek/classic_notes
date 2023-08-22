@@ -6,7 +6,6 @@ import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/widgets/d
 class DropDownOverlayManager {
   DropDownOverlayManager._();
 
-  static late OverlayState _overlayState;
   static OverlayEntry? _overlayEntry;
   static AnimationController? _buttonAnimationController;
 
@@ -16,7 +15,7 @@ class DropDownOverlayManager {
     required List<DropDownItem> dropDownItems,
   }) {
     _buttonAnimationController = buttonAnimationController;
-    _overlayState = Overlay.of(context);
+
     RenderBox box = context.findRenderObject() as RenderBox;
     Offset position = box.localToGlobal(Offset(0, box.constraints.maxHeight));
     _overlayEntry = OverlayEntry(
@@ -26,7 +25,6 @@ class DropDownOverlayManager {
           child: Align(
             child: DropDownItemListWidget(
               onClose: _removeHighlightOverlay,
-              overlayState: _overlayState,
               dropDownItems: dropDownItems,
               parentPosition: position,
             ),
@@ -35,7 +33,7 @@ class DropDownOverlayManager {
       },
     );
     _buttonAnimationController?.forward();
-    _overlayState.insert(_overlayEntry!);
+    Overlay.of(context).insert(_overlayEntry!);
   }
 
   static Future<void> _removeHighlightOverlay() async {

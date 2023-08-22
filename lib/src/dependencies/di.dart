@@ -11,7 +11,7 @@ import 'package:notes/src/domain/use_case/settings_case/app_settings_case/get_se
 import 'package:notes/src/domain/use_case/settings_case/app_settings_case/set_setting_interactor.dart';
 import 'package:notes/src/presentation/app_settings_cubit/app_settings_cubit.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_cubit.dart';
-import 'package:notes/src/presentation/folders_screen/cubit/folder_page_cubit.dart';
+import 'package:notes/src/presentation/folders_screen/cubit/folder_screen_cubit.dart';
 
 class ServiceLocator {
   ServiceLocator._();
@@ -23,7 +23,7 @@ class ServiceLocator {
   late final UpdateItemInteractor<Folder> _updateFolderInteractor;
   late final DeleteItemInteractor<Folder> _deleteFolderInteractor;
   late final UpdateItemsOrderInteractor<Folder> _updateFoldersOrderInteractor;
-  late final FolderPageCubit folderPageCubit;
+  late final FolderScreenCubit folderPageCubit;
   late final FolderFormCubit folderFormCubit;
   late final AppSettingsRepository appSettingsRepository;
   late final AppSettingsCubit appSettingsCubit;
@@ -42,13 +42,14 @@ class ServiceLocator {
     _deleteFolderInteractor = DeleteItemInteractor(_folderRepository);
     _updateFoldersOrderInteractor =
         UpdateItemsOrderInteractor(_folderRepository);
-    folderPageCubit = FolderPageCubit(
-        folderRepository: _folderRepository,
-        getFoldersInteractor: _getFoldersInteractor,
-        addFolderInteractor: _addFolderInteractor,
-        updateFolderInteractor: _updateFolderInteractor,
-        deleteFolderInteractor: _deleteFolderInteractor,
-        updateFoldersOrderInteractor: _updateFoldersOrderInteractor);
+    folderPageCubit = FolderScreenCubit(
+      folderRepository: _folderRepository,
+      getFoldersInteractor: _getFoldersInteractor,
+      addFolderInteractor: _addFolderInteractor,
+      updateFolderInteractor: _updateFolderInteractor,
+      deleteFolderInteractor: _deleteFolderInteractor,
+      updateFoldersOrderInteractor: _updateFoldersOrderInteractor,
+    );
     appSettingsRepository = AppSettingsRepository();
 
     _setAppSettingInteractor = SetAppSettingInteractor(appSettingsRepository);

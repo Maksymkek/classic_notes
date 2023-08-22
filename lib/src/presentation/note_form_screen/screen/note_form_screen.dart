@@ -27,7 +27,7 @@ class NoteFormScreenWidget extends StatefulWidget {
   });
 
   final Note note;
-  final NotePageCubit notePageCubit;
+  final NoteScreenCubit notePageCubit;
   static const screenName = '/note_form';
 
   @override
@@ -129,10 +129,8 @@ class _NoteFormScreenWidgetState extends State<NoteFormScreenWidget>
 
   @override
   void didPop() {
+    cubit.saveNote();
     DropDownOverlayManager.dispose();
-    try {
-      cubit.saveNote();
-    } catch (_) {}
     super.didPop();
   }
 
@@ -172,7 +170,7 @@ class _NoteFormScreenWidgetState extends State<NoteFormScreenWidget>
             Navigator.of(context).pop();
           },
           color: AppColors.darkBrown,
-          activeColor: AppColors.lightBrown,
+          activeColor: AppColors.lightToggledGrey,
         ),
       ),
       scrolledUnderElevation: 0,

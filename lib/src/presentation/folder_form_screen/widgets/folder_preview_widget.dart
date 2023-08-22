@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:notes/src/presentation/app_text_styles.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_cubit.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_state.dart';
 import 'package:notes/src/presentation/folders_screen/screen/folder_widget.dart';
@@ -30,7 +30,7 @@ class FolderPreviewWidget extends StatelessWidget {
             children: [
               Text(
                 'preview',
-                style: GoogleFonts.acme(fontSize: 12),
+                style: AppTextStyles.extraSmallStyle,
               ),
               const SizedBox(
                 width: 10,

@@ -1,4 +1,3 @@
-
 import 'package:notes/src/domain/entity/settings/app/app_languages.dart';
 import 'package:notes/src/domain/entity/settings/app/app_theme.dart';
 

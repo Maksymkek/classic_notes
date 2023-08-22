@@ -8,13 +8,11 @@ class DropDownItemListWidget extends StatefulWidget {
   const DropDownItemListWidget({
     super.key,
     required this.onClose,
-    required this.overlayState,
     required this.dropDownItems,
     required this.parentPosition,
   });
 
   final VoidCallback onClose;
-  final OverlayState overlayState;
 
   final List<DropDownItem> dropDownItems;
   final Offset parentPosition;
@@ -43,17 +41,22 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
               scale: menuAnimation,
               alignment: Alignment.topRight,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const Spacer(),
-                  Column(
-                    children: cubit.state.items
-                        .map(
-                          (item) => DropDownItemWidget(
-                            item: item,
-                            cubit: cubit,
-                          ),
-                        )
-                        .toList(),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 239.2),
+                    child: ListView(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.only(top: 10, bottom: 30),
+                      children: cubit.state.items
+                          .map(
+                            (item) => DropDownItemWidget(
+                              item: item,
+                              cubit: cubit,
+                            ),
+                          )
+                          .toList(),
+                    ),
                   ),
                 ],
               ),
@@ -70,7 +73,6 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
 
     cubit = DropDownMenuCubit(
       widget.dropDownItems,
-      widget.overlayState,
       widget.parentPosition.dy,
     );
     menuController = AnimationController(
@@ -93,11 +95,13 @@ class _DropDownItemListWidgetState extends State<DropDownItemListWidget>
   }
 
   void _onClose() {
-    cubit.syncChangedSettings(widget.dropDownItems);
-    menuController.reverse().whenComplete(() => widget.onClose());
+    if (mounted) {
+      cubit.syncChangedSettings(widget.dropDownItems);
+      menuController.reverse().whenComplete(() => widget.onClose());
+    }
   }
 
   EdgeInsets _getOffset() {
-    return EdgeInsets.fromLTRB(0.0, cubit.state.dy, 19.6, 0.0);
+    return EdgeInsets.fromLTRB(0.0, cubit.state.dy, 0, 0.0);
   }
 }

@@ -67,14 +67,9 @@ class _SlidableActionWidgetState extends State<SlidableActionWidget>
     controller = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
-      lowerBound: 0.3,
-      upperBound: 1.0,
       reverseDuration: const Duration(milliseconds: 0),
     );
-    animation = CurvedAnimation(
-      parent: controller,
-      curve: Curves.fastOutSlowIn,
-    );
+    animation = Tween<double>(begin: 0.8, end: 1.0).animate(controller);
     controller.forward();
     animation.addListener(() {
       setState(() {});

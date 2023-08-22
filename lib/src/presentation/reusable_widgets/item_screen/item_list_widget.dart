@@ -2,7 +2,6 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:notes/generated/locale_keys.g.dart';
 import 'package:notes/src/domain/entity/item/item.dart';
 import 'package:notes/src/domain/entity/settings/item/sort_by.dart';
 import 'package:notes/src/domain/entity/settings/item/sort_order.dart';

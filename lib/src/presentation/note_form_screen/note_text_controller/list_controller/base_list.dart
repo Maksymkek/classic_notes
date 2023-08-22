@@ -4,5 +4,6 @@ abstract class ListInput {
   final ListStatus listStatus;
 
   ListInput(this.listStatus);
+
   List<String> getSeparator(String text, int baseOffset);
 }

@@ -8,18 +8,17 @@ import 'package:rich_text_editor_controller/rich_text_editor_controller.dart';
 class TextOffset {
   TextOffset(this._controller, this._oldTextDeltas, this._cubit);
 
-  List<TextDelta> _oldTextDeltas;
-  set oldTextDelta(List<TextDelta> value) => _oldTextDeltas = value;
+  final TextDeltas Function() _oldTextDeltas;
   final NoteFormCubit _cubit;
   final RichTextEditorController _controller;
 
-  /// amount of 2 bytes symbol in previous enter
+  /// Amount of 2 bytes symbol in previous enter
   int _prev2BytesAmount = 0;
 
-  /// previous enter baseOffset
+  /// Previous enter baseOffset
   int oldBaseSelectionOffset = 0;
 
-  /// whether text where replaced by emoji
+  /// Whether text where replaced by emoji
   bool _emojiReplacement = false;
 
   bool get replacedByEmoji => _emojiReplacement;
@@ -37,7 +36,7 @@ class TextOffset {
       var baseOffset = getTrueOffset(_controller.selection.baseOffset);
       _cubit.copyWith(
         currentMetadata: CurrentMetadata(
-          metadata: _oldTextDeltas[baseOffset - 1].metadata ??
+          metadata: _oldTextDeltas()[baseOffset - 1].metadata ??
               TextMetaDataStyles.baseText,
         ),
       );
@@ -70,8 +69,8 @@ class TextOffset {
   int getTrueOffset(int baseOffset) {
     int current2BytesAmount = 0;
     for (int i = 0; i < _controller.deltas.length; i += 1) {
-      var textDelta = _controller.deltas[i];
-      var offset = Uint16List.fromList(textDelta.char.codeUnits).length;
+      final textDelta = _controller.deltas[i];
+      final offset = Uint16List.fromList(textDelta.char.codeUnits).length;
       if (baseOffset <= i) {
         break;
       }

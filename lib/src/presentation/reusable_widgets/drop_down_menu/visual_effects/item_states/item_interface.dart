@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 
-//TODO sort
 abstract class ItemState {
   double itemHeight = 0;
 
@@ -25,5 +24,5 @@ abstract class ItemState {
 
   Color dividerColor = AppColors.black;
 
-  Color textColor = AppColors.darkBrown;
+  Color textColor = AppColors.darkGrey;
 }

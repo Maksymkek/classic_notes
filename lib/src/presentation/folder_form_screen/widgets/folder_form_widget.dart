@@ -1,10 +1,12 @@
+import 'dart:ui';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/generated/locale_keys.g.dart';
 import 'package:notes/src/domain/entity/item/folder.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
+import 'package:notes/src/presentation/app_text_styles.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_cubit.dart';
 import 'package:notes/src/presentation/folder_form_screen/cubit/folder_form_state.dart';
 import 'package:notes/src/presentation/folder_form_screen/models/color_picker_model.dart';
@@ -13,8 +15,6 @@ import 'package:notes/src/presentation/folder_form_screen/widgets/folder_preview
 import 'package:notes/src/presentation/folder_form_screen/widgets/style_picker_widget.dart';
 import 'package:notes/src/presentation/folder_form_screen/widgets/text_field_widget.dart';
 import 'package:notes/src/presentation/reusable_widgets/app_buttons/app_text_button.dart';
-
-const Duration duration = Duration(milliseconds: 200);
 
 final List<ColorPickerModel> _colorPickers = [
   ColorPickerModel(
@@ -43,7 +43,7 @@ final List<ColorPickerModel> _colorPickers = [
     iconColor: AppColors.seashellWhite,
   ),
   ColorPickerModel(
-    color: AppColors.lightBrown,
+    color: AppColors.lightToggledGrey,
     iconColor: AppColors.seashellWhite,
   ),
   ColorPickerModel(
@@ -71,13 +71,6 @@ final List<IconPickerModel> _iconPickers = [
   IconPickerModel(icon: AppIcons.lock, iconSize: 22, trueIconSize: 32)
 ];
 
-final BoxShadow shadow = BoxShadow(
-  color: AppColors.black.withOpacity(0.23),
-  spreadRadius: 0,
-  blurRadius: 5,
-  offset: const Offset(0, 0), // changes position of shadow
-);
-
 class FolderFormWidget extends StatefulWidget {
   const FolderFormWidget({
     super.key,
@@ -96,61 +89,80 @@ class FolderFormWidget extends StatefulWidget {
 }
 
 class _FolderFormWidgetState extends State<FolderFormWidget>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late FolderFormCubit cubit;
   late final Animation<double> animation;
+  late double blurStatus;
   late final AnimationController animationController;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onClose,
-      child: FadeTransition(
-        opacity: animation,
-        child: Scaffold(
-          backgroundColor: AppColors.black.withOpacity(0.05),
-          body: Align(
-            alignment: Alignment.bottomCenter,
-            child: SizeTransition(
-              sizeFactor: animation,
-              axis: Axis.vertical,
-              axisAlignment: -1.0,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 30.0),
-                child: GestureDetector(
-                  onTap: () {},
-                  onVerticalDragUpdate: onDragClosing,
-                  child: Container(
-                    width: double.infinity,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.black.withOpacity(0.05),
-                          spreadRadius: 0,
-                          blurRadius: 20,
-                          offset: const Offset(0, 0),
-                        ),
-                      ],
-                      color: AppColors.white,
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(38.0),
-                      ),
+      child: Stack(
+        children: [
+          TweenAnimationBuilder(
+            tween: Tween<double>(begin: 0.0, end: blurStatus),
+            duration: const Duration(milliseconds: 250),
+            builder: (context, value, child) {
+              return BackdropFilter(
+                filter: ImageFilter.blur(
+                  sigmaX: value,
+                  sigmaY: value,
+                ),
+                child: child,
+              );
+            },
+            child: const SizedBox(
+              width: double.infinity,
+              height: double.infinity,
+            ),
+          ),
+          FadeTransition(
+            opacity: animation,
+            child: Scaffold(
+              backgroundColor: AppColors.transparent,
+              body: Align(
+                alignment: Alignment.bottomCenter,
+                child: SizeTransition(
+                  sizeFactor: animation,
+                  axis: Axis.vertical,
+                  axisAlignment: -1.0,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 35.0,
+                      bottom: 30.0,
+                      left: 10,
+                      right: 10,
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        top: 50.0,
-                        left: 27.0,
-                        right: 27.0,
+                    child: GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        width: double.infinity,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.black.withOpacity(0.25),
+                              spreadRadius: 0,
+                              blurRadius: 20,
+                              offset: const Offset(0, 0),
+                            ),
+                          ],
+                          color: AppColors.white,
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(38.0),
+                          ),
+                        ),
+                        child: buildFormWidgets(),
                       ),
-                      child: buildFormWidgets(),
                     ),
                   ),
                 ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -173,17 +185,24 @@ class _FolderFormWidgetState extends State<FolderFormWidget>
       ),
     );
     animationController = AnimationController(
-      duration: const Duration(milliseconds: 250),
-      reverseDuration: const Duration(milliseconds: 350),
+      duration: const Duration(milliseconds: 400),
+      reverseDuration: const Duration(milliseconds: 400),
       vsync: this,
     );
     animation = CurvedAnimation(
       curve: Curves.fastOutSlowIn,
       parent: animationController,
     );
+    blurStatus = 18.0;
     animationController.forward();
-    animationController.addListener(() {
-      setState(() {});
+    animationController.addStatusListener((status) {
+      if (status == AnimationStatus.forward) {
+        blurStatus = 18.0;
+        setState(() {});
+      } else if (status == AnimationStatus.reverse) {
+        blurStatus = 0.0;
+        setState(() {});
+      }
     });
   }
 
@@ -191,50 +210,70 @@ class _FolderFormWidgetState extends State<FolderFormWidget>
     animationController.reverse().whenComplete(() => widget.onClose());
   }
 
-  void onDragClosing(details) {
-    if (details.delta.dy > 0) {
-      onClose();
-    }
-  }
-
-  Column buildFormWidgets() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          LocaleKeys.folderFormTitle.tr(),
-          style: GoogleFonts.alexandria(
-            fontSize: 34,
-            color: AppColors.darkBrown,
-            fontWeight: FontWeight.w500,
+  Widget buildFormWidgets() {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxHeight: 600),
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          Center(
+            child: Text(
+              widget.folder.id == -1
+                  ? LocaleKeys.folderFormTitle.tr()
+                  : LocaleKeys.editFolderFormTitle.tr(),
+              style: AppTextStyles.bigHeaderStyle,
+            ),
           ),
-        ),
-        const SizedBox(height: 20),
-        FolderPreviewWidget(cubit: cubit),
-        const SizedBox(
-          height: 21,
-        ),
-        StylePickerWidget(cubit: cubit),
-        const SizedBox(
-          height: 21,
-        ),
-        TextFieldWidget(cubit: cubit),
-        const SizedBox(
-          height: 24,
-        ),
-        AppTextButtonWidget(
-          icon: AppIcons.selected,
-          text: LocaleKeys.done.tr(),
-          onPressed: () {
-            widget.onDone(cubit.state.folder);
-            onClose();
-          },
-          color: AppColors.darkBrown,
-        ),
-        const SizedBox(
-          height: 30,
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 20,
+              left: 27.0,
+              right: 27.0,
+            ),
+            child: FolderPreviewWidget(cubit: cubit),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 21.0,
+              left: 27.0,
+              right: 27.0,
+              bottom: 21.0,
+            ),
+            child: StylePickerWidget(cubit: cubit),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 27.0,
+              right: 27.0,
+              bottom: 24,
+            ),
+            child: TextFieldWidget(cubit: cubit),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              AppTextButtonWidget(
+                text: LocaleKeys.cancel.tr(),
+                onPressed: onClose,
+                color: AppColors.darkGrey,
+                activeColor: AppColors.carmineRed,
+              ),
+              AppTextButtonWidget(
+                text: LocaleKeys.done.tr(),
+                onPressed: () {
+                  widget.onDone(cubit.state.folder);
+                  onClose();
+                },
+                color: AppColors.darkGrey,
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+        ],
+      ),
     );
   }
 

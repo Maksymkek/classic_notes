@@ -23,8 +23,10 @@ class AppIconButtonWidget extends StatefulWidget {
 
 class _AppIconButtonWidgetState extends State<AppIconButtonWidget>
     with SingleTickerProviderStateMixin {
-  late Animation<Color?> animation;
-  late AnimationController controller;
+  late final Animation<Color?> animation;
+  late final AnimationController controller;
+
+  late final Animation<double> scaleAnimation;
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +41,13 @@ class _AppIconButtonWidgetState extends State<AppIconButtonWidget>
       onTapCancel: () {
         controller.reverse();
       },
-      child: Icon(
-        widget.icon,
-        size: widget.iconSize,
-        color: animation.value,
+      child: ScaleTransition(
+        scale: scaleAnimation,
+        child: Icon(
+          widget.icon,
+          size: widget.iconSize,
+          color: animation.value,
+        ),
       ),
     );
   }
@@ -57,6 +62,7 @@ class _AppIconButtonWidgetState extends State<AppIconButtonWidget>
     );
     animation = ColorTween(begin: widget.color, end: widget.activeColor)
         .animate(controller);
+    scaleAnimation = Tween<double>(begin: 1, end: 0.9).animate(controller);
     animation.addListener(() {
       setState(() {});
     });
