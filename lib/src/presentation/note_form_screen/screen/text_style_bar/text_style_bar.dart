@@ -24,7 +24,6 @@ class TextStyleBar extends StatelessWidget {
         AnimatedContainer(
           constraints: const BoxConstraints(minHeight: 14, minWidth: 30),
           duration: const Duration(seconds: 1),
-          curve: Curves.elasticInOut,
           decoration: const BoxDecoration(
             color: AppColors.light,
             borderRadius: BorderRadius.all(Radius.circular(20.0)),

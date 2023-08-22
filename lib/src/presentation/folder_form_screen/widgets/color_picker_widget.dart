@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
 import 'package:notes/src/presentation/folder_form_screen/models/color_picker_model.dart';
-import 'package:notes/src/presentation/folder_form_screen/widgets/folder_form_widget.dart';
 
 class ColorPickerWidget extends StatefulWidget {
   const ColorPickerWidget({
     super.key,
     required this.model,
     required this.onPressed,
+    this.size,
   });
 
   final ColorPickerModel model;
+  final double? size;
+
   final Function(ColorPickerModel) onPressed;
 
   @override
@@ -32,8 +34,8 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget>
         padding: const EdgeInsets.only(left: 7.5, right: 7.5),
         child: Container(
           clipBehavior: Clip.antiAlias,
-          height: 28,
-          width: 28,
+          height: widget.size ?? 28,
+          width: widget.size ?? 28,
           decoration: BoxDecoration(
             color: widget.model.color,
             shape: BoxShape.circle,
@@ -42,7 +44,7 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget>
                 color: AppColors.black.withOpacity(0.23),
                 spreadRadius: 0,
                 blurRadius: 5,
-                offset: const Offset(0, 0), // changes position of shadow
+                offset: const Offset(0, 0),
               ),
             ],
           ),
@@ -52,7 +54,7 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget>
               opacity: animation,
               child: Icon(
                 AppIcons.selected,
-                size: 22,
+                size: widget.size ?? 22,
                 color: widget.model.iconColor,
               ),
             ),
@@ -66,7 +68,7 @@ class _ColorPickerWidgetState extends State<ColorPickerWidget>
   void initState() {
     super.initState();
     animationController = AnimationController(
-      duration: duration,
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
     animation = Tween(

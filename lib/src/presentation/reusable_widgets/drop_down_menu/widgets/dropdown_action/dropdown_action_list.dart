@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:notes/src/presentation/app_colors.dart';
-import 'package:notes/src/presentation/folder_form_screen/widgets/folder_form_widget.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/cubit/dropdown_menu_cubit.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/models/dropdown_item_model.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/visual_effects/item_states/active_item.dart';
@@ -82,11 +81,12 @@ class _DropDownActionListWidgetState extends State<DropDownActionListWidget>
   }
 
   void _onClose() {
-    controller.reverse().whenComplete(() => widget.onClose());
+    if (mounted) controller.reverse().whenComplete(() => widget.onClose());
   }
 
   Widget _buildActionWidgets() {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Spacer(),
         SizeTransition(
@@ -95,26 +95,30 @@ class _DropDownActionListWidgetState extends State<DropDownActionListWidget>
           axisAlignment: -1,
           child: Padding(
             padding: _getActionsListPadding(),
-            child: Material(
-              elevation: elevation,
-              animationDuration: const Duration(milliseconds: 250),
-              color: AppColors.transparent,
-              borderRadius:
-                  const BorderRadius.vertical(bottom: Radius.circular(10.0)),
-              clipBehavior: Clip.antiAlias,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: widget.item.actions
-                    .map(
-                      (action) => DropDownActionWidget(
-                        action: action,
-                        cubit: widget.cubit,
-                        item: widget.item,
-                        onClose: _onClose,
-                        animation: animation,
-                      ),
-                    )
-                    .toList(),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 200),
+              child: Material(
+                elevation: elevation,
+                animationDuration: const Duration(milliseconds: 250),
+                color: AppColors.transparent,
+                borderRadius:
+                    const BorderRadius.vertical(bottom: Radius.circular(10.0)),
+                clipBehavior: Clip.antiAlias,
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.only(top: 0.0),
+                  children: widget.item.actions
+                      .map(
+                        (action) => DropDownActionWidget(
+                          action: action,
+                          cubit: widget.cubit,
+                          item: widget.item,
+                          onClose: _onClose,
+                          animation: animation,
+                        ),
+                      )
+                      .toList(),
+                ),
               ),
             ),
           ),
@@ -135,11 +139,8 @@ class _DropDownActionListWidgetState extends State<DropDownActionListWidget>
       top += DisabledItemState.getInstance().itemHeight;
       i += 1;
     }
-    return EdgeInsets.fromLTRB(
-      0,
-      top + ActiveItemState.getInstance().itemHeight,
-      0,
-      0,
+    return EdgeInsets.only(
+      top: top + ActiveItemState.getInstance().itemHeight + 10,
     );
   }
 }

@@ -13,13 +13,15 @@ abstract class AppColors {
 
   static const darkGrey = Color.fromRGBO(25, 25, 25, 1.0);
 
+  static const darkerGrey = Color.fromRGBO(75, 75, 75, 1.0);
+
   static const seashellWhite = Color.fromRGBO(255, 245, 238, 1.0);
 
   static const brightBlue = Color.fromRGBO(0, 150, 255, 1.0);
 
   static const lightBlue = Color.fromRGBO(194, 231, 255, 1.0);
 
-  static const lightBrown = Color.fromRGBO(196, 164, 132, 1.0);
+  static const lightToggledGrey = Color.fromRGBO(171, 169, 169, 1.0);
 
   static const khaki = Color.fromRGBO(240, 230, 140, 1.0);
 

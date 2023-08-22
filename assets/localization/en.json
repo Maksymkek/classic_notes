@@ -13,7 +13,9 @@
   },
   "done": "Done",
   "folderFormTitle": "New folder",
+  "editFolderFormTitle": "Edit folder",
   "sortBy": "Sort by",
+  "cancel": "Cancel",
   "date": "date",
   "name": "name",
   "custom": "custom",
@@ -29,5 +31,8 @@
   "ukrainian" : "ukrainian",
   "share": "Share",
   "save": "Save",
-  "restartForChanges": "Restart app for changes"
+  "ok": "Submit",
+  "restartForChanges": "Restart app for changes",
+  "folderDeleteAlert": "Are you sure you want to delete the folder {} and all its contents?",
+  "noteDeleteAlert": "Are you sure you want to delete the note {}?"
 }

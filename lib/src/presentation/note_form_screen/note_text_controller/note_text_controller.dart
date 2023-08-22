@@ -1,45 +1,65 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_logs/flutter_logs.dart';
-import 'package:notes/src/domain/entity/item/note.dart';
-import 'package:notes/src/presentation/note_form_screen/cubit/note_form_cubit.dart';
-import 'package:notes/src/presentation/note_form_screen/extensions/text_metadata_extension.dart';
-import 'package:notes/src/presentation/note_form_screen/note_text_controller/list_controller/base_list.dart';
-import 'package:notes/src/presentation/note_form_screen/note_text_controller/list_controller/list_status.dart';
-import 'package:notes/src/presentation/note_form_screen/note_text_controller/metadata_model/metadata_model.dart';
-import 'package:notes/src/presentation/note_form_screen/note_text_controller/metadata_model/metadata_styles.dart';
-import 'package:notes/src/presentation/note_form_screen/note_text_controller/text_offset/text_offset.dart';
-import 'package:notes/src/presentation/note_form_screen/note_text_controller/title_controller/note_title.dart';
-import 'package:notes/src/presentation/note_form_screen/note_text_controller/undo_controller/rich_undo_controller.dart';
-import 'package:rich_text_editor_controller/rich_text_editor_controller.dart';
+// ignore_for_file: invalid_use_of_protected_member
 
-/// powerful class which describes controller for rich text redactor
-class NoteTextController {
-  NoteTextController(this._cubit, {Map<String, dynamic>? controllerMap}) {
+part of 'package:notes/src/presentation/note_form_screen/note_text_controller/note_input_controller.dart';
+
+/// Manages rich text control
+abstract class NoteTextController {
+  NoteTextController(this._cubit, Map<String, dynamic>? controllerMap) {
     _initController(controllerMap);
-    _textOffset = TextOffset(_controller, _oldTextDeltas, _cubit);
+    _textOffset = TextOffset(_controller, oldTextDeltas, _cubit);
     _textOffset.oldBaseSelectionOffset = _controller.deltas.length;
     _undoController = RichUndoController(_controller, _cubit);
     _setCursorListener();
-    _noteTitle =
-        NoteTitle(_controller, _cubit, _oldTextDeltas, _textOffset, null);
   }
 
-  /// initialize [_controller]
+  final NoteFormCubit _cubit;
+
+  @protected
+  NoteFormCubit get cubit => _cubit;
+
+  /// Needed to detect bugs in the deltas
+  List<TextDelta> _oldTextDeltas = [];
+
+  @protected
+  List<TextDelta> oldTextDeltas() => _oldTextDeltas;
+
+  late final RichTextEditorController _controller;
+
+  RichTextEditorController get controller => _controller;
+
+  late final TextOffset _textOffset;
+
+  @protected
+  TextOffset get textOffset => _textOffset;
+
+  late final RichUndoController _undoController;
+
+  /// Needed to store class descendants instances
+  ListInput? _listInput;
+
+  /// Need to call when user changed text
+  void onTextChange();
+
+  /// Add symbols to controller
+  ///
+  /// WARNING: Length of the symbol in [chars] mustn't be bigger than 1. Only one symbol in the String
+  void addText(List<String> chars);
+
+  /// Initializes [_controller]
   void _initController(Map<String, dynamic>? controllerMap) {
     if (controllerMap != null) {
       _controller = RichTextEditorController.fromMap(controllerMap);
       _oldTextDeltas = List.from(_controller.deltas);
     } else {
-      _controller = RichTextEditorController();
+      _controller = RichTextEditorController()
+        ..metadata = TextMetaDataStyles.mainHeaderText;
     }
   }
 
-  /// add listener to the [_controller] for the [_textOffset] detection
+  /// Add listener to the [_controller] for the [_textOffset] detection
   void _setCursorListener() {
     _controller.addListener(() {
-      if (_controller.selection.baseOffset !=
-              _textOffset.oldBaseSelectionOffset &&
-          _oldTextDeltas.length == _controller.deltas.length) {
+      if (_cursorMoved()) {
         if (_controller.selection.isCollapsed) {
           _textOffset.onSelection();
         } else {
@@ -49,43 +69,15 @@ class NoteTextController {
     });
   }
 
-//-------------------------------------------------------------------------------
-  final NoteFormCubit _cubit;
-
-  late final TextOffset _textOffset;
-
-  late final NoteTitle _noteTitle;
-
-  late final RichUndoController _undoController;
-
-  late final RichTextEditorController _controller;
-
-  RichTextEditorController get controller => _controller;
-
-  /// needed to detect bugs in the package
-  List<TextDelta> _oldTextDeltas = [];
-
-  /// needed to store class descendants instances
-  ListInput? _listInput;
-
-//-------------------------------------------------------------------------------
-
-  /// need to call when user changed text
-  void onTextChange() {
-    int bufferLastCharIndex = _updateDeltas();
-    _noteTitle.titleWatcher();
-    if (!bufferLastCharIndex.isNegative) {
-      _undoController.updateBuffer(
-        _controller.deltas[bufferLastCharIndex].char,
-        _controller.deltas,
-        _controller.text,
-      );
-    }
+  bool _cursorMoved() {
+    return _controller.selection.baseOffset !=
+            _textOffset.oldBaseSelectionOffset &&
+        _oldTextDeltas.length == _controller.deltas.length;
   }
 
-  /// corrects styles for new text
+  /// Corrects and adds styles for new text
   int _updateDeltas() {
-    var baseOffset = _controller.selection.baseOffset;
+    final baseOffset = _controller.selection.baseOffset;
     bool textAdded = false;
     bool textDeleted = false;
     if (_controller.deltas.length <= 1) {
@@ -116,17 +108,17 @@ class NoteTextController {
     return -1;
   }
 
-  /// corrects styles if user added text
+  /// Corrects and adds styles if user added text
   int _updateAddedDeltas(int baseOffset) {
     baseOffset = _textOffset.getTrueOffset(baseOffset);
-    var addedTextLength = _controller.deltas.length - _oldTextDeltas.length;
-    var startIndex = baseOffset - addedTextLength;
-    var endIndex = baseOffset - 1;
+    final addedTextLength = _controller.deltas.length - _oldTextDeltas.length;
+    final startIndex = baseOffset - addedTextLength;
+    final endIndex = baseOffset - 1;
     try {
-      var startRangeDelta = _controller.deltas[startIndex];
+      final startRangeDelta = _controller.deltas[startIndex];
       if (_needToggleMetadata(startRangeDelta)) {
         for (int i = startIndex; i <= endIndex; i++) {
-          var delta = TextDelta(
+          final delta = TextDelta(
             char: _controller.deltas[i].char,
             metadata: _cubit.state.currentMetadata.metadata,
           );
@@ -136,28 +128,33 @@ class NoteTextController {
         _cubit.state.currentMetadata.justToggled = false;
       } else {
         for (int i = startIndex; i <= endIndex; i++) {
-          var prevSymbol = startIndex - 1;
-          var delta = TextDelta(
+          var prevSymbolIndex = startIndex - 1;
+          final TextMetadata metadata = prevSymbolIndex < 0
+              ? TextMetaDataStyles.mainHeaderText
+              : _controller.deltas[prevSymbolIndex].metadata!;
+
+          final delta = TextDelta(
             char: _controller.deltas[i].char,
-            metadata: _controller.deltas[prevSymbol].metadata,
+            metadata: metadata,
           );
           _controller.deltas[i] = delta;
           _oldTextDeltas.insert(i, delta.copyWith());
         }
       }
     } catch (_) {}
-    _fixBuggedDeltas();
+
+    if (addedTextLength > 1) _fixBuggedDeltas();
     if (_controller.deltas[endIndex].char == '\n') {
       _listWatcher();
     }
     return endIndex;
   }
 
-  /// corrects styles if user deleted text
+  /// Corrects and adds styles if user deleted text
   int _updateDeletedDeltas(int baseOffset) {
     baseOffset = _textOffset.getTrueOffset(baseOffset);
-    int deletedRange = _oldTextDeltas.length - _controller.deltas.length;
-    int endOffset = deletedRange + baseOffset;
+    final deletedRange = _oldTextDeltas.length - _controller.deltas.length;
+    final endOffset = deletedRange + baseOffset;
     if (_textOffset.replacedByEmoji) {
       _oldTextDeltas[baseOffset - 1] = _controller.deltas[baseOffset - 1];
     }
@@ -170,12 +167,11 @@ class NoteTextController {
       );
     }
     _oldTextDeltas.removeRange(baseOffset, endOffset);
-
-    _fixBuggedDeltas();
+    if (deletedRange > 1) _fixBuggedDeltas();
     return baseOffset - 1;
   }
 
-  /// return whether need to grab metadata from previous symbol or
+  /// Return whether need to grab metadata from previous symbol or
   /// toggle it. Used in [_updateAddedDeltas]
   bool _needToggleMetadata(TextDelta startRangeCharDelta) {
     return _cubit.state.currentMetadata.metadata !=
@@ -183,11 +179,11 @@ class NoteTextController {
         _cubit.state.currentMetadata.justToggled;
   }
 
-  /// needed to fix styles of the controller deltas
+  /// Needed to fix styles of the controller deltas
   void _fixBuggedDeltas() {
     for (int i = 0; i < _oldTextDeltas.length; i++) {
-      var newDelta = _controller.deltas[i];
-      var oldDelta = _oldTextDeltas[i];
+      final newDelta = _controller.deltas[i];
+      final oldDelta = _oldTextDeltas[i];
       if (oldDelta.metadata != newDelta.metadata) {
         _controller.deltas[i] = oldDelta.copyWith(char: newDelta.char);
       }
@@ -197,32 +193,32 @@ class NoteTextController {
     }
   }
 
-  /// returns whether text can be styled
-  bool textCanBeStyled() {
+  /// Returns whether text can be styled
+  bool _textCanBeStyled() {
     if (_controller.deltas.isEmpty) {
       return false;
     } else {
-      var trueOffset =
+      final trueOffset =
           _textOffset.getTrueOffset(_controller.selection.baseOffset - 1);
       if (trueOffset < 1) {
         return false;
       }
-      var selectedDelta = _controller.deltas[trueOffset - 1].metadata;
-      if (selectedDelta == TextMetaDataStyles.mainHeaderText) {
+      var selectedDelta = _controller.deltas[trueOffset];
+      if (selectedDelta.metadata == TextMetaDataStyles.mainHeaderText) {
         return false;
       }
       return true;
     }
   }
 
-  /// toggles text style
+  /// Toggles text style
   ///
   /// Parameters:
   ///
   ///[toggled] - will be used if current metadata is not equal to it
   ///
   /// [untoggled] - will be used if current metadata is [toggled]
-  void toggleStyle(CurrentMetadata toggled, CurrentMetadata untoggled) {
+  void _toggleStyle(CurrentMetadata toggled, CurrentMetadata untoggled) {
     if (_rangeIsSelected) {
       _toggleRangeStyle(toggled, untoggled);
       return;
@@ -242,11 +238,11 @@ class NoteTextController {
     }
   }
 
-  /// toggles selected range style
+  /// Toggles selected range style
   void _toggleRangeStyle(CurrentMetadata toggled, CurrentMetadata untoggled) {
-    var baseOffset =
+    final baseOffset =
         _textOffset.getTrueOffset(_controller.selection.baseOffset);
-    var extentOffset =
+    final extentOffset =
         _textOffset.getTrueOffset(_controller.selection.extentOffset);
 
     for (int i = baseOffset; i < extentOffset; i += 1) {
@@ -268,9 +264,8 @@ class NoteTextController {
         metadata: _controller.deltas[extentOffset - 1].metadata!,
       ),
     );
-    //cubit.state.controller.toggleSuperscript();
+    // ignore: invalid_use_of_visible_for_testing_member
     _controller.notifyListeners();
-    //cubit.state.controller.applyMetadataToTextInSelection(newMetadata: newMetadata, deltas: deltas, change: change, selection: selection);
     _undoController.updateBuffer(
       ' ',
       _controller.deltas,
@@ -280,64 +275,7 @@ class NoteTextController {
 
   bool get _rangeIsSelected => !_controller.selection.isCollapsed;
 
-  /// add symbols to controller
-  ///
-  /// WARNING: Length of the symbol in [symbols] mustn't be bigger than 1. Only one symbol in the String
-  void addText(List<String> symbols) {
-    try {
-      Future(() {
-        for (var symbol in symbols) {
-          if (symbol.length != 1) {
-            throw Exception([
-              'In function $addText symbol in $symbols had more than 1 length'
-            ]);
-          }
-        }
-      });
-      final currentOffset = _controller.selection.baseOffset + symbols.length;
-      final baseOffset =
-          _textOffset.getTrueOffset(_controller.selection.baseOffset);
-      if (needToAppend(baseOffset)) {
-        _oldTextDeltas.addAll(
-          symbols.map(
-            (char) => TextDelta(
-              char: char,
-              metadata: _cubit.state.currentMetadata.metadata,
-            ),
-          ),
-        );
-        String newText = _uniteInString(symbols);
-        _controller.text += newText;
-      } else {
-        _oldTextDeltas.insertAll(
-          baseOffset,
-          symbols.map(
-            (char) => TextDelta(
-              char: char,
-              metadata: _cubit.state.currentMetadata.metadata,
-            ),
-          ),
-        );
-        var charList = _controller.text.characters.toList();
-        charList.insertAll(baseOffset, symbols);
-        String newText = _uniteInString(charList);
-        _controller.text = newText;
-        _controller.selection = TextSelection(
-          baseOffset: currentOffset,
-          extentOffset: currentOffset,
-        );
-      }
-      _controller.setDeltas(_oldTextDeltas);
-    } on Exception catch (ex) {
-      FlutterLogs.logError(
-        'Presentation',
-        'NoteTextController',
-        ex.toString(),
-      );
-    }
-  }
-
-  ///unitTest [List] of symbols in [String]
+  ///UnitTest [List] of symbols in [String]
   String _uniteInString(List<String> symbolsToAdd) {
     String newText = '';
     for (final char in symbolsToAdd) {
@@ -346,11 +284,11 @@ class NoteTextController {
     return newText;
   }
 
-  bool needToAppend(int baseOffset) {
+  bool _needToAppend(int baseOffset) {
     return baseOffset == _controller.text.length || _controller.deltas.isEmpty;
   }
 
-  /// if [ListStatus] from state is not null adds the list separator in text
+  /// If [ListStatus] from state is not null adds the list separator in text
   void _listWatcher() {
     if (_cubit.state.listStatus != ListStatus.none) {
       List<String> separator = _listInput?.getSeparator(
@@ -362,58 +300,11 @@ class NoteTextController {
     }
   }
 
-  /// toggles current [ListStatus] to another(or deactivates if )
-  void toggleList(ListInput listInput) {
-    if (!textCanBeStyled()) {
-      return;
-    }
-    if (_cubit.state.listStatus == listInput.listStatus) {
-      _listInput = null;
-      _cubit.copyWith(listStatus: ListStatus.none);
-    } else {
-      _listInput = listInput;
-      _cubit.copyWith(listStatus: listInput.listStatus);
-    }
-  }
-
-  /// sets new deltas to controller
+  /// Sets new deltas to controller
   void _setControllerDeltas(List<TextDelta> deltas, String text) {
     _controller.setDeltas(deltas);
     _oldTextDeltas = List.from(deltas);
-    _noteTitle.oldTextDelta = _textOffset.oldTextDelta = _oldTextDeltas;
+
     _controller.text = text;
-  }
-
-  Future<void> undo() async {
-    final undoResult = await _undoController.undo();
-    if (undoResult != null) {
-      _setControllerDeltas(undoResult.deltas, undoResult.text);
-    }
-  }
-
-  Future<void> redo() async {
-    final redoResult = await _undoController.redo();
-    if (redoResult != null) {
-      _setControllerDeltas(redoResult.deltas, redoResult.text);
-    }
-  }
-
-  /// need to call before save. Returns whether can be saved and object to save
-  (bool, Note) prepareToSave(Note note) {
-    if (_undoController.bufferIterator == 0) {
-      return (false, note);
-    }
-    var endOfTitle = _controller.text.indexOf('\n');
-    final Note newNote;
-    if (endOfTitle != -1) {
-      newNote = note.copyWith(
-          title: _controller.text.substring(0, endOfTitle),
-          text: _controller.text.substring(endOfTitle),
-          dateOfLastChange: DateTime.now());
-    } else {
-      newNote = note.copyWith(title: _controller.text);
-    }
-    newNote.controllerMap = _controller.toMap();
-    return (true, newNote);
   }
 }

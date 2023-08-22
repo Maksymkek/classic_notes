@@ -37,9 +37,8 @@ class _DropDownActionWidgetState extends State<DropDownActionWidget> {
       onTap: () {
         if (widget.animation.isCompleted || widget.animation.isDismissed) {
           widget.cubit.onActionSelected(widget.action, context);
-          Future.delayed(
-            const Duration(milliseconds: 250),
-          ).whenComplete(() => widget.onClose());
+          Future.delayed(const Duration(milliseconds: 250))
+              .whenComplete(widget.onClose);
         }
       },
       onTapDown: (details) {
@@ -49,7 +48,7 @@ class _DropDownActionWidgetState extends State<DropDownActionWidget> {
       onTapUp: (details) {
         Future.delayed(const Duration(milliseconds: 200)).whenComplete(() {
           tapResponceColor = null;
-          setState(() {});
+          if (mounted) setState(() {});
         });
       },
       onTapCancel: () {
@@ -84,7 +83,7 @@ class _DropDownActionWidgetState extends State<DropDownActionWidget> {
                       child: Icon(
                         widget.action.icon,
                         size: widget.action.iconSize ?? 16,
-                        color: AppColors.darkBrown,
+                        color: AppColors.darkGrey,
                       ),
                     ),
                   ),
@@ -107,7 +106,7 @@ class _DropDownActionWidgetState extends State<DropDownActionWidget> {
           Icon(
             AppIcons.selected,
             size: 14,
-            color: AppColors.darkBrown,
+            color: AppColors.darkGrey,
           ),
           SizedBox(
             width: 10,

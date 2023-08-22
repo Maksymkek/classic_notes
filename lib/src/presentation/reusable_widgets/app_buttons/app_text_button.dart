@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 
 class AppTextButtonWidget extends StatefulWidget {
   const AppTextButtonWidget({
     super.key,
-    required this.icon,
+    this.icon,
     required this.text,
     required this.onPressed,
     this.iconSize = 26.0,
@@ -12,11 +13,14 @@ class AppTextButtonWidget extends StatefulWidget {
     this.activeColor = AppColors.green,
     this.textSize = 20.0,
     this.spacer = 5.0,
+    this.textStyle,
   });
+
   final String text;
   final VoidCallback onPressed;
-  final IconData icon;
+  final IconData? icon;
   final double iconSize;
+  final TextStyle? textStyle;
   final Color color;
   final Color activeColor;
   final double textSize;
@@ -28,7 +32,8 @@ class AppTextButtonWidget extends StatefulWidget {
 
 class _AppTextButtonWidgetState extends State<AppTextButtonWidget>
     with SingleTickerProviderStateMixin {
-  late Animation<Color?> animation;
+  late Animation<Color?> colorAnimation;
+  late Animation<double> scaleAnimation;
   late AnimationController controller;
 
   @override
@@ -44,22 +49,36 @@ class _AppTextButtonWidgetState extends State<AppTextButtonWidget>
       onTapCancel: () {
         controller.reverse();
       },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            widget.icon,
-            size: widget.iconSize,
-            color: animation.value,
-          ),
-          SizedBox(width: widget.spacer),
-          Text(
-            widget.text,
-            style: TextStyle(fontSize: widget.textSize, color: animation.value),
-          )
-        ],
-      ),
+      child: ScaleTransition(scale: scaleAnimation, child: _buildTextButton()),
     );
+  }
+
+  Widget _buildTextButton() {
+    final text = Text(
+      widget.text,
+      maxLines: 1,
+      textAlign: TextAlign.center,
+      style: widget.textStyle?.copyWith(color: colorAnimation.value) ??
+          GoogleFonts.nunito(
+            fontSize: widget.textSize,
+            color: colorAnimation.value,
+            fontWeight: FontWeight.w600,
+          ),
+    );
+    return widget.icon != null
+        ? Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                widget.icon,
+                size: widget.iconSize,
+                color: colorAnimation.value,
+              ),
+              SizedBox(width: widget.spacer),
+              text
+            ],
+          )
+        : text;
   }
 
   @override
@@ -70,9 +89,10 @@ class _AppTextButtonWidgetState extends State<AppTextButtonWidget>
       vsync: this,
       reverseDuration: const Duration(milliseconds: 600),
     );
-    animation = ColorTween(begin: widget.color, end: widget.activeColor)
+    colorAnimation = ColorTween(begin: widget.color, end: widget.activeColor)
         .animate(controller);
-    animation.addListener(() {
+    scaleAnimation = Tween<double>(begin: 1, end: 0.9).animate(controller);
+    colorAnimation.addListener(() {
       setState(() {});
     });
   }

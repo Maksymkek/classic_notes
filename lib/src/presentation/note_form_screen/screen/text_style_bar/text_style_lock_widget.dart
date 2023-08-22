@@ -41,10 +41,10 @@ class _TextStyleLockWidgetState extends State<TextStyleLockWidget> {
       },
       child: AnimatedPadding(
         padding: iconSize == 20 ? const EdgeInsets.all(3.0) : EdgeInsets.zero,
-        duration: const Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 350),
         child: TweenAnimationBuilder<double>(
           tween: Tween<double>(begin: 0, end: iconSize),
-          duration: const Duration(milliseconds: 250),
+          duration: const Duration(milliseconds: 350),
           builder: (BuildContext context, double size, Widget? child) {
             return Icon(
               AppIcons.lock,

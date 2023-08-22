@@ -37,10 +37,10 @@ class ActiveItemState implements ItemState {
   double horizontalPadding = 10;
 
   @override
-  Color dividerColor = AppColors.darkBrown;
+  Color dividerColor = AppColors.darkGrey;
 
   @override
-  Color textColor = AppColors.darkBrown;
+  Color textColor = AppColors.darkGrey;
 
   static ActiveItemState getInstance() {
     return _instance ?? (_instance = ActiveItemState._());

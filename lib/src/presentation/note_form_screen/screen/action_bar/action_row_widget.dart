@@ -19,7 +19,7 @@ class ActionsRowWidget extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(6.0)),
         border: Border.all(
-          color: AppColors.darkBrown,
+          color: AppColors.darkGrey,
           width: 1,
           strokeAlign: BorderSide.strokeAlignOutside,
         ),

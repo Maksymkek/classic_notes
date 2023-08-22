@@ -15,7 +15,6 @@
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:windowSoftInputMode="adjustResize"
-            android:screenOrientation="portrait"
             >
 
             <meta-data

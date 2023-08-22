@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:notes/src/dependencies/custom_icons.dart';
 
-//TODO need to unite project styles
 class AppIcons {
   static const medicine = CustomIcons.pills;
 
@@ -88,4 +87,8 @@ class AppIcons {
   static const pencilSlash = CupertinoIcons.pencil_slash;
 
   static const ellipsis = CupertinoIcons.ellipsis;
+
+  static const cancel = CupertinoIcons.xmark_circle;
+
+  static const done = CupertinoIcons.check_mark_circled;
 }

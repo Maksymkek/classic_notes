@@ -8,8 +8,8 @@ import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_settings_cubit/app_settings_state.dart';
 import 'package:notes/src/presentation/folder_form_screen/folder_form_button.dart';
 import 'package:notes/src/presentation/folder_form_screen/folder_form_overlay.dart';
-import 'package:notes/src/presentation/folders_screen/cubit/folder_page_cubit.dart';
 import 'package:notes/src/presentation/folders_screen/cubit/folder_page_state.dart';
+import 'package:notes/src/presentation/folders_screen/cubit/folder_screen_cubit.dart';
 import 'package:notes/src/presentation/folders_screen/screen/folder_actions_widget.dart';
 import 'package:notes/src/presentation/mixins/screen_need_redraw.dart';
 import 'package:notes/src/presentation/notes_app.dart';
@@ -31,7 +31,7 @@ class FolderScreen extends StatefulWidget {
 
 class _FolderScreenState extends State<FolderScreen>
     with RouteAware, ScreenRedraw {
-  late final FolderPageCubit cubit;
+  late final FolderScreenCubit cubit;
   late final Future<void> future;
   late List<DropDownItem> dropDownItems;
   late final AppSettings appSettings;
@@ -61,7 +61,7 @@ class _FolderScreenState extends State<FolderScreen>
           future: future,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              return BlocBuilder<FolderPageCubit, FolderPageState>(
+              return BlocBuilder<FolderScreenCubit, FolderPageState>(
                 bloc: cubit,
                 buildWhen: (prev, current) {
                   return (needRedraw(current, prev));
@@ -91,9 +91,9 @@ class _FolderScreenState extends State<FolderScreen>
     );
   }
 
-  ItemListWidget<Folder, FolderPageState, FolderPageCubit>
+  ItemListWidget<Folder, FolderPageState, FolderScreenCubit>
       buildFolderListWidget() =>
-          ItemListWidget<Folder, FolderPageState, FolderPageCubit>(
+          ItemListWidget<Folder, FolderPageState, FolderScreenCubit>(
             cubit: cubit,
             actionsWidget: FolderActionsWidget.new,
           );

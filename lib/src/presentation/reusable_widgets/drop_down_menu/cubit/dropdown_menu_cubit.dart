@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/cubit/dropdown_menu_state.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/models/dropdown_action_model.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/models/dropdown_item_model.dart';
@@ -8,10 +7,8 @@ import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/visual_ef
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/visual_effects/item_states/disabled_item.dart';
 
 class DropDownMenuCubit extends Cubit<DropDownMenuState> {
-  DropDownMenuCubit(List<DropDownItem> items, this.overlayState, double dy)
+  DropDownMenuCubit(List<DropDownItem> items, double dy)
       : super(DropDownMenuState(items: items, dy: dy));
-
-  final OverlayState overlayState;
 
   _copyWith({required List<DropDownItem> items}) {
     emit(DropDownMenuState(items: items, dy: state.dy));
@@ -28,7 +25,7 @@ class DropDownMenuCubit extends Cubit<DropDownMenuState> {
   }
 
   void onActionSelected(DropDownAction selectedAction, BuildContext context) {
-    if (selectedAction.isSelected == false) {
+    if (!selectedAction.isSelected) {
       selectedAction.onTap(context);
       List<DropDownItem> newItems = state.items.map((item) {
         var newItem = DropDownItem.from(item);
@@ -60,7 +57,6 @@ class DropDownMenuCubit extends Cubit<DropDownMenuState> {
     selectedItem.isActive = selectedItem.isActive ? false : true;
     final newItems = state.items.map((item) {
       if (state.items.indexOf(item) == id) {
-        for (var action in selectedItem.actions) {}
         return selectedItem;
       } else {
         item.visualState = DisabledItemState.getInstance();
@@ -80,15 +76,6 @@ class DropDownMenuCubit extends Cubit<DropDownMenuState> {
       return newItem;
     }).toList();
     _copyWith(items: newItems);
-  }
-
-  int _getActionId(DropDownAction action, DropDownItem item) {
-    for (var oldAction in item.actions) {
-      if (action.title == oldAction.title) {
-        return item.actions.indexOf(oldAction);
-      }
-    }
-    return -1;
   }
 
   int getItemId(DropDownItem item) {

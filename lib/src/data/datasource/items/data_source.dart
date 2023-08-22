@@ -3,6 +3,7 @@ import 'package:notes/src/domain/entity/item/item.dart';
 
 abstract class DataSource<Entity extends Item> {
   DataSource(this.boxName, this.settings);
+
   final String boxName;
 
   final ItemSettingsDataSource settings;

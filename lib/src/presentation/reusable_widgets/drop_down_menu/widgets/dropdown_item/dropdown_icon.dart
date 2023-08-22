@@ -46,7 +46,7 @@ class _DropDownIconWidgetState extends State<DropDownIconWidget>
       duration: const Duration(milliseconds: 250),
       vsync: this,
     );
-    animation = ColorTween(begin: AppColors.darkBrown, end: AppColors.white)
+    animation = ColorTween(begin: AppColors.darkGrey, end: AppColors.white)
         .animate(animationController);
     animation.addListener(() {
       setState(() {});

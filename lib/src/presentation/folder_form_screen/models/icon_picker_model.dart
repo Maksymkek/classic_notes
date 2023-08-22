@@ -8,7 +8,7 @@ class IconPickerModel extends Equatable {
     required this.icon,
     required this.iconSize,
     required this.trueIconSize,
-    this.color = AppColors.darkBrown,
+    this.color = AppColors.darkGrey,
   });
 
   bool isActive;

@@ -14,13 +14,14 @@ class Folder extends Item {
   Icon icon;
 
   Folder copyWith({
+    int? id,
     String? title,
     Color? background,
     Icon? icon,
     DateTime? dateOfLastChange,
   }) {
     return Folder(
-      id: id,
+      id: id ?? this.id,
       title: title ?? this.title,
       background: background ?? this.background,
       icon: icon ?? this.icon,

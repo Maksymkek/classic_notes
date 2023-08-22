@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notes/src/presentation/app_colors.dart';
+import 'package:notes/src/presentation/app_shadow.dart';
 import 'package:notes/src/presentation/folder_form_screen/models/icon_picker_model.dart';
-import 'package:notes/src/presentation/folder_form_screen/widgets/folder_form_widget.dart';
 
 class IconPickerWidget extends StatelessWidget {
   const IconPickerWidget({
@@ -21,17 +21,18 @@ class IconPickerWidget extends StatelessWidget {
         onTap: () => onPressed(model),
         behavior: HitTestBehavior.translucent,
         child: AnimatedContainer(
-          duration: duration,
+          duration: const Duration(milliseconds: 200),
           height: 28,
           width: 28,
           decoration: BoxDecoration(
             color: AppColors.white,
             shape: BoxShape.circle,
-            boxShadow: model.isActive ? [shadow] : null,
+            boxShadow: model.isActive ? [AppShadow.baseShadow] : null,
           ),
           child: Align(
-              alignment: Alignment.center,
-              child: Icon(model.icon, size: model.iconSize)),
+            alignment: Alignment.center,
+            child: Icon(model.icon, size: model.iconSize),
+          ),
         ),
       ),
     );

@@ -1,10 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
+import 'package:notes/src/presentation/app_text_styles.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/cubit/dropdown_menu_cubit.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/cubit/dropdown_menu_state.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/models/dropdown_item_model.dart';
@@ -113,11 +112,6 @@ class _DropDownItemWidgetState extends State<DropDownItemWidget> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     overlayEntry?.remove();
     overlayEntry = null;
@@ -140,7 +134,7 @@ class _DropDownItemWidgetState extends State<DropDownItemWidget> {
         );
       },
     );
-    widget.cubit.overlayState.insert(overlayEntry!);
+    Overlay.of(context).insert(overlayEntry!);
   }
 
   Future<void> _removeHighlightOverlay() async {
@@ -208,7 +202,7 @@ class _DropDownItemWidgetState extends State<DropDownItemWidget> {
       width: widget.item.visualState.maxTextSpace,
       child: AnimatedDefaultTextStyle(
         curve: Curves.easeInOut,
-        style: GoogleFonts.roboto(
+        style: GoogleFonts.mPlusRounded1c(
           color: widget.item.visualState.textColor,
           fontSize: widget.item.visualState.textSize,
         ),
@@ -216,6 +210,7 @@ class _DropDownItemWidgetState extends State<DropDownItemWidget> {
         child: Text(
           widget.item.title,
           maxLines: 1,
+          style: AppTextStyles.smallDropDownStyle,
           overflow: TextOverflow.ellipsis,
         ),
       ),

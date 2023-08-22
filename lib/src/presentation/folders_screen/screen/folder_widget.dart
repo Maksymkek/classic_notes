@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:notes/src/dependencies/extensions/date_time_extension.dart';
 import 'package:notes/src/domain/entity/item/folder.dart';
 import 'package:notes/src/presentation/app_colors.dart';
+import 'package:notes/src/presentation/app_shadow.dart';
 import 'package:notes/src/presentation/app_text_styles.dart';
-import 'package:notes/src/presentation/folder_form_screen/widgets/folder_form_widget.dart';
 import 'package:notes/src/presentation/notes_screen/screen/notes_screen_widget.dart';
 
 class FolderWidget extends StatefulWidget {
@@ -67,7 +66,7 @@ class _FolderWidgetState extends State<FolderWidget>
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: widget.folder.background,
-                    boxShadow: widget.previewMode ? [shadow] : [],
+                    boxShadow: widget.previewMode ? [AppShadow.baseShadow] : [],
                     borderRadius: const BorderRadius.all(Radius.circular(15.0)),
                   ),
                   child: widget.folder.icon,
@@ -82,15 +81,18 @@ class _FolderWidgetState extends State<FolderWidget>
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(15.0),
-                      boxShadow: widget.previewMode ? [shadow] : [],
+                      boxShadow:
+                          widget.previewMode ? [AppShadow.baseShadow] : [],
                       color: widget.previewMode
                           ? AppColors.white
                           : animation.value,
                     ),
-                    child: Text(widget.folder.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: AppTextStyles.middleStyle),
+                    child: Text(
+                      widget.folder.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppTextStyles.middleStyle,
+                    ),
                   ),
                 ),
               ],
@@ -103,10 +105,8 @@ class _FolderWidgetState extends State<FolderWidget>
                   widget.folder.dateOfLastChange.getDateTimeString(),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.alexandria(
-                    color: AppColors.hintGrey,
-                    fontSize: 11,
-                  ),
+                  style: AppTextStyles.extraSmallStyle
+                      .copyWith(color: AppColors.hintGrey),
                 ),
               ),
             )

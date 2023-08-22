@@ -1,6 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/generated/locale_keys.g.dart';
 import 'package:notes/src/dependencies/di.dart';
@@ -10,10 +9,10 @@ import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
 import 'package:notes/src/presentation/app_settings_cubit/app_settings_cubit.dart';
 import 'package:notes/src/presentation/app_settings_cubit/app_settings_state.dart';
+import 'package:notes/src/presentation/reusable_widgets/alert_dialog/alert_dialog.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/dropdown_overlay.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/models/dropdown_action_model.dart';
 import 'package:notes/src/presentation/reusable_widgets/drop_down_menu/models/dropdown_item_model.dart';
-import 'package:notes/src/presentation/reusable_widgets/snack_bar/snack_bar_widget.dart';
 
 class DropDownButtonWidget extends StatefulWidget {
   const DropDownButtonWidget({super.key, required this.dropdownItems});
@@ -26,8 +25,9 @@ class DropDownButtonWidget extends StatefulWidget {
 
 class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
     with TickerProviderStateMixin {
-  late AnimationController buttonAnimationController;
-  late Animation<Color?> buttonAnimation;
+  late final AnimationController controller;
+  late final Animation<Color?> colorAnimation;
+  late final Animation<double> scaleAnimation;
   late List<DropDownItem> settingsItems;
   late Future<void> setAppSettingsFuture;
   late AppSettingsCubit cubit;
@@ -44,21 +44,24 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
               rewriteItems();
               DropDownOverlayManager.buildOverlay(
                 context: context,
-                buttonAnimationController: buttonAnimationController,
+                buttonAnimationController: controller,
                 dropDownItems: settingsItems,
               );
             },
             onTapDown: (details) {
-              buttonAnimationController.forward();
+              controller.forward();
             },
             onTapCancel: () {
-              buttonAnimationController.reverse();
+              controller.reverse();
             },
-            child: Icon(
-              AppIcons.ellipsis,
-              key: null, //dropDownWidgetKey,
-              color: buttonAnimation.value ?? AppColors.darkBrown,
-              size: 34,
+            child: ScaleTransition(
+              scale: scaleAnimation,
+              child: Icon(
+                AppIcons.ellipsis,
+                key: null, //dropDownWidgetKey,
+                color: colorAnimation.value ?? AppColors.darkGrey,
+                size: 38,
+              ),
             ),
           );
         },
@@ -71,15 +74,15 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
     super.initState();
     cubit = ServiceLocator.getInstance().appSettingsCubit;
     _setItems();
-    buttonAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 250),
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 150),
       vsync: this,
-      reverseDuration: const Duration(milliseconds: 350),
     );
-    buttonAnimation =
-        ColorTween(begin: AppColors.darkBrown, end: AppColors.lightBrown)
-            .animate(buttonAnimationController);
-    buttonAnimation.addListener(() {
+    colorAnimation =
+        ColorTween(begin: AppColors.darkGrey, end: AppColors.lightToggledGrey)
+            .animate(controller);
+    scaleAnimation = Tween<double>(begin: 1, end: 0.9).animate(controller);
+    colorAnimation.addListener(() {
       setState(() {});
     });
   }
@@ -123,11 +126,8 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
             title: LocaleKeys.english.tr(),
             onTap: (context) {
               cubit.onLanguageChanged(AppLanguage.english);
-              showSnackBar(
-                context,
-                LocaleKeys.restartForChanges.tr(),
-                CupertinoIcons.restart,
-              );
+              AppAlertDialog.showMessageDialog(
+                  context, LocaleKeys.restartForChanges.tr());
             },
             isSelected: settings.language == AppLanguage.english,
             icon: AppIcons.listItem,
@@ -136,17 +136,16 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
             title: LocaleKeys.ukrainian.tr(),
             onTap: (context) {
               cubit.onLanguageChanged(AppLanguage.ukrainian);
-              showSnackBar(
+              AppAlertDialog.showMessageDialog(
                 context,
                 LocaleKeys.restartForChanges.tr(),
-                CupertinoIcons.restart,
               );
             },
             isSelected: settings.language == AppLanguage.ukrainian,
             icon: AppIcons.listItem,
           ),
         ],
-      )
+      ),
     ];
   }
 
@@ -159,8 +158,7 @@ class _DropDownButtonWidgetState extends State<DropDownButtonWidget>
   @override
   void dispose() {
     DropDownOverlayManager.dispose();
-    buttonAnimationController.dispose();
-
+    controller.dispose();
     super.dispose();
   }
 }

@@ -1,4 +1,4 @@
-/// needed to check whether buffer can redo or undo
+/// Needed to check whether buffer can redo or undo
 class BufferStatus {
   BufferStatus({this.canRedo = false, this.canUndo = false});
 
@@ -7,6 +7,8 @@ class BufferStatus {
 
   BufferStatus copyWith({bool? canRedo, bool? canUndo}) {
     return BufferStatus(
-        canRedo: canRedo ?? this.canRedo, canUndo: canUndo ?? this.canUndo);
+      canRedo: canRedo ?? this.canRedo,
+      canUndo: canUndo ?? this.canUndo,
+    );
   }
 }

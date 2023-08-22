@@ -2,10 +2,10 @@ import 'dart:ui';
 
 import 'package:notes/src/presentation/note_form_screen/metadata/font_style_data.dart';
 import 'package:notes/src/presentation/note_form_screen/note_text_controller/metadata_model/metadata_styles.dart';
-import 'package:notes/src/presentation/note_form_screen/note_text_controller/note_text_controller.dart';
+import 'package:notes/src/presentation/note_form_screen/note_text_controller/note_input_controller.dart';
 import 'package:rich_text_editor_controller/rich_text_editor_controller.dart';
 
-/// represents current [TextMetadata] for [NoteTextController] and has additional
+/// Represents current [TextMetadata] for [NoteInputController] and has additional
 /// properties for [NoteFormCubit]
 class CurrentMetadata {
   CurrentMetadata({
@@ -14,15 +14,15 @@ class CurrentMetadata {
     this.canBeStyled = true,
   });
 
-  /// if [TextMetadata] was just toggled to another
+  /// If [TextMetadata] was just toggled to another
   bool justToggled;
 
   final TextMetadata metadata;
 
-  /// shows if the [TextMetadata] can be changed
+  /// Shows if the [TextMetadata] can be changed
   bool canBeStyled;
 
-  /// checks if given [MetadataValue] is active in [metadata]
+  /// Checks if given [MetadataValue] is active in [metadata]
   bool isMetaDataActive(MetadataValue metadataValue) {
     bool isActive = false;
     switch (metadataValue) {

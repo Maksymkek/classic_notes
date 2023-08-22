@@ -10,12 +10,11 @@ import 'package:notes/src/domain/use_case/item_case/update_item_interactor.dart'
 import 'package:notes/src/domain/use_case/item_case/update_items_order_interactor.dart';
 import 'package:notes/src/domain/use_case/settings_case/item_settings_case/get_setting_interactor.dart';
 import 'package:notes/src/domain/use_case/settings_case/item_settings_case/set_setting_interactor.dart';
+import 'package:notes/src/presentation/folders_screen/cubit/folder_page_state.dart';
 import 'package:notes/src/presentation/interfaces/screen_cubit.dart';
 
-import 'folder_page_state.dart';
-
-class FolderPageCubit extends ScreenCubit<Folder, FolderPageState> {
-  FolderPageCubit({
+class FolderScreenCubit extends ScreenCubit<Folder, FolderPageState> {
+  FolderScreenCubit({
     required this.folderRepository,
     required this.getFoldersInteractor,
     required this.addFolderInteractor,
@@ -72,17 +71,27 @@ class FolderPageCubit extends ScreenCubit<Folder, FolderPageState> {
 
   Future<void> onAddFolderClick(Folder folder) async {
     await addFolderInteractor(folder);
-    _copyWith(folders: await getFolders());
+    Map<int, Folder> newFolders = Map.from(state.items)
+      ..[state.items.length] =
+          folder.copyWith(id: getId(), dateOfLastChange: DateTime.now());
+    _copyWith(folders: newFolders);
   }
 
   Future<void> onUpdateFolderClick(Folder folder) async {
     await updateFolderInteractor(folder);
-    _copyWith(folders: await getFolders());
+    Map<int, Folder> newFolders = Map.from(state.items)
+      ..update(
+        getMapKey(folder),
+        (value) => folder.copyWith(dateOfLastChange: DateTime.now()),
+      );
+    _copyWith(folders: newFolders);
   }
 
   Future<void> onDeleteFolderClick(Folder folder) async {
     await deleteFolderInteractor(folder);
-    _copyWith(folders: await getFolders());
+    Map<int, Folder> newFolders = Map.from(state.items)
+      ..removeWhere((key, value) => value == folder);
+    _copyWith(folders: reindexMap(newFolders));
   }
 
   @override
