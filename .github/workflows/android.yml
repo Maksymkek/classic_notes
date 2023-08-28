@@ -1,5 +1,5 @@
 name: Develop workflow
-on: [workflow_dispatch]
+on: workflow_dispatch
 jobs:
   print:
     runs-on: windows-latest
