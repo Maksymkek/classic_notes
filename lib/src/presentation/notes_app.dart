@@ -1,8 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:notes/src/dependencies/di.dart';
-
-//import 'generated/locale_keys.g.dart';
 import 'router/router.dart';
 
 class NotesApp extends StatefulWidget {
