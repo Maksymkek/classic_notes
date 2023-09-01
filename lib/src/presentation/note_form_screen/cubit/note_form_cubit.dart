@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/src/domain/entity/item/note.dart';
+import 'package:notes/src/presentation/interfaces/screen_cubit.dart';
 import 'package:notes/src/presentation/note_form_screen/cubit/note_form_state.dart';
 import 'package:notes/src/presentation/note_form_screen/metadata/font_style_data.dart';
 import 'package:notes/src/presentation/note_form_screen/note_text_controller/list_controller/dotted_list.dart';
@@ -11,7 +12,6 @@ import 'package:notes/src/presentation/note_form_screen/note_text_controller/met
 import 'package:notes/src/presentation/note_form_screen/note_text_controller/metadata_model/metadata_styles.dart';
 import 'package:notes/src/presentation/note_form_screen/note_text_controller/note_input_controller.dart';
 import 'package:notes/src/presentation/note_form_screen/note_text_controller/undo_controller/buffer_status.dart';
-import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
 import 'package:rich_text_editor_controller/rich_text_editor_controller.dart';
 
 class NoteFormCubit extends Cubit<NoteForm> {

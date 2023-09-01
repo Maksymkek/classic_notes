@@ -6,10 +6,10 @@ import 'package:notes/src/domain/entity/item/folder.dart';
 import 'package:notes/src/domain/entity/item/note.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
+import 'package:notes/src/presentation/interfaces/screen_cubit.dart';
 import 'package:notes/src/presentation/mixins/screen_need_redraw.dart';
 import 'package:notes/src/presentation/note_form_screen/screen/note_form_screen.dart';
 import 'package:notes/src/presentation/notes_app.dart';
-import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
 import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_state.dart';
 import 'package:notes/src/presentation/notes_screen/screen/notes_widget_actions.dart';
 import 'package:notes/src/presentation/reusable_widgets/app_buttons/icon_button.dart';
@@ -120,7 +120,7 @@ class _NotesScreenWidgetState extends State<NotesScreenWidget>
   @override
   void initState() {
     super.initState();
-    cubit = NoteScreenCubit.fromCache(widget.folder);
+    cubit = NoteScreenCubit.getInstance(widget.folder);
     screenLoad = cubit.onScreenLoad();
   }
 

@@ -3,8 +3,8 @@ import 'package:notes/src/dependencies/extensions/date_time_extension.dart';
 import 'package:notes/src/domain/entity/item/note.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_text_styles.dart';
+import 'package:notes/src/presentation/interfaces/screen_cubit.dart';
 import 'package:notes/src/presentation/note_form_screen/screen/note_form_screen.dart';
-import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
 
 class NoteWidget extends StatefulWidget {
   const NoteWidget({

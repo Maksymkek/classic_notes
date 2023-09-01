@@ -12,4 +12,6 @@ abstract class ItemRepository<Entity extends Item>
   Future<void> deleteItem(Entity item);
 
   Future<void> updateItemsOrder(Map<int, Entity> items);
+
+  Future<void> deleteAll();
 }

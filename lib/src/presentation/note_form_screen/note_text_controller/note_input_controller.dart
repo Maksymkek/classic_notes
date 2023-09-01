@@ -36,18 +36,19 @@ class NoteInputController extends NoteTextController with TitleController {
     }
   }
 
+  bool isSymbols(List<String> chars) {
+    for (var symbol in chars) {
+      if (symbol.length != 1) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   @override
   void addText(List<String> chars) {
     try {
-      Future(() {
-        for (var symbol in chars) {
-          if (symbol.length != 1) {
-            throw Exception([
-              'In function $addText symbol in $chars had more than 1 length'
-            ]);
-          }
-        }
-      });
+      assert(isSymbols(chars), '$chars includes non one-symbol $String');
       final currentOffset = _controller.selection.baseOffset + chars.length;
       final baseOffset =
           _textOffset.getTrueOffset(_controller.selection.baseOffset);

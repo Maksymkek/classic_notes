@@ -8,9 +8,9 @@ import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_settings_cubit/app_settings_state.dart';
 import 'package:notes/src/presentation/folder_form_screen/folder_form_button.dart';
 import 'package:notes/src/presentation/folder_form_screen/folder_form_overlay.dart';
-import 'package:notes/src/presentation/folders_screen/cubit/folder_page_state.dart';
-import 'package:notes/src/presentation/folders_screen/cubit/folder_screen_cubit.dart';
+import 'package:notes/src/presentation/folders_screen/cubit/folder_screen_state.dart';
 import 'package:notes/src/presentation/folders_screen/screen/folder_actions_widget.dart';
+import 'package:notes/src/presentation/interfaces/screen_cubit.dart';
 import 'package:notes/src/presentation/mixins/screen_need_redraw.dart';
 import 'package:notes/src/presentation/notes_app.dart';
 import 'package:notes/src/presentation/reusable_widgets/appbar/appbar.dart';
@@ -61,7 +61,7 @@ class _FolderScreenState extends State<FolderScreen>
           future: future,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              return BlocBuilder<FolderScreenCubit, FolderPageState>(
+              return BlocBuilder<FolderScreenCubit, FolderScreenState>(
                 bloc: cubit,
                 buildWhen: (prev, current) {
                   return (needRedraw(current, prev));
@@ -91,9 +91,9 @@ class _FolderScreenState extends State<FolderScreen>
     );
   }
 
-  ItemListWidget<Folder, FolderPageState, FolderScreenCubit>
+  ItemListWidget<Folder, FolderScreenState, FolderScreenCubit>
       buildFolderListWidget() =>
-          ItemListWidget<Folder, FolderPageState, FolderScreenCubit>(
+          ItemListWidget<Folder, FolderScreenState, FolderScreenCubit>(
             cubit: cubit,
             actionsWidget: FolderActionsWidget.new,
           );
@@ -108,7 +108,7 @@ class _FolderScreenState extends State<FolderScreen>
   @override
   void initState() {
     super.initState();
-    cubit = ServiceLocator.getInstance().folderPageCubit;
+    cubit = ServiceLocator.getInstance().folderScreenCubit;
     future = cubit.onScreenLoad();
   }
 

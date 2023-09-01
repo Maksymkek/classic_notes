@@ -38,10 +38,10 @@ class FolderFormOverlayManager {
               onClose: dispose,
               onDone: folder != null
                   ? ServiceLocator.getInstance()
-                      .folderPageCubit
+                      .folderScreenCubit
                       .onUpdateFolderClick
                   : ServiceLocator.getInstance()
-                      .folderPageCubit
+                      .folderScreenCubit
                       .onAddFolderClick,
             ),
           ),
