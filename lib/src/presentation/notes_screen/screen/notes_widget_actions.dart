@@ -6,7 +6,7 @@ import 'package:notes/generated/locale_keys.g.dart';
 import 'package:notes/src/domain/entity/item/note.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
-import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
+import 'package:notes/src/presentation/interfaces/screen_cubit.dart';
 import 'package:notes/src/presentation/notes_screen/screen/note_widget.dart';
 import 'package:notes/src/presentation/reusable_widgets/alert_dialog/alert_dialog.dart';
 import 'package:notes/src/presentation/reusable_widgets/slidable_action/slidable_action.dart';

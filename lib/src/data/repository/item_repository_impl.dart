@@ -7,42 +7,47 @@ import 'package:notes/src/domain/repository/item_repository.dart';
 class ItemRepositoryImpl<Entity extends Item,
         EntityDataSource extends DataSource<Entity>>
     implements ItemRepository<Entity> {
-  ItemRepositoryImpl(this._entityDataSource);
+  ItemRepositoryImpl(this._dataSource);
 
-  final EntityDataSource _entityDataSource;
+  final EntityDataSource _dataSource;
 
   @override
   Future<void> addItem(Entity item) async {
-    await _entityDataSource.putItem(item);
+    await _dataSource.putItem(item);
   }
 
   @override
   Future<void> deleteItem(Entity item) async {
-    await _entityDataSource.deleteItem(item);
+    await _dataSource.deleteItem(item);
   }
 
   @override
   Future<Map<int, Entity>?> getItems() async {
-    return await _entityDataSource.getItems();
+    return await _dataSource.getItems();
   }
 
   @override
   Future<void> updateItem(Entity item) async {
-    await _entityDataSource.putItem(item);
+    await _dataSource.putItem(item);
   }
 
   @override
   Future<void> updateItemsOrder(Map<int, Entity> items) async {
-    await _entityDataSource.putItems(items);
+    await _dataSource.putItems(items);
   }
 
   @override
   Future<ItemSettingsModel> getSetting() async {
-    return await _entityDataSource.settings.readSettings();
+    return await _dataSource.settings.readSettings();
   }
 
   @override
   Future<void> setSetting(ItemSetting setting) async {
-    _entityDataSource.settings.writeSetting(setting);
+    await _dataSource.settings.writeSetting(setting);
+  }
+
+  @override
+  Future<void> deleteAll() async {
+    await _dataSource.deleteAll();
   }
 }

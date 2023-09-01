@@ -6,7 +6,7 @@ class SetItemSettingInteractor {
 
   final SettingsRepository settingsRepository;
 
-  void call(ItemSetting setting) {
-    settingsRepository.setSetting(setting);
+  Future<void> call(ItemSetting setting) async {
+    await settingsRepository.setSetting(setting);
   }
 }

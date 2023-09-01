@@ -1,19 +1,6 @@
-import 'package:notes/src/domain/entity/item/folder.dart';
-import 'package:notes/src/domain/entity/item/item_settings_model.dart';
-import 'package:notes/src/domain/entity/settings/item/sort_by.dart';
-import 'package:notes/src/domain/entity/settings/item/sort_order.dart';
-import 'package:notes/src/domain/repository/item_repository.dart';
-import 'package:notes/src/domain/use_case/item_case/add_item_interactor.dart';
-import 'package:notes/src/domain/use_case/item_case/delete_item_interactor.dart';
-import 'package:notes/src/domain/use_case/item_case/get_items_interactor.dart';
-import 'package:notes/src/domain/use_case/item_case/update_item_interactor.dart';
-import 'package:notes/src/domain/use_case/item_case/update_items_order_interactor.dart';
-import 'package:notes/src/domain/use_case/settings_case/item_settings_case/get_setting_interactor.dart';
-import 'package:notes/src/domain/use_case/settings_case/item_settings_case/set_setting_interactor.dart';
-import 'package:notes/src/presentation/folders_screen/cubit/folder_page_state.dart';
-import 'package:notes/src/presentation/interfaces/screen_cubit.dart';
+part of 'package:notes/src/presentation/interfaces/screen_cubit.dart';
 
-class FolderScreenCubit extends ScreenCubit<Folder, FolderPageState> {
+class FolderScreenCubit extends ScreenCubit<Folder, FolderScreenState> {
   FolderScreenCubit({
     required this.folderRepository,
     required this.getFoldersInteractor,
@@ -22,7 +9,7 @@ class FolderScreenCubit extends ScreenCubit<Folder, FolderPageState> {
     required this.deleteFolderInteractor,
     required this.updateFoldersOrderInteractor,
   }) : super(
-          FolderPageState(
+          FolderScreenState(
             settings: ItemSettingsModel(SortBy.date, SortOrder.descending),
             folders: {},
           ),
@@ -35,7 +22,7 @@ class FolderScreenCubit extends ScreenCubit<Folder, FolderPageState> {
   final GetItemsInteractor<Folder> getFoldersInteractor;
   final AddItemInteractor<Folder> addFolderInteractor;
   final UpdateItemInteractor<Folder> updateFolderInteractor;
-  final DeleteItemInteractor<Folder> deleteFolderInteractor;
+  final DeleteFolderInteractor deleteFolderInteractor;
   final UpdateItemsOrderInteractor<Folder> updateFoldersOrderInteractor;
   late final SetItemSettingInteractor _setItemSettingInteractor;
   late final GetItemSettingInteractor _getItemSettingInteractor;
@@ -47,7 +34,7 @@ class FolderScreenCubit extends ScreenCubit<Folder, FolderPageState> {
     ItemSettingsModel? settings,
   }) {
     emit(
-      FolderPageState(
+      FolderScreenState(
         settings: settings ??
             ItemSettingsModel(
               sortBy ?? state.settings.sortBy,
@@ -70,28 +57,26 @@ class FolderScreenCubit extends ScreenCubit<Folder, FolderPageState> {
   }
 
   Future<void> onAddFolderClick(Folder folder) async {
-    await addFolderInteractor(folder);
-    Map<int, Folder> newFolders = Map.from(state.items)
-      ..[state.items.length] =
-          folder.copyWith(id: getId(), dateOfLastChange: DateTime.now());
+    final indexedFolder = folder.copyWith(
+      id: state.items.getId(),
+      dateOfLastChange: DateTime.now(),
+    );
+    final newFolders = _addItem(indexedFolder);
     _copyWith(folders: newFolders);
+    await addFolderInteractor(indexedFolder);
   }
 
   Future<void> onUpdateFolderClick(Folder folder) async {
-    await updateFolderInteractor(folder);
-    Map<int, Folder> newFolders = Map.from(state.items)
-      ..update(
-        getMapKey(folder),
-        (value) => folder.copyWith(dateOfLastChange: DateTime.now()),
-      );
+    final newFolder = folder.copyWith(dateOfLastChange: DateTime.now());
+    Map<int, Folder> newFolders = _updateItem(newFolder);
     _copyWith(folders: newFolders);
+    await updateFolderInteractor(folder);
   }
 
   Future<void> onDeleteFolderClick(Folder folder) async {
+    Map<int, Folder> newFolders = _deleteItem(folder);
+    _copyWith(folders: newFolders);
     await deleteFolderInteractor(folder);
-    Map<int, Folder> newFolders = Map.from(state.items)
-      ..removeWhere((key, value) => value == folder);
-    _copyWith(folders: reindexMap(newFolders));
   }
 
   @override

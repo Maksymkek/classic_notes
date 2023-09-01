@@ -7,8 +7,8 @@ import 'package:notes/src/domain/entity/item/folder.dart';
 import 'package:notes/src/presentation/app_colors.dart';
 import 'package:notes/src/presentation/app_icons.dart';
 import 'package:notes/src/presentation/folder_form_screen/folder_form_overlay.dart';
-import 'package:notes/src/presentation/folders_screen/cubit/folder_screen_cubit.dart';
 import 'package:notes/src/presentation/folders_screen/screen/folder_widget.dart';
+import 'package:notes/src/presentation/interfaces/screen_cubit.dart';
 import 'package:notes/src/presentation/reusable_widgets/alert_dialog/alert_dialog.dart';
 import 'package:notes/src/presentation/reusable_widgets/slidable_action/slidable_action.dart';
 

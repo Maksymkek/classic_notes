@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:notes/src/domain/entity/item/folder.dart';
 import 'package:notes/src/domain/entity/item/note.dart';
 import 'package:notes/src/presentation/folders_screen/screen/folder_screen_widget.dart';
+import 'package:notes/src/presentation/interfaces/screen_cubit.dart';
 import 'package:notes/src/presentation/load_screen/load_screen.dart';
 import 'package:notes/src/presentation/note_form_screen/screen/note_form_screen.dart';
-import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_cubit.dart';
 import 'package:notes/src/presentation/notes_screen/screen/notes_screen_widget.dart';
 
 class AppNavigation {

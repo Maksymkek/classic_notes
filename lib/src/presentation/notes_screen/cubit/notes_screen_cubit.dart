@@ -1,24 +1,7 @@
-import 'package:notes/src/data/repository/note_repository_impl.dart';
-import 'package:notes/src/dependencies/di.dart';
-import 'package:notes/src/domain/entity/item/folder.dart';
-import 'package:notes/src/domain/entity/item/item_settings_model.dart';
-import 'package:notes/src/domain/entity/item/note.dart';
-import 'package:notes/src/domain/entity/settings/item/sort_by.dart';
-import 'package:notes/src/domain/entity/settings/item/sort_order.dart';
-import 'package:notes/src/domain/repository/item_repository.dart';
-import 'package:notes/src/domain/use_case/item_case/add_item_interactor.dart';
-import 'package:notes/src/domain/use_case/item_case/delete_item_interactor.dart';
-import 'package:notes/src/domain/use_case/item_case/get_items_interactor.dart';
-import 'package:notes/src/domain/use_case/item_case/update_item_interactor.dart';
-import 'package:notes/src/domain/use_case/item_case/update_items_order_interactor.dart';
-import 'package:notes/src/domain/use_case/settings_case/item_settings_case/get_setting_interactor.dart';
-import 'package:notes/src/domain/use_case/settings_case/item_settings_case/set_setting_interactor.dart';
-import 'package:notes/src/presentation/folders_screen/cubit/folder_screen_cubit.dart';
-import 'package:notes/src/presentation/interfaces/screen_cubit.dart';
-import 'package:notes/src/presentation/notes_screen/cubit/notes_screen_state.dart';
+part of 'package:notes/src/presentation/interfaces/screen_cubit.dart';
 
 class NoteScreenCubit extends ScreenCubit<Note, NotePageState> {
-  NoteScreenCubit(
+  NoteScreenCubit._(
     this.folder,
   ) : super(
           NotePageState(
@@ -32,18 +15,20 @@ class NoteScreenCubit extends ScreenCubit<Note, NotePageState> {
     _init();
   }
 
-  factory NoteScreenCubit.fromCache(Folder folder) {
-    return _cache.putIfAbsent(folder.id, () => NoteScreenCubit(folder));
+  factory NoteScreenCubit.getInstance(Folder folder) {
+    return _cache.putIfAbsent(folder.id, () => NoteScreenCubit._(folder));
   }
 
+  static StreamSubscription<FolderScreenState>? _subscription;
+  static FolderScreenState? _prevState;
   static final Map<int, NoteScreenCubit> _cache = {};
   final Folder folder;
   late final FolderScreenCubit _folderPageCubit;
   late final ItemRepository<Note> _noteRepository;
   late final GetItemsInteractor<Note> _getNotesInteractor;
-  late final AddItemInteractor<Note> _addNoteInteractor;
-  late final UpdateItemInteractor<Note> _updateNoteInteractor;
-  late final DeleteItemInteractor<Note> _deleteNoteInteractor;
+  late final AddNoteInteractor _addNoteInteractor;
+  late final UpdateNoteInteractor _updateNoteInteractor;
+  late final DeleteNoteInteractor _deleteNoteInteractor;
   late final UpdateItemsOrderInteractor<Note> _updateNotesOrderInteractor;
   late final SetItemSettingInteractor _setItemSettingInteractor;
   late final GetItemSettingInteractor _getItemSettingInteractor;
@@ -52,13 +37,32 @@ class NoteScreenCubit extends ScreenCubit<Note, NotePageState> {
     _noteRepository = NoteRepositoryImpl(folder: folder);
     _getNotesInteractor = GetItemsInteractor(_noteRepository);
     _updateNotesOrderInteractor = UpdateItemsOrderInteractor(_noteRepository);
-    _addNoteInteractor = AddItemInteractor(_noteRepository);
-    _updateNoteInteractor = UpdateItemInteractor(_noteRepository);
-    _deleteNoteInteractor = DeleteItemInteractor(_noteRepository);
+    _addNoteInteractor = AddNoteInteractor(_noteRepository, () {
+      _folderPageCubit.onUpdateFolderClick(folder);
+    });
+    _updateNoteInteractor = UpdateNoteInteractor(_noteRepository, () {
+      _folderPageCubit.onUpdateFolderClick(folder);
+    });
+    _deleteNoteInteractor = DeleteNoteInteractor(_noteRepository, () {
+      _folderPageCubit.onUpdateFolderClick(folder);
+    });
     var di = ServiceLocator.getInstance();
     _getItemSettingInteractor = GetItemSettingInteractor(_noteRepository);
     _setItemSettingInteractor = SetItemSettingInteractor(_noteRepository);
-    _folderPageCubit = di.folderPageCubit;
+    _folderPageCubit = di.folderScreenCubit;
+    _subscription = _subscription ??
+        _folderPageCubit.stream.asBroadcastStream().listen((newState) {
+          if (_prevState?.items.length == newState.items.length) {
+            _prevState = newState;
+            return;
+          }
+          _prevState = newState;
+          _cache.forEach((key, value) {
+            if (newState.items.getMapKey(value.folder) == -1) {
+              _cache.remove(key);
+            }
+          });
+        });
   }
 
   void _copyWith({
@@ -93,33 +97,26 @@ class NoteScreenCubit extends ScreenCubit<Note, NotePageState> {
   }
 
   Future<void> onAddNoteClick(Note note) async {
-    _folderPageCubit.onUpdateFolderClick(folder);
-    await _addNoteInteractor(note);
-    Map<int, Note> newNotes = Map.from(state.items)
-      ..[state.items.length] = note.copyWith(
-        id: getId(),
-        dateOfLastChange: DateTime.now(),
-      );
+    var indexedNote = note.copyWith(
+      id: state.items.getId(),
+      dateOfLastChange: DateTime.now(),
+    );
+    final newNotes = _addItem(indexedNote);
     _copyWith(notes: newNotes);
+    await _addNoteInteractor(indexedNote);
   }
 
   Future<void> onUpdateNoteClick(Note note) async {
-    _folderPageCubit.onUpdateFolderClick(folder);
-    await _updateNoteInteractor(note);
-    Map<int, Note> newNotes = Map.from(state.items)
-      ..update(
-        getMapKey(note),
-        (value) => note.copyWith(dateOfLastChange: DateTime.now()),
-      );
+    final newNote = note.copyWith(dateOfLastChange: DateTime.now());
+    Map<int, Note> newNotes = _updateItem(newNote);
     _copyWith(notes: newNotes);
+    await _updateNoteInteractor(newNote);
   }
 
   Future<void> onDeleteNoteClick(Note note) async {
-    _folderPageCubit.onUpdateFolderClick(folder);
-    await _deleteNoteInteractor(note);
-    Map<int, Note> newNotes = Map.from(state.items)
-      ..removeWhere((key, value) => value == note);
+    Map<int, Note> newNotes = _deleteItem(note);
     _copyWith(notes: reindexMap(newNotes));
+    await _deleteNoteInteractor(note);
   }
 
   @override
